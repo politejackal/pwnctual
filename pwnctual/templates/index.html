@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% from "_macros.html" import rank_card, avatar, plans with context %}
+{% set active_nav = 'index' %}
+{% block main %}
+<section class="wrap hero">
+  <div class="hero-art" aria-hidden="true">
+    <svg viewBox="0 0 400 400">
+      {% macro morph(a, fill, opacity=1) -%}
+        <path fill="{{ fill }}" opacity="{{ opacity }}" d="{{ a.d }}"><animate attributeName="d" values="{{ a.values }}" dur="{{ a.dur }}"
+          keyTimes="{{ a.keyTimes }}" keySplines="{{ a.keySplines }}" calcMode="spline" repeatCount="indefinite"/></path>
+      {%- endmacro %}
+      {{ morph(hero.big, 'var(--primary-container)') }}
+      <text x="230" y="180" class="hero-glyph" fill="var(--on-primary-container)" font-size="150">skull</text>
+      {{ morph(hero.accent, 'var(--tertiary)') }}
+      <text x="330" y="330" class="hero-glyph" fill="var(--on-tertiary)" font-size="56">terminal</text>
+      {{ morph(hero.small, 'var(--secondary-container)') }}
+      <text x="72" y="318" class="hero-glyph" fill="var(--on-secondary-container)" font-size="44">code</text>
+    </svg>
+  </div>
+
+  {% if me %}
+    <div class="label">Welcome back, {{ me.login }}</div>
+    <h1 class="display-l" style="margin-top:12px"><span class="sr-only">Learn to hack computers, the web, networks, binaries, kernels and browsers.</span><span aria-hidden="true">Learn to hack<br><em><span class="rotator" data-words="computers,the web,networks,binaries,kernels,browsers"><span class="rot-word">computers</span></span>.</em></span></h1>
+    <div class="card filled" style="margin-top:32px;max-width:720px">{{ rank_card(my_rank) }}</div>
+    <div class="row" style="margin-top:24px">
+      {% set next_c = namespace(c=None) %}
+      {% for p in PATHS %}{% for c in p.challenges %}{% if not next_c.c and c.slug not in my_solved %}{% set next_c.c = c %}{% endif %}{% endfor %}{% endfor %}
+      {% if next_c.c %}
+        <a class="btn lg" href="/paths/{{ next_c.c.path.id }}/{{ next_c.c.module.id }}#{{ next_c.c.slug }}"><span class="material-symbols-rounded">play_arrow</span>Continue: {{ next_c.c.title }}</a>
+      {% endif %}
+      <a class="btn lg tonal" href="/course"><span class="material-symbols-rounded">calendar_month</span>Course plan</a>
+      <a class="btn lg tonal" href="/workspace"><span class="material-symbols-rounded">terminal</span>Open workspace</a>
+    </div>
+  {% else %}
+    <a class="free-badge" href="/pricing"><span class="material-symbols-rounded">redeem</span>Week 1 is free, live classes included <span class="muted">· no card needed</span></a>
+    <h1 class="display-l"><span class="sr-only">Learn to hack computers, the web, networks, binaries, kernels and browsers.</span><span aria-hidden="true">Learn to hack<br><em><span class="rotator" data-words="computers,the web,networks,binaries,kernels,browsers"><span class="rot-word">computers</span></span>.</em></span></h1>
+    <p class="lede">A six-year path from absolute zero to vulnerability researcher, built so every year ends with a profile you can get hired on. <b>The first week is completely free.</b> Write real code in
+      your own GitHub Codespace, get checked against randomized tests, and climb from <b>Noob</b> to
+      <b class="ghost-name">Ghost</b>. Stuck during your free week? Live classes are free too.</p>
+    <div class="row">
+      <a class="btn lg" href="/login?next=/course"><span class="material-symbols-rounded">play_arrow</span>Start week 1 free</a>
+      <a class="btn lg outlined" href="/course">Browse the course</a>
+    </div>
+  {% endif %}
+</section>
+
+<section class="section">
+  <div class="wrap row" style="margin-bottom:16px">
+    <h2 class="headline">The ladder</h2><span class="spacer"></span>
+    <a class="btn text" href="/ranks">All ranks<span class="material-symbols-rounded">arrow_forward</span></a>
+  </div>
+  <div class="wrap rank-row">
+    {% for t in ladder %}
+      <a class="rank-step {{ 'apex' if t.key == 'ghost' }}" href="/ranks">
+        {{ emblem(t, 120) }}
+        <span class="title-m {{ 'ghost-name' if t.key == 'ghost' }}">{{ t.name }}</span>
+        <span class="muted" style="font-size:13px">{{ t.min }} points</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2 class="headline" style="margin-bottom:20px">How it works</h2>
+  <div class="grid grid-3 steps">
+    <div class="card step"><div class="title-l">Sign in</div>
+      <p class="muted">Use your Google or GitHub account. Week 1 is free, so no card is needed.</p></div>
+    <div class="card step"><div class="title-l">Launch your Codespace</div>
+      <p class="muted">A full Linux box in your browser, with the course tools and the <code class="mono">pwnctual</code> CLI already installed.</p></div>
+    <div class="card step"><div class="title-l">Solve, check, rank up</div>
+      <p class="muted"><code class="mono">pwnctual check</code> runs your code against fresh random input. Pass and you earn points.</p></div>
+  </div>
+</section>
+
+<section class="wrap section" id="pricing">
+  <div class="row" style="margin-bottom:8px">
+    <h2 class="headline">Simple pricing</h2><span class="spacer"></span>
+    <a class="btn text" href="/pricing">Pricing & FAQ<span class="material-symbols-rounded">arrow_forward</span></a>
+  </div>
+  <p class="muted" style="margin:0 0 20px;max-width:640px">Your first week is on us, live classes included. Unlock the full month for {{ PRO_PRICE }}.</p>
+  {{ plans() }}
+</section>
+
+<section class="wrap section">
+  <div class="live-card">
+    <span class="live-icon"><span class="material-symbols-rounded">video_call</span></span>
+    <div>
+      <div class="label">Free during week 1</div>
+      <h2 class="headline">On-call live classes</h2>
+      <p class="muted">Got a doubt? Hop on a live call with a mentor and work through it together, from a
+        stubborn bug to a concept that won't click. Live classes are free for your whole first week, and
+        Pro keeps them going all month.</p>
+    </div>
+    <a class="btn lg tonal" href="/classes"><span class="material-symbols-rounded">event</span>Book a live class</a>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2 class="headline" style="margin-bottom:20px">Paths</h2>
+  <div class="grid grid-2">
+    {% for p in PATHS %}
+      {% set done = p.challenges|selectattr('slug', 'in', my_solved)|list|length %}
+      <a class="card path-card tone-{{ p.tone }}" href="/paths/{{ p.id }}">
+        <span class="material-symbols-rounded" style="font-size:40px">{{ p.icon }}</span>
+        <div class="headline" style="margin-top:16px">{{ p.title }}</div>
+        <div style="opacity:.8">{{ p.tagline }}</div>
+        <div class="meta">
+          <div class="row" style="font-size:14px;font-weight:650"><span>{{ p.modules|length }} modules · {{ p.challenges|length }} challenges</span><span class="spacer"></span><span>{{ done }}/{{ p.challenges|length }}</span></div>
+          <div class="progress-line"><i style="width:{{ (100 * done / p.challenges|length)|round }}%"></i></div>
+        </div>
+        <div class="num">{{ '%02d'|format(p.number) }}</div>
+      </a>
+    {% endfor %}
+    <div class="card outlined path-card">
+      <span class="material-symbols-rounded" style="font-size:40px;color:var(--on-surface-variant)">lock</span>
+      <div class="headline" style="margin-top:16px">More paths</div>
+      <div class="muted">New paths are on the way. Every new challenge raises the bar for Ghost.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

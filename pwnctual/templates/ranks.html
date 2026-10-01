@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macros.html" import rank_card with context %}
+{% set active_nav = 'ranks' %}
+{% block title %}Ranks · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <h1 class="display-s" style="margin:40px 0 8px">Ranked</h1>
+  <p class="muted" style="font-size:18px;max-width:640px">Every solve earns points. Collect enough and you climb through five ranks:
+    Noob, Shadow, Demon, Reaper and, at the very top, Ghost. To become a <b class="ghost-name">Ghost</b> you have to clear everything. When a new
+    path drops, the bar goes up.</p>
+
+  {% if me %}<div class="card filled" style="margin:32px 0">{{ rank_card(my_rank) }}</div>{% endif %}
+
+  {% set cur = my_rank.tier.index if my_rank else -1 %}
+  <div class="ladder" style="margin-top:32px">
+    {% for t in ladder|reverse %}
+      {% set here = t.index == cur %}
+      <div class="ladder-rank {{ 'current' if here }} {{ 'locked' if cur < t.index }} {{ 'apex' if t.key == 'ghost' }}">
+        <div style="display:grid;place-items:center">{{ emblem(t, 132) }}</div>
+        <div class="stack">
+          <div class="row"><span class="headline {{ 'ghost-name' if t.key == 'ghost' }}">{{ t.name }}</span>
+            {% if here %}<span class="chip good"><span class="material-symbols-rounded">my_location</span>You are here</span>{% endif %}</div>
+          <div class="{{ '' if here else 'muted' }}">{{ t.motto }}</div>
+          <div class="ladder-divs">
+            <span class="div-pill {{ 'here' if here else ('reached' if t.index < cur) }}">{{ t.min }} points</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

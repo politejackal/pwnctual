@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_macros.html" import plans with context %}
+{% block title %}Pricing · pwnctual{% endblock %}
+{% block main %}
+<div class="wrap pricing-page">
+  <header class="pricing-head">
+    <span class="chip good"><span class="material-symbols-rounded">redeem</span>Week 1 is free, live classes included</span>
+    <h1 class="display-s">Start free. Go Pro when you're hooked.</h1>
+    <p class="muted">The whole first week costs nothing, with no card needed, and you can book live classes free all
+      week. When you're ready for the rest of the 30-day course, Pro is {{ PRO_PRICE }} a month.</p>
+  </header>
+
+  {{ plans() }}
+
+  <section class="live-card">
+    <span class="live-icon"><span class="material-symbols-rounded">video_call</span></span>
+    <div>
+      <div class="label">Free during week 1 · all month with Pro</div>
+      <h2 class="headline">On-call live classes</h2>
+      <p class="muted">Stuck on a bug, or a concept that won't click? Book a live call with a mentor and work
+        through it together, screen-share and all.</p>
+    </div>
+    <a class="btn lg" href="/classes"><span class="material-symbols-rounded">event</span>Book a live class</a>
+  </section>
+
+  <section class="faq">
+    <h2 class="headline">Questions</h2>
+    <details class="chal"><summary><span class="title-m">Is week 1 really free?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
+      <div class="body muted">Yes. Sign in and do all seven days of Week 1, including every challenge, rank and flag, and book live classes whenever you're stuck, all without paying or adding a card.</div></details>
+    <details class="chal"><summary><span class="title-m">What do I get with Pro?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
+      <div class="body muted">The full 30-day course: weeks 2–4 and the Final Haunt, the boss-fight exam, plus live classes for the whole month instead of just your free week.</div></details>
+    <details class="chal"><summary><span class="title-m">How do the live classes work?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
+      <div class="body muted">During your free week you can book live calls at no cost. With Pro they continue all month. You join a live video session with a mentor and go through your question together.</div></details>
+    <details class="chal"><summary><span class="title-m">Do I need anything installed?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
+      <div class="body muted">No. Everything runs in a GitHub Codespace in your browser. You'll need a free GitHub account for the workspace.</div></details>
+  </section>
+</div>
+{% endblock %}

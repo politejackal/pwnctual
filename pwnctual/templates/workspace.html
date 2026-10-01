@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% set active_nav = 'workspace' %}
+{% block title %}Workspace · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <div class="label" style="margin-top:40px">Setup · takes about 2 minutes</div>
+  <h1 class="display-s" style="margin:8px 0 32px">Your workspace</h1>
+
+  <div class="grid steps">
+    <div class="card step">
+      <div class="title-l">Launch a Codespace</div>
+      <p class="muted">A Linux machine in your browser with the course tools and the <code class="mono">pwnctual</code> CLI pre-installed.
+        Free GitHub accounts include monthly Codespaces hours, which is plenty for this course.</p>
+      <div class="row">
+        <a class="btn lg" href="https://codespaces.new/{{ WORKSPACE_REPO }}?quickstart=1" target="_blank" rel="noopener">
+          <span class="material-symbols-rounded">rocket_launch</span>Launch Codespace</a>
+        <a class="btn lg outlined" href="https://github.com/{{ WORKSPACE_REPO }}" target="_blank" rel="noopener">View template</a>
+      </div>
+    </div>
+
+    <div class="card step">
+      <div class="title-l">Link the CLI to your account</div>
+      <p class="muted">In the Codespace terminal run:</p>
+      <div class="cmd"><code>pwnctual login</code><button class="btn tonal copy" data-copy="pwnctual login" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+      <p class="muted">It prints an 8-letter code. Enter it on the <a href="/link">link page</a> and approve. The CLI picks up your token automatically.</p>
+    </div>
+
+    <div class="card step">
+      <div class="title-l">Solve something</div>
+      <div class="cmd"><code>pwnctual new hello-hacker</code><button class="btn tonal copy" data-copy="pwnctual new hello-hacker" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+      <div class="cmd"><code>pwnctual check hello-hacker</code><button class="btn tonal copy" data-copy="pwnctual check hello-hacker" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+      <p class="muted">Other commands: <code class="mono">pwnctual list</code>, <code class="mono">pwnctual show &lt;slug&gt;</code>, <code class="mono">pwnctual whoami</code>.</p>
+    </div>
+  </div>
+
+  <h2 class="headline" id="tokens" style="margin:48px 0 8px">Access tokens</h2>
+  <p class="muted">Working outside Codespaces? Create a token and run <code class="mono">pwnctual login --token &lt;token&gt; --url {{ base }}</code>.</p>
+  {% if me %}
+    {% if new_token %}
+      <div class="banner ok" style="margin:16px 0"><span class="material-symbols-rounded">key</span>
+        <div style="min-width:0;flex:1"><b>Copy this now. It won't be shown again.</b>
+          <div class="cmd" style="background:transparent"><code style="white-space:nowrap">{{ new_token }}</code><button class="btn copy" data-copy="{{ new_token }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div></div></div>
+    {% endif %}
+    <div class="lb" style="margin:16px 0">
+      {% for t in tokens %}
+        <div class="lb-row" style="grid-template-columns:48px 1fr auto">
+          <span class="avatar" style="background:var(--secondary-container);color:var(--on-secondary-container)"><span class="material-symbols-rounded">{{ 'cloud' if t.label == 'codespace' else 'key' }}</span></span>
+          <span><b>{{ t.label }}</b><br><span class="muted" style="font-size:13px">created <span class="ago" data-t="{{ t.created_at }}"></span>{% if t.last_used %} · used <span class="ago" data-t="{{ t.last_used }}"></span>{% endif %}</span></span>
+          <form method="post" action="/workspace/tokens/{{ t.rowid }}/revoke"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button class="btn text sm">Revoke</button></form>
+        </div>
+      {% else %}
+        <div class="muted">No tokens yet.</div>
+      {% endfor %}
+    </div>
+    <form method="post" action="/workspace/tokens"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <button class="btn tonal"><span class="material-symbols-rounded">add</span>New token</button></form>
+  {% else %}
+    <div class="banner info" style="margin-top:16px"><span class="material-symbols-rounded">info</span><span><a href="/login?next=/workspace">Sign in</a> to manage tokens.</span></div>
+  {% endif %}
+</div>
+{% endblock %}

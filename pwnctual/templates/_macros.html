@@ -1,0 +1,73 @@
+{% macro avatar(user, size=40) -%}
+<span class="avatar" style="width:{{ size }}px;height:{{ size }}px">
+  {%- if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="">{% else %}{{ user.login[:1]|upper }}{% endif -%}
+</span>
+{%- endmacro %}
+
+{% macro wavy(p) -%}
+<div class="wavy-host" data-p="{{ '%.4f'|format(p) }}"></div>
+{%- endmacro %}
+
+{% macro rank_card(rank, big=True) -%}
+<div class="rank-card">
+  {{ emblem(rank.tier, 140 if big else 96) }}
+  <div class="stack" style="min-width:0">
+    <div class="label">Current rank</div>
+    <div class="display-s {{ 'ghost-name' if rank.tier.key == 'ghost' }}">{{ rank.tier.label }}</div>
+    <div class="muted">{{ rank.tier.motto }}</div>
+    {{ wavy(rank.progress) }}
+    <div class="row muted" style="font-size:14px">
+      <span><b style="color:var(--on-surface)">{{ rank.score }}</b> points</span>
+      <span class="spacer"></span>
+      {% if rank.next %}<span>{{ rank.to_next }} to <b style="color:var(--on-surface)">{{ rank.next.label }}</b></span>
+      {% else %}<span>Apex reached. Nothing left to haunt.</span>{% endif %}
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro plans() -%}
+<div class="plans">
+  <div class="plan">
+    <div class="plan-top">
+      <span class="plan-icon"><span class="material-symbols-rounded">school</span></span>
+      <div><div class="title-l">Week 1</div><div class="muted">Free forever</div></div>
+    </div>
+    <div class="price"><span class="amount">$0</span><span class="per">no card needed</span></div>
+    <ul class="feats">
+      <li><span class="material-symbols-rounded">check</span>Days 1–7: how computers work, from absolute zero</li>
+      <li><span class="material-symbols-rounded">check</span>All {{ FREE_SLUGS|length }} Week 1 challenges, auto-checked</li>
+      <li><span class="material-symbols-rounded">check</span>Your own Codespace workspace</li>
+      <li><span class="material-symbols-rounded">check</span>Ranks, flags and the leaderboard</li>
+      <li><span class="material-symbols-rounded">check</span><span><b>Free live classes</b> all through your free week</span></li>
+    </ul>
+    {% if me %}
+      <a class="btn lg outlined" href="/course">Go to the course</a>
+    {% else %}
+      <a class="btn lg outlined" href="/login?next=/course">Start week 1 free</a>
+    {% endif %}
+  </div>
+
+  <div class="plan pro">
+    <span class="plan-flag">Full course</span>
+    <div class="plan-top">
+      <span class="plan-icon"><span class="material-symbols-rounded">workspace_premium</span></span>
+      <div><div class="title-l">pwnctual Pro</div><div class="plan-sub">One month, all 30 days</div></div>
+    </div>
+    <div class="price"><span class="amount">{{ PRO_PRICE }}</span><span class="per">/ month</span></div>
+    <ul class="feats">
+      <li><span class="material-symbols-rounded">check</span>Everything in the free plan</li>
+      <li><span class="material-symbols-rounded">check</span><span><b>Live classes all month long</b>, not just week 1</span></li>
+      <li><span class="material-symbols-rounded">check</span>Weeks 2–4: data wrangling, bits & bytes, hacker toolkit</li>
+      <li><span class="material-symbols-rounded">check</span><span><b>The Final Haunt</b>: a boss-fight exam to prove you're a Ghost</span></li>
+    </ul>
+    {% if IS_PRO %}
+      <div class="btn lg pro-on" aria-disabled="true"><span class="material-symbols-rounded">verified</span>You're Pro until {{ pro_until }}</div>
+    {% elif CHECKOUT_URL %}
+      <a class="btn lg" href="{{ CHECKOUT_URL }}" data-reload rel="noopener"><span class="material-symbols-rounded">workspace_premium</span>Get Pro for {{ PRO_PRICE }}</a>
+    {% else %}
+      <div class="btn lg pro-soon" aria-disabled="true"><span class="material-symbols-rounded">schedule</span>Checkout opens soon</div>
+    {% endif %}
+  </div>
+</div>
+{%- endmacro %}

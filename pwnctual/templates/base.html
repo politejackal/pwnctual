@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}pwnctual{% endblock %}</title>
+<meta name="description" content="pwnctual: learn to hack from absolute zero, all the way to vulnerability research.">
+<script>
+  try { var t = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,ROND@6..144,1..1000,0..100&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@300..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='35' fill='%23D0BCFF'/%3E%3Ctext x='50' y='72' font-family='Google Sans Flex, Arial, sans-serif' font-size='72' font-weight='800' text-anchor='middle' fill='%23381E72'%3Ep%3C/text%3E%3C/svg%3E">
+</head>
+<body data-user="{{ me.login if me else '' }}" data-rank="{{ my_rank.tier.index if my_rank else '' }}" data-rank-label="{{ my_rank.tier.label if my_rank else '' }}" data-rank-key="{{ my_rank.tier.key if my_rank else '' }}">
+{% set nav = [
+  ('index', '/', 'home', 'Home'),
+  ('paths', '/course', 'school', 'Learn'),
+  ('ranks', '/ranks', 'skull', 'Ranks'),
+  ('leaderboard', '/leaderboard', 'leaderboard', 'Leaderboard'),
+  ('workspace', '/workspace', 'terminal', 'Workspace'),
+] %}
+{% set active = active_nav|default('') %}
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><span>pwn<b>ctual</b></span></a>
+    <nav class="navgroup">
+      {% for key, href, icon, label in nav %}
+        <a href="{{ href }}" class="{{ 'active' if active == key }}" title="{{ label }}"{% if active == key %} aria-current="page"{% endif %}>{% if active == key %}<span class="nav-ind" aria-hidden="true"></span>{% endif %}<span class="nav-c" data-k="{{ key }}"><span class="material-symbols-rounded">{{ icon }}</span><span class="nl">{{ label }}</span></span></a>
+      {% endfor %}
+    </nav>
+    <div class="topbar-end">
+    <button class="btn text icon-btn" id="theme-toggle" aria-label="Toggle theme"><span class="material-symbols-rounded" id="theme-icon">dark_mode</span></button>
+    <div class="actions">
+    {% if me %}
+      <a class="mini-rank" href="/u/{{ me.login }}" title="{{ my_rank.tier.label }}">{{ emblem(my_rank.tier, 40) }}<span class="nl">{{ my_rank.tier.label }}</span></a>
+      <form method="post" action="/auth/logout" class="hide-m"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <button class="btn text sm" title="Sign out"><span class="material-symbols-rounded">logout</span></button></form>
+    {% else %}
+      <a class="btn sm" href="/login"><span class="material-symbols-rounded">login</span>Sign in</a>
+    {% endif %}
+    </div>
+    </div>
+  </div>
+</header>
+
+<main>{% block main %}{% endblock %}</main>
+
+<footer>
+  <div class="wrap row">
+    <span>pwnctual · Learn to hack. Leave no trace.</span>
+    <span class="spacer"></span>
+    <a href="/course">Course</a><a href="/classes">Live classes</a><a href="/pricing">Pricing</a><a href="/ranks">Ranks</a><a href="/workspace">Workspace</a>
+  </div>
+</footer>
+
+<nav class="bottomnav">
+  {% for key, href, icon, label in nav %}
+    <a href="{{ href }}" class="{{ 'active' if active == key }}"{% if active == key %} aria-current="page"{% endif %}><span class="pill">{% if active == key %}<span class="bnav-ind" aria-hidden="true"></span>{% endif %}<span class="material-symbols-rounded bnav-c" data-k="{{ key }}">{{ icon }}</span></span>{{ label }}</a>
+  {% endfor %}
+</nav>
+
+<div class="snackbar" id="snackbar"></div>
+<script src="{{ asset('js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

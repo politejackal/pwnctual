@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% set active_nav = 'paths' %}
+{% block title %}{{ module.title }} · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <div class="crumbs">
+    <a href="/">Home</a><span class="material-symbols-rounded">chevron_right</span>
+    <a href="/paths/{{ path.id }}">{{ path.title }}</a><span class="material-symbols-rounded">chevron_right</span>
+    <span>Module {{ module.number }}</span>
+  </div>
+  <div class="label">Module {{ module.number }} · {{ module.points }} points</div>
+  <h1 class="display-s" style="margin:8px 0 4px">{{ module.title }}</h1>
+  <div class="muted" style="font-size:18px">{{ module.summary }}</div>
+
+  <details class="chal" open style="margin-top:32px">
+    <summary>
+      <span class="state" style="background:var(--primary-container);color:var(--on-primary-container)"><span class="material-symbols-rounded">menu_book</span></span>
+      <span class="title-l">Lecture</span><span></span>
+      <span class="material-symbols-rounded chev">expand_more</span>
+    </summary>
+    <div class="body prose">{{ md(module.lecture) }}</div>
+  </details>
+
+  <h2 class="headline" style="margin:40px 0 16px">Challenges</h2>
+  <div id="challenges" data-logged-in="{{ 1 if me else 0 }}">
+    {% for c in module.challenges %}
+      {% set solved = c.slug in my_solved %}
+      <details class="chal {{ 'solved' if solved }}" id="{{ c.slug }}" data-slug="{{ c.slug }}">
+        <summary>
+          <span class="state"><span class="material-symbols-rounded">{{ 'check' if solved else 'flag' }}</span></span>
+          <span><span class="title-m">{{ c.title }}</span><br><span class="muted mono" style="font-size:13px">{{ c.number }} · {{ c.slug }}</span></span>
+          <span class="chip">{{ c.points }} points</span>
+          <span class="material-symbols-rounded chev">expand_more</span>
+        </summary>
+        <div class="body">
+          <div class="prose">{{ md(c.description) }}</div>
+          {% if c.slug not in FREE_SLUGS and not IS_PRO %}
+          <div class="banner info" style="margin-top:20px"><span class="material-symbols-rounded">workspace_premium</span>
+            <span>This challenge is part of <b>pwnctual Pro</b> ({{ PRO_PRICE }}/month). <a href="/pricing">See plans</a></span></div>
+          {% else %}
+          <div class="label" style="margin-top:24px">In your Codespace</div>
+          <div class="cmd"><code>pwnctual new {{ c.slug }}</code><button class="btn tonal copy" data-copy="pwnctual new {{ c.slug }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+          <div class="cmd"><code>pwnctual check {{ c.slug }}</code><button class="btn tonal copy" data-copy="pwnctual check {{ c.slug }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+          {% endif %}
+          {% if not me %}<div class="banner info" style="margin-top:16px"><span class="material-symbols-rounded">info</span><span><a href="/login">Sign in</a> to track your solves and earn points.</span></div>{% endif %}
+        </div>
+      </details>
+    {% endfor %}
+  </div>
+
+  <div class="row" style="margin-top:40px">
+    {% if prev %}<a class="btn outlined" href="/paths/{{ path.id }}/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>{{ prev.title }}</a>{% endif %}
+    <span class="spacer"></span>
+    {% if nxt %}<a class="btn" href="/paths/{{ path.id }}/{{ nxt.id }}">{{ nxt.title }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
+  </div>
+</div>
+{% endblock %}

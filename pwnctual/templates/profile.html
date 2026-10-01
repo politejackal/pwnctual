@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_macros.html" import rank_card, avatar with context %}
+{% block title %}{{ user.login }} · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <div class="row" style="margin:40px 0 24px;gap:16px">
+    {{ avatar(user, 64) }}
+    <div><h1 class="headline">{{ user.login }}</h1>
+      {% if user.github_id %}<a class="muted" href="https://github.com/{{ user.login }}" rel="noopener">github.com/{{ user.login }}</a>{% endif %}
+      {% if me and me.id == user.id and IS_PRO %}<div><span class="chip pro-chip"><span class="material-symbols-rounded">workspace_premium</span>Pro until {{ pro_until }}</span></div>{% endif %}</div>
+    {% if me and me.id == user.id %}<span class="spacer"></span>
+      <form method="post" action="/auth/logout"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <button class="btn outlined sm"><span class="material-symbols-rounded">logout</span>Sign out</button></form>{% endif %}
+  </div>
+  <div class="card filled">{{ rank_card(rank) }}</div>
+
+  <div class="grid grid-3" style="margin-top:16px">
+    <div class="card tone-primary"><div class="label" style="color:inherit;opacity:.8">Points</div><div class="display-s">{{ rank.score }}</div></div>
+    <div class="card tone-tertiary"><div class="label" style="color:inherit;opacity:.8">Solved</div><div class="display-s">{{ solved|length }}<span style="font-size:22px;opacity:.7"> / {{ PATHS|map(attribute='challenges')|map('length')|sum }}</span></div></div>
+    <div class="card tone-secondary"><div class="label" style="color:inherit;opacity:.8">Ladder</div><div class="display-s">#{{ rank.tier.index + 1 }}<span style="font-size:22px;opacity:.7"> / {{ RANK_COUNT }}</span></div></div>
+  </div>
+
+  <h2 class="headline" style="margin:40px 0 16px">Progress</h2>
+  <div class="module-list">
+    {% for p in PATHS %}{% for m in p.modules %}
+      {% set d = m.challenges|selectattr('slug', 'in', solved)|list|length %}
+      <a class="card module-row {{ 'done' if d == m.challenges|length }}" href="/paths/{{ p.id }}/{{ m.id }}">
+        <span class="badge">{% if d == m.challenges|length %}<span class="material-symbols-rounded">check</span>{% else %}{{ m.number }}{% endif %}</span>
+        <div class="info">
+          <div class="title-m">{{ m.title }}</div>
+          <div class="progress-line"><i style="width:{{ (100 * d / m.challenges|length)|round }}%"></i></div>
+        </div>
+        <span class="end">
+          <span class="chip {{ 'good' if d == m.challenges|length }}">{{ d }}/{{ m.challenges|length }}</span>
+          <span class="material-symbols-rounded go">arrow_forward</span>
+        </span>
+      </a>
+    {% endfor %}{% endfor %}
+  </div>
+
+  {% if recent %}
+  <h2 class="headline" style="margin:40px 0 16px">Recent kills</h2>
+  <div class="lb">
+    {% for c, t in recent %}
+      <a class="lb-row" style="grid-template-columns:48px 1fr auto" href="/paths/{{ c.path.id }}/{{ c.module.id }}#{{ c.slug }}">
+        <span class="avatar" style="background:var(--tertiary);color:var(--on-tertiary)"><span class="material-symbols-rounded">flag</span></span>
+        <span><b>{{ c.title }}</b><br><span class="muted mono" style="font-size:13px">{{ c.number }} · <span class="ago" data-t="{{ t }}"></span></span></span>
+        <span class="score">+{{ c.points }}</span>
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

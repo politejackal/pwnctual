@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% set active_nav = 'paths' %}
+{% block title %}{{ path.title }} · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <div class="crumbs"><a href="/">Home</a><span class="material-symbols-rounded">chevron_right</span><span>Path {{ path.number }}</span></div>
+  <div class="card tone-{{ path.tone }} path-card" style="min-height:240px">
+    <span class="material-symbols-rounded" style="font-size:44px">{{ path.icon }}</span>
+    <h1 class="display-s" style="margin-top:16px">{{ path.title }}</h1>
+    <div style="opacity:.85;font-size:18px">{{ path.tagline }}</div>
+    {% set done = path.challenges|selectattr('slug', 'in', my_solved)|list|length %}
+    <div class="meta">
+      <div class="row" style="font-size:14px;font-weight:650"><span>{{ path.points }} points available</span><span class="spacer"></span><span>{{ done }}/{{ path.challenges|length }} solved</span></div>
+      <div class="progress-line"><i style="width:{{ (100 * done / path.challenges|length)|round }}%"></i></div>
+    </div>
+    <div class="num">{{ '%02d'|format(path.number) }}</div>
+  </div>
+
+  <div class="module-list" style="margin-top:24px">
+    {% for m in path.modules %}
+      {% set mdone = m.challenges|selectattr('slug', 'in', my_solved)|list|length %}
+      <a class="card module-row {{ 'done' if mdone == m.challenges|length }}" href="/paths/{{ path.id }}/{{ m.id }}">
+        <span class="badge">{% if mdone == m.challenges|length %}<span class="material-symbols-rounded">check</span>{% else %}{{ m.number }}{% endif %}</span>
+        <div class="info">
+          <div class="title-l">{{ m.title }}</div>
+          <div class="muted">{{ m.summary }}</div>
+          <div class="progress-line"><i style="width:{{ (100 * mdone / m.challenges|length)|round }}%"></i></div>
+        </div>
+        <span class="end">
+          <span class="chip {{ 'good' if mdone == m.challenges|length }}">{{ mdone }}/{{ m.challenges|length }}</span>
+          <span class="material-symbols-rounded go">arrow_forward</span>
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

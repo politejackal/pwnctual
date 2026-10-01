@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_macros.html" import avatar with context %}
+{% set active_nav = 'leaderboard' %}
+{% block title %}Leaderboard · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <h1 class="display-s" style="margin:40px 0 32px">Leaderboard</h1>
+  {% if rows %}
+  <div class="lb">
+    {% for r in rows %}
+      <a class="lb-row {{ 'top%d'|format(loop.index) if loop.index <= 3 }}" href="/u/{{ r.user.login }}">
+        <span class="pos">{{ loop.index }}</span>
+        {{ emblem(r.rank.tier, 48) }}
+        <span class="row" style="gap:12px;min-width:0">{{ avatar(r.user, 36) }}<span style="min-width:0"><b>{{ r.user.login }}</b><br>
+          <span class="{{ 'ghost-name' if r.rank.tier.key == 'ghost' else 'muted' }}" style="font-size:13px">{{ r.rank.tier.label }}</span></span></span>
+        <span class="chip rk">{{ r.solves }} solves</span>
+        <span class="score">{{ r.score }}</span>
+      </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="card outlined" style="text-align:center;padding:48px">
+      <span class="material-symbols-rounded" style="font-size:48px;color:var(--on-surface-variant)">skull</span>
+      <div class="title-l" style="margin-top:12px">The graveyard is empty</div>
+      <p class="muted">Be the first to solve a challenge.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
