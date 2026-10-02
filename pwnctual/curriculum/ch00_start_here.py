@@ -73,5 +73,4 @@ CHAPTER = Chapter(
     "What this course is, the six-year roadmap, and how every chapter works.",
     video="https://youtu.be/33cANYTCsjg",
     lecture=LECTURE,
-    free=True,
 )

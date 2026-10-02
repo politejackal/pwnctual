@@ -32,18 +32,17 @@ PWNCTUAL_DEV=1 python -m pwnctual          # http://127.0.0.1:5000
 2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically).
 3. Run behind a real WSGI server, e.g. `gunicorn -w 4 "pwnctual.app:app"`.
 
-## Free chapter and Pro
+## Free course and Pro
 
-Chapter 1 is free for everyone, including on-call live classes while learners work through it. Every
-other chapter and live classes all month are part of **pwnctual Pro**
-($10 for one month, set with `PWNCTUAL_PRO_PRICE`). The site enforces this: a free account can't
-open or mark a Pro challenge. Mark a chapter free with `free=True` on its `Chapter`.
+The whole course is free for everyone, forever: every chapter, video, write-up and challenge.
+**pwnctual Pro** ($10 a month, set with `PWNCTUAL_PRO_PRICE`) adds 1-on-1 calls with a mentor for
+questions and doubts. Only Pro members (and admins) can book a call; the site enforces this.
 
 - **Selling Pro:** set `PWNCTUAL_CHECKOUT_URL` to a payment link to enable the Pro button. Without it, the button
   reads "Checkout opens soon".
 - **Granting Pro by hand:** `python -m pwnctual grant-pro LOGIN` (30 days by default, adds to any time left;
   `--days N` to change it) and `python -m pwnctual revoke-pro LOGIN`.
-- **Live classes:** learners book 15-minute calls at `/classes`. Slots run from 08:00 to 24:00 in
+- **1-on-1 calls:** Pro members book 15-minute calls at `/classes`. Slots run from 08:00 to 24:00 in
   `PWNCTUAL_CLASS_TZ` (default `Asia/Riyadh`), and each learner sees them in their own timezone. A slot can only
   be booked once, and each person can hold one upcoming booking. Set `PWNCTUAL_CLASS_MEET_URL` to your
   video-call link, and list your login in `PWNCTUAL_ADMINS` to see every booking at `/classes/admin`.

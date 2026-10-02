@@ -254,7 +254,6 @@ CHAPTER = Chapter(
     "Why hackers don't use mice: the Linux file tree, and moving through it without one.",
     video="",
     lecture=LECTURE,
-    free=True,
     challenges=[
         Challenge(
             "bandit-0", "Bandit Level 0: Get in", 10,

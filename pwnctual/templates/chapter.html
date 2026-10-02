@@ -47,10 +47,6 @@
         </summary>
         <div class="body">
           {% if c.description %}<div class="prose">{{ md(c.description) }}</div>{% endif %}
-          {% if c.slug not in FREE_SLUGS and not IS_PRO %}
-          <div class="banner info" style="margin-top:20px"><span class="material-symbols-rounded">workspace_premium</span>
-            <span>This challenge is part of <b>pwnctual Pro</b> ({{ PRO_PRICE }}/month). <a href="/pricing">See plans</a></span></div>
-          {% else %}
           <div class="row" style="margin-top:20px">
             <a class="btn" href="{{ c.url }}" target="_blank" rel="noopener"><span class="material-symbols-rounded">open_in_new</span>Open challenge</a>
             {% if me %}
@@ -64,7 +60,6 @@
               Still stuck? Ask in the comments of
               {% if chapter.video %}<a href="{{ chapter.video }}" target="_blank" rel="noopener">this chapter's video</a>{% else %}this chapter's video (coming soon){% endif %}.
               Mention that you're on <b>{{ c.title }}</b> and what you've tried so far. I'm active there and I'll definitely reply.</span></div>
-          {% endif %}
           {% if not me %}<div class="banner info" style="margin-top:16px"><span class="material-symbols-rounded">info</span><span><a href="/login?next=/chapters/{{ chapter.id }}">Sign in</a> to mark challenges done and earn points.</span></div>{% endif %}
         </div>
       </details>

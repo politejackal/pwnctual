@@ -146,10 +146,19 @@
     if (!rot) return;
     const words = rot.dataset.words.split(",");
     let i = 0;
+    // start clean: exactly one word, natural width (a restored page can carry a half-finished swap)
+    const first = document.createElement("span");
+    first.className = "rot-word";
+    first.textContent = words[0];
+    rot.replaceChildren(first);
+    rot.style.width = "";
     rotTimer = setInterval(() => {
       if (document.hidden || !rot.isConnected) return;
       i = (i + 1) % words.length;
-      const old = $(".rot-word", rot);
+      // drop any word a stalled animation left behind, keeping only the current one
+      const all = $$(".rot-word", rot);
+      all.slice(0, -1).forEach((w) => w.remove());
+      const old = all[all.length - 1];
       if (reducedMotion() || !old.animate) { old.textContent = words[i]; return; }
       const next = document.createElement("span");
       next.className = "rot-word";
@@ -163,6 +172,7 @@
       old.animate([{ transform: "none", opacity: 1, filter: "blur(0)" },
                    { transform: "translateY(-45%)", opacity: 0, filter: "blur(8px)" }],
                   { duration: 380, easing: ease, fill: "forwards" }).finished.then(() => old.remove(), () => old.remove());
+      setTimeout(() => old.remove(), 600);  // animations can stall in a background window
       next.animate([{ transform: "translateY(45%)", opacity: 0, filter: "blur(8px)" },
                     { transform: "none", opacity: 1, filter: "blur(0)" }],
                    { duration: 520, delay: 90, easing: "cubic-bezier(.38, 1.21, .22, 1)", fill: "backwards" });
@@ -280,7 +290,7 @@
         }
         const cancel = el("button", "btn text sm", "Cancel booking"); cancel.type = "button";
         cancel.onclick = async () => {
-          if (!confirm("Cancel this live class?")) return;
+          if (!confirm("Cancel this call?")) return;
           try { await post(`/api/classes/${b.id}/cancel`); snack("Booking cancelled"); } catch (err) { snack(err.message); }
           load();
         };
@@ -362,7 +372,7 @@
   // admin: cancel a learner's booking
   document.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-admin-cancel]"); if (!b) return;
-    if (!confirm("Cancel this learner's live class?")) return;
+    if (!confirm("Cancel this learner's call?")) return;
     const r = await fetch(`/api/classes/${b.dataset.adminCancel}/cancel`, { method: "POST", credentials: "same-origin",
       headers: { "X-CSRF-Token": $("#admin-csrf").value, Accept: "application/json" } });
     if (r.ok) { b.closest(".admin-booking").remove(); snack("Booking cancelled"); } else snack("Couldn't cancel that booking.");

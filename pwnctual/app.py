@@ -17,7 +17,7 @@ from flask import (Flask, abort, g, jsonify, redirect, render_template, request,
 from markupsafe import Markup
 
 from . import db as dbm
-from .curriculum import CHALLENGES, CHAPTERS, CHAPTERS_BY_ID, FREE_SLUGS, TOTAL_POINTS
+from .curriculum import CHALLENGES, CHAPTERS, CHAPTERS_BY_ID, TOTAL_POINTS
 from .emblems import emblem
 from . import classes as cls
 from . import shapes
@@ -235,10 +235,6 @@ def is_admin(user):
     return bool(user) and user["login"].lower() in ADMINS
 
 
-def can_access(user, chal):
-    return chal.slug in FREE_SLUGS or is_pro(user)
-
-
 def asset(name):
     full = os.path.join(app.static_folder, name)
     v = int(os.path.getmtime(full)) if os.path.exists(full) else 0
@@ -253,7 +249,7 @@ def inject():
         "CHAPTERS": CHAPTERS, "TOTAL_POINTS": TOTAL_POINTS, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
         "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID),
         "my_rank": None, "my_solved": {},
-        "IS_PRO": is_pro(user), "FREE_SLUGS": FREE_SLUGS, "PRO_PRICE": PRO_PRICE, "PRO_DAYS": PRO_DAYS,
+        "IS_PRO": is_pro(user), "PRO_PRICE": PRO_PRICE, "PRO_DAYS": PRO_DAYS,
         "CHECKOUT_URL": CHECKOUT_URL, "video_embed": video_embed, "IS_ADMIN": is_admin(user),
         "pro_until": (time.strftime("%d %b %Y", time.localtime(user["pro_until"]))
                       if is_pro(user) else None),
@@ -316,8 +312,10 @@ def api_class_slots():
 def api_class_book():
     user = current_user()
     if not user:
-        return jsonify(error="Sign in to book a live class."), 401
+        return jsonify(error="Sign in to book a 1-on-1 call."), 401
     check_csrf()
+    if not (is_pro(user) or is_admin(user)):
+        return jsonify(error=f"1-on-1 calls are part of pwnctual Pro ({PRO_PRICE}/month)."), 402
     body = request.get_json(silent=True) or {}
     ts, note = body.get("t"), str(body.get("note") or "").strip()[:500]
     if not cls.is_valid_slot(ts, int(now())):
@@ -595,8 +593,6 @@ def api_challenge_done(slug):
     c = CHALLENGES.get(slug)
     if not c:
         return jsonify(error="unknown challenge"), 404
-    if not can_access(user, c):
-        return jsonify(error=f"'{c.title}' is part of pwnctual Pro"), 402
     before = user_rank(user["id"])
     db = dbm.get_db()
     db.execute("INSERT OR IGNORE INTO solves (user_id, slug, solved_at) VALUES (?,?,?)", (user["id"], slug, now()))

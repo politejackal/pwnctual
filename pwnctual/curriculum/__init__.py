@@ -19,5 +19,4 @@ for ni, chapter in enumerate(CHAPTERS):
             raise ValueError(f"duplicate challenge slug: {chal.slug}")
         CHALLENGES[chal.slug] = chal
 
-FREE_SLUGS = {c.slug for ch in CHAPTERS if ch.free for c in ch.challenges}
 TOTAL_POINTS = sum(c.points for c in CHALLENGES.values())

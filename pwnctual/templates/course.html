@@ -9,10 +9,10 @@
     <p class="lede muted">Every chapter is a recorded lesson, a detailed write-up, and live challenges to break into.
       Go at your own pace: clear a chapter's challenges, then move on to the next.</p>
     <div class="row course-stats">
-      <span class="chip good"><span class="material-symbols-rounded">redeem</span>Chapter 1 is free</span>
+      <span class="chip good"><span class="material-symbols-rounded">redeem</span>Free forever</span>
       <span class="chip filled"><span class="material-symbols-rounded">menu_book</span>{{ CHAPTERS|length }} chapter{{ 's' if CHAPTERS|length != 1 }}</span>
       <span class="chip"><span class="material-symbols-rounded">school</span>Starts at absolute zero</span>
-      <a class="chip filled" href="/classes"><span class="material-symbols-rounded">video_call</span>Book a 15-min live class</a>
+      <a class="chip filled" href="/classes"><span class="material-symbols-rounded">video_call</span>1-on-1 calls with Pro</a>
     </div>
     <div class="row" style="margin-top:24px">
       {% if up_next %}
@@ -36,7 +36,6 @@
           {% if me and total %}<div class="progress-line"><i style="width:{{ ((100 * d / total)|round) if total else 0 }}%"></i></div>{% endif %}
         </div>
         <span class="end">
-          {% if not ch.free and not IS_PRO %}<span class="chip pro-chip"><span class="material-symbols-rounded">workspace_premium</span>Pro</span>{% endif %}
           {% if total %}<span class="chip {{ 'good' if d == total }}">{{ d }}/{{ total }}</span>{% else %}<span class="chip">Intro</span>{% endif %}
           <span class="material-symbols-rounded go">arrow_forward</span>
         </span>

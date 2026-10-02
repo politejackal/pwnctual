@@ -31,13 +31,13 @@
       <a class="btn lg tonal" href="/course"><span class="material-symbols-rounded">menu_book</span>All chapters</a>
     </div>
   {% else %}
-    <a class="free-badge" href="/pricing"><span class="material-symbols-rounded">redeem</span>Chapter 1 is free, live classes included <span class="muted">· no card needed</span></a>
+    <a class="free-badge" href="/pricing"><span class="material-symbols-rounded">redeem</span>The whole course is free, forever <span class="muted">· no card needed</span></a>
     <h1 class="display-l"><span class="sr-only">Learn to hack computers, the web, networks, binaries, kernels and browsers.</span><span aria-hidden="true">Learn to hack<br><em><span class="rotator" data-words="computers,the web,networks,binaries,kernels,browsers"><span class="rot-word">computers</span></span>.</em></span></h1>
-    <p class="lede">A six-year path from absolute zero to vulnerability researcher, built so every year ends with a profile you can get hired on. <b>The first chapter is completely free.</b> Watch each lesson,
+    <p class="lede">A six-year path from absolute zero to vulnerability researcher, built so every year ends with a profile you can get hired on. <b>Every chapter is free, forever.</b> Watch each lesson,
       read the full write-up, then go break into real live challenges and climb from <b>Noob</b> to
-      <b class="ghost-name">Ghost</b>. Stuck on the free chapter? Live classes are free too.</p>
+      <b class="ghost-name">Ghost</b>. Want help? Pro gets you 1-on-1 calls.</p>
     <div class="row">
-      <a class="btn lg" href="/login?next=/course"><span class="material-symbols-rounded">play_arrow</span>Start chapter 1 free</a>
+      <a class="btn lg" href="/login?next=/course"><span class="material-symbols-rounded">play_arrow</span>Start learning free</a>
       <a class="btn lg outlined" href="/course">Browse the course</a>
     </div>
   {% endif %}
@@ -63,7 +63,7 @@
   <h2 class="headline" style="margin-bottom:20px">How it works</h2>
   <div class="grid grid-3 steps">
     <div class="card step"><div class="title-l">Sign in</div>
-      <p class="muted">Use your Google or GitHub account. Chapter 1 is free, so no card is needed.</p></div>
+      <p class="muted">Use your Google or GitHub account. The whole course is free, so no card is needed.</p></div>
     <div class="card step"><div class="title-l">Watch and read</div>
       <p class="muted">Every lesson is a recording plus a detailed write-up, so you can rewatch or skim whenever you need to.</p></div>
     <div class="card step"><div class="title-l">Break in, rank up</div>
@@ -76,7 +76,7 @@
     <h2 class="headline">Simple pricing</h2><span class="spacer"></span>
     <a class="btn text" href="/pricing">Pricing & FAQ<span class="material-symbols-rounded">arrow_forward</span></a>
   </div>
-  <p class="muted" style="margin:0 0 20px;max-width:640px">Your first chapter is on us, live classes included. Unlock every chapter for {{ PRO_PRICE }} a month.</p>
+  <p class="muted" style="margin:0 0 20px;max-width:640px">Every chapter is free. Pro is {{ PRO_PRICE }} a month for 1-on-1 calls when you want help.</p>
   {{ plans() }}
 </section>
 
@@ -84,13 +84,12 @@
   <div class="live-card">
     <span class="live-icon"><span class="material-symbols-rounded">video_call</span></span>
     <div>
-      <div class="label">Free with chapter 1</div>
-      <h2 class="headline">On-call live classes</h2>
-      <p class="muted">Got a doubt? Hop on a live call with a mentor and work through it together, from a
-        stubborn bug to a concept that won't click. Live classes are free while you work through chapter 1, and
-        Pro keeps them going all month.</p>
+      <div class="label">pwnctual Pro</div>
+      <h2 class="headline">1-on-1 calls</h2>
+      <p class="muted">Got a question or a doubt? Book a 15-minute call with a mentor and work through it together,
+        from a stubborn level to a concept that won't click.</p>
     </div>
-    <a class="btn lg tonal" href="/classes"><span class="material-symbols-rounded">event</span>Book a live class</a>
+    <a class="btn lg tonal" href="/classes"><span class="material-symbols-rounded">event</span>Book a call</a>
   </div>
 </section>
 
@@ -107,7 +106,7 @@
         <div class="headline" style="margin-top:16px">{{ ch.title }}</div>
         <div style="opacity:.8">{{ ch.summary }}</div>
         <div class="meta">
-          <div class="row" style="font-size:14px;font-weight:650"><span>{% if ch.challenges %}{{ ch.challenges|length }} challenges{% else %}Intro, no challenges{% endif %}{{ ' · free' if ch.free }}</span><span class="spacer"></span>{% if ch.challenges %}<span>{{ done }}/{{ ch.challenges|length }}</span>{% endif %}</div>
+          <div class="row" style="font-size:14px;font-weight:650"><span>{% if ch.challenges %}{{ ch.challenges|length }} challenges{% else %}Intro, no challenges{% endif %}</span><span class="spacer"></span>{% if ch.challenges %}<span>{{ done }}/{{ ch.challenges|length }}</span>{% endif %}</div>
           <div class="progress-line"><i style="width:{{ ((100 * done / ch.challenges|length)|round) if ch.challenges else 0 }}%"></i></div>
         </div>
         <div class="num">{{ '%02d'|format(ch.number) }}</div>

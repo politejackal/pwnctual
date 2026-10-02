@@ -29,7 +29,6 @@ class Chapter:
     video: str  # recording URL (YouTube links are embedded); empty until it's published
     lecture: str  # the written explanation, in Markdown
     challenges: list = field(default_factory=list)
-    free: bool = False  # free chapters are open to everyone; the rest need Pro
     number: int = 0
 
     @property
