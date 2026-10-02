@@ -308,6 +308,14 @@ def _bookings_for(user):
     return _my_bookings(user["id"], meet_url=CLASS_MEET_URL if (is_pro(user) or is_admin(user)) else None)
 
 
+def _booked_days(uid, since_ts):
+    """Days (in my timezone) the user already has a call on, past calls earlier that day included."""
+    rows = dbm.get_db().execute(
+        "SELECT start_ts FROM class_bookings WHERE user_id=? AND cancelled_at IS NULL AND start_ts >= ?",
+        (uid, cls.day_bounds(since_ts)[0])).fetchall()
+    return sorted({cls.day_of(r["start_ts"]) for r in rows})
+
+
 @app.get("/api/classes/slots")
 def api_class_slots():
     ts_now = int(now())
@@ -316,8 +324,9 @@ def api_class_slots():
         "SELECT start_ts FROM class_bookings WHERE cancelled_at IS NULL AND start_ts >= ?", (starts[0] if starts else ts_now,))}
     user = current_user()
     return jsonify(
-        mentor_tz=cls.MENTOR_TZ_NAME, slot_minutes=cls.SLOT_MINUTES, max_upcoming=cls.MAX_UPCOMING,
-        slots=[{"t": t, "taken": t in taken} for t in starts],
+        mentor_tz=cls.MENTOR_TZ_NAME, slot_minutes=cls.SLOT_MINUTES,
+        slots=[{"t": t, "taken": t in taken, "d": cls.day_of(t)} for t in starts],
+        booked_days=_booked_days(user["id"], starts[0] if starts else ts_now) if user else [],
         signed_in=bool(user), mine=_bookings_for(user) if user else [],
         can_book=bool(user) and (is_pro(user) or is_admin(user)),
     )
@@ -336,14 +345,16 @@ def api_class_book():
     if not cls.is_valid_slot(ts, int(now())):
         return jsonify(error="That time isn't available. Please pick another slot."), 400
     db = dbm.get_db()
-    # Check "one call at a time" and insert inside one write-locked transaction,
+    # Check "one call a day" and insert inside one write-locked transaction,
     # so two simultaneous requests from the same person can't both get through.
     db.commit()
     db.execute("BEGIN IMMEDIATE")
     try:
-        if len(_my_bookings(user["id"])) >= cls.MAX_UPCOMING:
+        day_start, day_end = cls.day_bounds(ts)
+        if db.execute("SELECT 1 FROM class_bookings WHERE user_id=? AND cancelled_at IS NULL AND start_ts >= ? AND start_ts < ?",
+                      (user["id"], day_start, day_end)).fetchone():
             db.rollback()
-            return jsonify(error="You can only have one call booked at a time. Cancel your current call to pick a new time."), 409
+            return jsonify(error="You already have a call that day. Pro includes one call a day, so pick another day."), 409
         db.execute("INSERT INTO class_bookings (user_id, start_ts, note, created_at) VALUES (?,?,?,?)",
                    (user["id"], ts, note, now()))
         db.commit()

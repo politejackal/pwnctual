@@ -6,19 +6,20 @@
   <header class="classes-head">
     <div class="label">pwnctual Pro</div>
     <h1 class="display-s">Book a 1-on-1 call</h1>
-    <p class="muted">Got a question or a doubt? Pick a time and hop on a 15-minute call with a mentor.
-      Calls are part of pwnctual Pro ({{ PRO_PRICE }}/month). The course itself stays free.</p>
+    <p class="muted">Got a question or a doubt? Pick a time and hop on a 15-minute call with me. I make the
+      course, so you're talking to the person who wrote the lessons. With pwnctual Pro ({{ PRO_PRICE }}/month)
+      you can have <b>a call every day</b>. The course itself stays free.</p>
     <div class="row" style="gap:8px">
       <span class="chip filled"><span class="material-symbols-rounded">timer</span>15 minutes</span>
       <a class="chip pro-chip" href="/pricing"><span class="material-symbols-rounded">workspace_premium</span>Pro</a>
       <span class="chip"><span class="material-symbols-rounded">public</span>Shown in your timezone</span>
-      <span class="chip"><span class="material-symbols-rounded">looks_one</span>1 call at a time</span>
+      <span class="chip"><span class="material-symbols-rounded">event_repeat</span>1 call every day</span>
     </div>
   </header>
 
   {% if not (IS_PRO or IS_ADMIN) %}
   <div class="banner info pro-gate"><span class="material-symbols-rounded">workspace_premium</span>
-    <span>Booking calls is for pwnctual Pro members. You can look at the open times below;
+    <span>Booking calls is for pwnctual Pro members, who can have a call with me every day. You can look at the open times below;
       {% if me %}<a href="/pricing">get Pro</a>{% else %}<a href="/login?next=/classes">sign in</a> and get Pro{% endif %} to book one.
       Without Pro, you can still ask under each chapter's video.</span></div>
   {% endif %}
@@ -28,13 +29,13 @@
     <div class="tz-main">
       <label class="label" for="tz-select">Showing times in</label>
       <select id="tz-select" class="m3-select" aria-label="Your timezone"></select>
-      <div class="muted tz-hours" id="tz-hours">Mentor hours: 8:00 AM – 12:00 AM ({{ mentor_tz }})</div>
+      <div class="muted tz-hours" id="tz-hours">My hours: 8:00 AM – 12:00 AM ({{ mentor_tz }})</div>
     </div>
   </section>
 
   <section id="my-classes" class="my-classes" hidden>
-    <h2 class="title-l">Your upcoming call</h2>
-    <p class="muted one-rule">You can have one call booked at a time. Cancel it if you'd like a different time.</p>
+    <h2 class="title-l">Your upcoming calls</h2>
+    <p class="muted one-rule">You can book one call a day. Cancel a call if you'd like a different time that day.</p>
     <div id="my-list"></div>
   </section>
 
@@ -57,6 +58,8 @@
   <div class="label">Confirm your 1-on-1 call</div>
   <h2 class="headline" id="book-title"></h2>
   <div class="muted" id="book-mentor"></div>
+  <div class="banner info daily-rule"><span class="material-symbols-rounded">event_repeat</span>
+    <span>Pro includes <b>one 15-minute call with me every day</b>. Book one for today, and you can book another for tomorrow.</span></div>
   {% if me and (IS_PRO or IS_ADMIN) %}
     <label class="field" style="margin-top:16px">
       <span class="label">What do you need help with? (optional)</span>

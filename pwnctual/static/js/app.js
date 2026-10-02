@@ -205,6 +205,8 @@
     };
     const range = (t, zone = tz) => `${timeOf(t, zone)} – ${timeOf(t + data.slot_minutes * 60, zone)}`;
     const longDay = (t, zone = tz) => fmt(t, { weekday: "long", day: "numeric", month: "long" }, zone);
+    // Pro allows one call per day (a calendar day in my timezone; the server sends each slot's day)
+    const bookedDay = (t) => { const s = data.slots.find((x) => x.t === t); return !!s && data.booked_days.includes(s.d); };
     const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 
     // timezone picker: every IANA zone the browser knows, labelled with its UTC offset
@@ -228,14 +230,14 @@
       picked = t;
       $("#book-title").textContent = `${longDay(t)} · ${range(t)}`;
       const mentorTz = data.mentor_tz;
-      $("#book-mentor").textContent = mentorTz === tz ? "15-minute call in your timezone."
-        : `15-minute call · that's ${longDay(t, mentorTz)}, ${range(t, mentorTz)} for your mentor (${zoneName(mentorTz)}).`;
+      $("#book-mentor").textContent = mentorTz === tz ? "15-minute call with me, shown in your timezone."
+        : `15-minute call with me · that's ${longDay(t, mentorTz)}, ${range(t, mentorTz)} for me (${zoneName(mentorTz)}).`;
       const note = $("#book-note"); if (note) note.value = "";
       const confirm = $("#book-confirm");
       if (confirm) {
-        const full = data.mine.length >= data.max_upcoming;
+        const full = bookedDay(t);
         confirm.disabled = full;
-        confirm.lastChild.textContent = full ? "You already have a call booked" : "Book this time";
+        confirm.lastChild.textContent = full ? "You already have a call that day" : "Book this time";
       }
       sheet.hidden = scrim.hidden = false;
       requestAnimationFrame(() => { sheet.classList.add("open"); scrim.classList.add("open"); });
@@ -280,7 +282,7 @@
         const icon = el("span", "plan-icon"); icon.append(el("span", "material-symbols-rounded", "video_call"));
         const info = el("div", "my-info");
         info.append(el("div", "title-m", `${longDay(b.t)} · ${range(b.t)}`));
-        if (data.mentor_tz !== tz) info.append(el("div", "muted", `${timeOf(b.t, data.mentor_tz)} for your mentor`));
+        if (data.mentor_tz !== tz) info.append(el("div", "muted", `${timeOf(b.t, data.mentor_tz)} for me`));
         if (b.note) info.append(el("div", "muted my-note", `“${b.note}”`));
         const actions = el("div", "row");
         if (b.meet_url) {
@@ -305,23 +307,15 @@
 
     function render() {
       if (!data) return;
-      // mentor hours, translated into the chosen timezone
+      // my hours, translated into the chosen timezone
       const open = data.slots.find((s) => hourOf(s.t, data.mentor_tz) === 8 && minuteOf(s.t, data.mentor_tz) === 0);
       const hours = $("#tz-hours");
       if (open && data.mentor_tz !== tz) {
-        hours.textContent = `Mentor hours are 8:00 AM – 12:00 AM in ${zoneName(data.mentor_tz)}, which is ${timeOf(open.t, tz)} – ${timeOf(open.t + 16 * 3600, tz)} for you.`;
+        hours.textContent = `My hours are 8:00 AM – 12:00 AM in ${zoneName(data.mentor_tz)}, which is ${timeOf(open.t, tz)} – ${timeOf(open.t + 16 * 3600, tz)} for you.`;
       } else {
-        hours.textContent = `Mentor hours: 8:00 AM – 12:00 AM (${zoneName(data.mentor_tz)}).`;
+        hours.textContent = `My hours: 8:00 AM – 12:00 AM (${zoneName(data.mentor_tz)}).`;
       }
       renderMine();
-      const hasCall = data.mine.length >= data.max_upcoming;
-      const banner = $("#one-call-banner");
-      banner.hidden = !hasCall;
-      if (hasCall) {
-        const b = data.mine[0];
-        $("#one-call-text").textContent = `You already have a call booked for ${longDay(b.t)}, ${timeOf(b.t, tz)}. `
-          + "You can have one call at a time, so cancel it above to choose a different time.";
-      }
 
       // days, in the chosen timezone
       const byDay = new Map();
@@ -340,6 +334,16 @@
         strip.append(b);
       }
 
+      // one call a day: say so when the chosen day already has one of yours
+      const daySlots = byDay.get(day) || [];
+      const banner = $("#one-call-banner");
+      banner.hidden = !daySlots.some((s) => bookedDay(s.t));
+      if (!banner.hidden) {
+        const b = data.mine.find((m) => daySlots.some((s) => s.t === m.t));
+        $("#one-call-text").textContent = (b ? `You already have a call this day at ${timeOf(b.t, tz)}. ` : "You've already had a call this day. ")
+          + "Pro includes one call a day, so pick another day, or cancel it above to choose a different time.";
+      }
+
       // slots for the chosen day, grouped by time of day
       const groups = [["Early hours", 0, 5], ["Morning", 5, 12], ["Afternoon", 12, 17], ["Evening", 17, 21], ["Night", 21, 24]];
       const box = $("#slot-groups"); box.innerHTML = "";
@@ -350,8 +354,9 @@
         g.append(el("div", "label", name));
         const grid = el("div", "slots");
         for (const s of slots) {
-          const b = el("button", `slot${s.taken ? " taken" : ""}${hasCall && !s.taken ? " locked" : ""}${s.t === picked ? " sel" : ""}`, timeOf(s.t, tz));
-          b.type = "button"; b.dataset.t = s.t; b.disabled = s.taken || hasCall;
+          const locked = bookedDay(s.t);
+          const b = el("button", `slot${s.taken ? " taken" : ""}${locked && !s.taken ? " locked" : ""}${s.t === picked ? " sel" : ""}`, timeOf(s.t, tz));
+          b.type = "button"; b.dataset.t = s.t; b.disabled = s.taken || locked;
           b.setAttribute("aria-label", `${longDay(s.t)}, ${range(s.t)}${s.taken ? ", taken" : ""}`);
           b.onclick = () => openSheet(s.t);
           grid.append(b);
