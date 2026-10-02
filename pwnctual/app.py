@@ -74,8 +74,14 @@ DEV_LOGIN = os.environ.get("PWNCTUAL_DEV") == "1"
 PUBLIC_URL = os.environ.get("PWNCTUAL_PUBLIC_URL", "").rstrip("/")
 PRO_PRICE = os.environ.get("PWNCTUAL_PRO_PRICE", "$10")
 PRO_DAYS = 30
-# Paste a payment link (e.g. a Stripe Payment Link) to open checkout; until then
-# the Pro button says checkout opens soon and Pro can be granted by hand.
+# Pro is a Stripe subscription: Checkout to subscribe, the Customer Portal to
+# cancel or change card, and a signed webhook that keeps users.pro_until in sync.
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_PRICE_ID = os.environ.get("STRIPE_PRICE_ID", "")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+STRIPE_ENABLED = bool(STRIPE_SECRET_KEY and STRIPE_PRICE_ID)
+# Without Stripe, an external payment link can sell Pro instead (granted by hand);
+# with neither, the Pro button says checkout opens soon.
 CHECKOUT_URL = os.environ.get("PWNCTUAL_CHECKOUT_URL", "")
 # Live classes: video link shown to people who booked (e.g. a Google Meet room),
 # and the logins allowed to see every booking at /classes/admin.
@@ -250,9 +256,12 @@ def inject():
         "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID),
         "my_rank": None, "my_solved": {},
         "IS_PRO": is_pro(user), "PRO_PRICE": PRO_PRICE, "PRO_DAYS": PRO_DAYS,
-        "CHECKOUT_URL": CHECKOUT_URL, "video_embed": video_embed, "IS_ADMIN": is_admin(user),
+        "CHECKOUT_URL": CHECKOUT_URL, "STRIPE_ENABLED": STRIPE_ENABLED,
+        "video_embed": video_embed, "IS_ADMIN": is_admin(user),
         "pro_until": (time.strftime("%d %b %Y", time.localtime(user["pro_until"]))
                       if is_pro(user) else None),
+        "pro_renews": is_pro(user) and bool(user["pro_renews"]),
+        "has_billing": bool(user) and STRIPE_ENABLED and bool(user["stripe_customer_id"]),
     }
     if user:
         ctx["my_solved"] = solved_slugs(user["id"])
@@ -284,14 +293,19 @@ def classes_page():
                            open_hour=cls.OPEN_HOUR, close_hour=cls.CLOSE_HOUR)
 
 
-def _my_bookings(uid, upcoming_only=True):
+def _my_bookings(uid, upcoming_only=True, meet_url=None):
     q = "SELECT id, start_ts, note FROM class_bookings WHERE user_id=? AND cancelled_at IS NULL"
     if upcoming_only:
         q += f" AND start_ts + {cls.SLOT_MINUTES * 60} > ?"
         rows = dbm.get_db().execute(q + " ORDER BY start_ts", (uid, int(now()))).fetchall()
     else:
         rows = dbm.get_db().execute(q + " ORDER BY start_ts", (uid,)).fetchall()
-    return [{"id": r["id"], "t": r["start_ts"], "note": r["note"] or "", "meet_url": CLASS_MEET_URL} for r in rows]
+    return [{"id": r["id"], "t": r["start_ts"], "note": r["note"] or "", "meet_url": meet_url or ""} for r in rows]
+
+
+def _bookings_for(user):
+    """A user's upcoming calls; the video link is only shared while they have Pro."""
+    return _my_bookings(user["id"], meet_url=CLASS_MEET_URL if (is_pro(user) or is_admin(user)) else None)
 
 
 @app.get("/api/classes/slots")
@@ -304,7 +318,8 @@ def api_class_slots():
     return jsonify(
         mentor_tz=cls.MENTOR_TZ_NAME, slot_minutes=cls.SLOT_MINUTES, max_upcoming=cls.MAX_UPCOMING,
         slots=[{"t": t, "taken": t in taken} for t in starts],
-        signed_in=bool(user), mine=_my_bookings(user["id"]) if user else [],
+        signed_in=bool(user), mine=_bookings_for(user) if user else [],
+        can_book=bool(user) and (is_pro(user) or is_admin(user)),
     )
 
 
@@ -335,7 +350,7 @@ def api_class_book():
     except sqlite3.IntegrityError:
         db.rollback()
         return jsonify(error="Someone just booked that slot. Please pick another one."), 409
-    return jsonify(ok=True, mine=_my_bookings(user["id"]))
+    return jsonify(ok=True, mine=_bookings_for(user))
 
 
 @app.post("/api/classes/<int:booking_id>/cancel")
@@ -350,7 +365,7 @@ def api_class_cancel(booking_id):
         return jsonify(error="Booking not found."), 404
     db.execute("UPDATE class_bookings SET cancelled_at=? WHERE id=?", (now(), booking_id))
     db.commit()
-    return jsonify(ok=True, mine=_my_bookings(user["id"]))
+    return jsonify(ok=True, mine=_bookings_for(user))
 
 
 @app.get("/classes/admin")
@@ -367,7 +382,172 @@ def classes_admin():
 
 @app.get("/pricing")
 def pricing():
-    return render_template("pricing.html")
+    return render_template("pricing.html", billing_note=session.pop("billing_note", None))
+
+
+# ------------------------------------------------------------------ Pro billing (Stripe)
+
+def _stripe(method, path, params=None):
+    """Call the Stripe API (form-encoded; nested keys written out like 'line_items[0][price]')."""
+    url = "https://api.stripe.com/v1/" + path
+    body = None
+    if params and method == "GET":
+        url += "?" + urllib.parse.urlencode(params)
+    elif params:
+        body = urllib.parse.urlencode(params).encode()
+    req = urllib.request.Request(url, data=body, method=method, headers={
+        "Authorization": f"Bearer {STRIPE_SECRET_KEY}", "Stripe-Version": "2025-03-31.basil"})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        return json.load(resp)
+
+
+def _period_end(sub):
+    # Since API version 2025-03-31 the billing period lives on the subscription items.
+    items = (sub.get("items") or {}).get("data") or []
+    ends = [i["current_period_end"] for i in items if i.get("current_period_end")]
+    return max(ends) if ends else sub.get("current_period_end")
+
+
+def _apply_subscription(sub):
+    """Make a user's Pro match a Stripe subscription. Idempotent, so webhook retries,
+    duplicates and out-of-order events are harmless: the subscription is always
+    re-read from Stripe and its current state wins."""
+    db = dbm.get_db()
+    row = db.execute("SELECT id, pro_until FROM users WHERE stripe_customer_id=?", (sub["customer"],)).fetchone()
+    if row is None:
+        uid = (sub.get("metadata") or {}).get("user_id")
+        row = db.execute("SELECT id, pro_until FROM users WHERE id=?", (uid,)).fetchone() if uid else None
+        if row is None:
+            return None
+        db.execute("UPDATE users SET stripe_customer_id=? WHERE id=?", (sub["customer"], row["id"]))
+    until = row["pro_until"] or 0
+    if sub["status"] in ("active", "trialing"):
+        # Paid up: Pro runs to the end of the paid period (never shortening time granted by hand).
+        until = max(until, _period_end(sub) or 0)
+        renews = not sub.get("cancel_at_period_end") and not sub.get("cancel_at")
+    elif sub["status"] in ("canceled", "unpaid", "incomplete_expired"):
+        until, renews = min(until, now()), False
+    else:
+        # past_due / incomplete / paused: keep what was already paid for, don't extend.
+        renews = False
+    db.execute("UPDATE users SET pro_until=?, pro_renews=?, stripe_subscription_id=? WHERE id=?",
+               (until, int(renews), sub["id"], row["id"]))
+    db.commit()
+    return row["id"]
+
+
+def _sync_subscription(sub_id):
+    return _apply_subscription(_stripe("GET", f"subscriptions/{urllib.parse.quote(sub_id)}"))
+
+
+@app.post("/billing/checkout")
+def billing_checkout():
+    user = current_user()
+    if not user:
+        return redirect(url_for("login", next="/pricing"))
+    check_csrf()
+    if not STRIPE_ENABLED:
+        abort(404)
+    if is_pro(user) and user["pro_renews"]:
+        return redirect("/pricing")
+    params = {
+        "mode": "subscription",
+        "line_items[0][price]": STRIPE_PRICE_ID,
+        "line_items[0][quantity]": 1,
+        "client_reference_id": str(user["id"]),
+        "metadata[user_id]": str(user["id"]),
+        "subscription_data[metadata][user_id]": str(user["id"]),
+        "success_url": base_url() + "/billing/success?session_id={CHECKOUT_SESSION_ID}",
+        "cancel_url": base_url() + "/pricing",
+    }
+    if user["stripe_customer_id"]:
+        params["customer"] = user["stripe_customer_id"]
+    elif user["email"]:
+        params["customer_email"] = user["email"]
+    try:
+        cs = _stripe("POST", "checkout/sessions", params)
+    except (urllib.error.URLError, ValueError):
+        session["billing_note"] = "Couldn't open checkout. Please try again in a moment."
+        return redirect("/pricing")
+    return redirect(cs["url"], code=303)
+
+
+@app.get("/billing/success")
+def billing_success():
+    """Stripe sends people here after paying. Sync right away so Pro is on before the
+    webhook arrives (the webhook stays the source of truth for renewals and cancels)."""
+    user = current_user()
+    sid = request.args.get("session_id", "")
+    if user and STRIPE_ENABLED and sid.startswith("cs_"):
+        try:
+            cs = _stripe("GET", f"checkout/sessions/{urllib.parse.quote(sid)}")
+            if cs.get("client_reference_id") == str(user["id"]) and cs.get("subscription"):
+                db = dbm.get_db()
+                db.execute("UPDATE users SET stripe_customer_id=? WHERE id=?", (cs["customer"], user["id"]))
+                db.commit()
+                _sync_subscription(cs["subscription"])
+                session["billing_note"] = "Welcome to Pro! You can book a 1-on-1 call now."
+        except (urllib.error.URLError, ValueError, KeyError):
+            session["billing_note"] = "Payment received. Pro will switch on in a minute."
+    return redirect("/pricing")
+
+
+@app.post("/billing/portal")
+def billing_portal():
+    user = current_user()
+    if not user:
+        return redirect(url_for("login", next="/pricing"))
+    check_csrf()
+    if not (STRIPE_ENABLED and user["stripe_customer_id"]):
+        abort(404)
+    try:
+        ps = _stripe("POST", "billing_portal/sessions",
+                     {"customer": user["stripe_customer_id"], "return_url": base_url() + "/pricing"})
+    except (urllib.error.URLError, ValueError):
+        session["billing_note"] = "Couldn't open billing. Please try again in a moment."
+        return redirect("/pricing")
+    return redirect(ps["url"], code=303)
+
+
+def _stripe_signature_ok(payload, header, tolerance=300):
+    parts = [p.split("=", 1) for p in header.split(",") if "=" in p]
+    ts = next((v for k, v in parts if k == "t"), "")
+    sigs = [v for k, v in parts if k == "v1"]
+    if not ts.isdigit() or abs(now() - int(ts)) > tolerance:
+        return False
+    expected = hmac.new(STRIPE_WEBHOOK_SECRET.encode(), f"{ts}.".encode() + payload, hashlib.sha256).hexdigest()
+    return any(hmac.compare_digest(expected, s) for s in sigs)
+
+
+@app.post("/stripe/webhook")
+def stripe_webhook():
+    if not (STRIPE_ENABLED and STRIPE_WEBHOOK_SECRET):
+        abort(404)
+    payload = request.get_data()
+    if not _stripe_signature_ok(payload, request.headers.get("Stripe-Signature", "")):
+        return jsonify(error="bad signature"), 400
+    event = json.loads(payload)
+    obj = event.get("data", {}).get("object", {})
+    kind = event.get("type", "")
+    sub_id = None
+    if kind == "checkout.session.completed" and obj.get("mode") == "subscription":
+        uid = obj.get("client_reference_id")
+        if uid and obj.get("customer"):
+            db = dbm.get_db()
+            db.execute("UPDATE users SET stripe_customer_id=? WHERE id=? AND stripe_customer_id IS NULL",
+                       (obj["customer"], uid))
+            db.commit()
+        sub_id = obj.get("subscription")
+    elif kind.startswith("customer.subscription."):
+        sub_id = obj.get("id")
+    elif kind in ("invoice.paid", "invoice.payment_failed"):
+        sub_id = ((obj.get("parent") or {}).get("subscription_details") or {}).get("subscription") or obj.get("subscription")
+    if sub_id:
+        try:
+            _sync_subscription(sub_id)
+        except (urllib.error.URLError, ValueError, KeyError):
+            return jsonify(error="sync failed"), 500  # Stripe retries
+    return jsonify(ok=True)
 
 
 @app.get("/course")

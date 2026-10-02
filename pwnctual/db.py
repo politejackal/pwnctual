@@ -52,6 +52,9 @@ MIGRATIONS = [
     ("google_sub", "ALTER TABLE users ADD COLUMN google_sub TEXT"),
     ("email", "ALTER TABLE users ADD COLUMN email TEXT"),
     ("pro_until", "ALTER TABLE users ADD COLUMN pro_until REAL"),
+    ("stripe_customer_id", "ALTER TABLE users ADD COLUMN stripe_customer_id TEXT"),
+    ("stripe_subscription_id", "ALTER TABLE users ADD COLUMN stripe_subscription_id TEXT"),
+    ("pro_renews", "ALTER TABLE users ADD COLUMN pro_renews INTEGER NOT NULL DEFAULT 0"),
 ]
 
 
@@ -63,5 +66,6 @@ def init_db():
         if col not in cols:
             con.execute(ddl)
     con.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub ON users(google_sub)")
+    con.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_stripe_customer ON users(stripe_customer_id)")
     con.commit()
     con.close()

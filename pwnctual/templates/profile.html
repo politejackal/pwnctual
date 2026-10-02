@@ -7,7 +7,7 @@
     {{ avatar(user, 64) }}
     <div><h1 class="headline">{{ user.login }}</h1>
       {% if user.github_id %}<a class="muted" href="https://github.com/{{ user.login }}" rel="noopener">github.com/{{ user.login }}</a>{% endif %}
-      {% if me and me.id == user.id and IS_PRO %}<div><span class="chip pro-chip"><span class="material-symbols-rounded">workspace_premium</span>Pro until {{ pro_until }}</span></div>{% endif %}</div>
+      {% if me and me.id == user.id and IS_PRO %}<div><span class="chip pro-chip"><span class="material-symbols-rounded">workspace_premium</span>{% if pro_renews %}Pro · renews {{ pro_until }}{% else %}Pro until {{ pro_until }}{% endif %}</span></div>{% endif %}</div>
     {% if me and me.id == user.id %}<span class="spacer"></span>
       <form method="post" action="/auth/logout"><input type="hidden" name="csrf" value="{{ csrf_token() }}">
         <button class="btn outlined sm"><span class="material-symbols-rounded">logout</span>Sign out</button></form>{% endif %}

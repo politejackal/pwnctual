@@ -287,6 +287,9 @@
           const join = el("a", "btn sm"); join.href = b.meet_url; join.target = "_blank"; join.rel = "noopener";
           join.append(el("span", "material-symbols-rounded", "videocam"), document.createTextNode("Join call"));
           actions.append(join);
+        } else if (!data.can_book) {
+          const renew = el("a", "btn sm", "Renew Pro to join"); renew.href = "/pricing";
+          actions.append(renew);
         }
         const cancel = el("button", "btn text sm", "Cancel booking"); cancel.type = "button";
         cancel.onclick = async () => {

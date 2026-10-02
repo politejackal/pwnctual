@@ -26,6 +26,12 @@
 </div>
 {%- endmacro %}
 
+{% macro billing_button(label) -%}
+<form method="post" action="/billing/portal" data-reload>
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <button class="btn text plan-manage"><span class="material-symbols-rounded">credit_card</span>{{ label }}</button></form>
+{%- endmacro %}
+
 {% macro plans() -%}
 <div class="plans">
   <div class="plan">
@@ -61,7 +67,16 @@
       <li><span class="material-symbols-rounded">check</span>Keeps the course free for everyone</li>
     </ul>
     {% if IS_PRO %}
-      <div class="btn lg pro-on" aria-disabled="true"><span class="material-symbols-rounded">verified</span>You're Pro until {{ pro_until }}</div>
+      <div class="btn lg pro-on" aria-disabled="true"><span class="material-symbols-rounded">verified</span>
+        {% if pro_renews %}Pro · renews {{ pro_until }}{% else %}You're Pro until {{ pro_until }}{% endif %}</div>
+      {% if has_billing %}{{ billing_button("Manage subscription") }}{% endif %}
+    {% elif STRIPE_ENABLED and me %}
+      <form method="post" action="/billing/checkout" data-reload style="margin-top:auto">
+        <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <button class="btn lg"><span class="material-symbols-rounded">workspace_premium</span>Get Pro for {{ PRO_PRICE }}/month</button></form>
+      {% if has_billing %}{{ billing_button("Billing history") }}{% endif %}
+    {% elif STRIPE_ENABLED %}
+      <a class="btn lg" href="/login?next=/pricing"><span class="material-symbols-rounded">workspace_premium</span>Sign in to get Pro</a>
     {% elif CHECKOUT_URL %}
       <a class="btn lg" href="{{ CHECKOUT_URL }}" data-reload rel="noopener"><span class="material-symbols-rounded">workspace_premium</span>Get Pro for {{ PRO_PRICE }}</a>
     {% else %}

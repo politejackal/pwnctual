@@ -36,10 +36,18 @@ PWNCTUAL_DEV=1 python -m pwnctual          # http://127.0.0.1:5000
 
 The whole course is free for everyone, forever: every chapter, video, write-up and challenge.
 **pwnctual Pro** ($10 a month, set with `PWNCTUAL_PRO_PRICE`) adds 1-on-1 calls with a mentor for
-questions and doubts. Only Pro members (and admins) can book a call; the site enforces this.
+questions and doubts. Only Pro members (and admins) can book a call, and the video link for a booked call is only shown while
+Pro is active; the server enforces both.
 
-- **Selling Pro:** set `PWNCTUAL_CHECKOUT_URL` to a payment link to enable the Pro button. Without it, the button
-  reads "Checkout opens soon".
+- **Selling Pro (Stripe):** set `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID` (a monthly recurring price) and
+  `STRIPE_WEBHOOK_SECRET` (see `.env.example` for the webhook events). "Get Pro" opens Stripe Checkout; after paying,
+  Pro switches on right away and then follows the subscription: renewals extend it to the end of each paid period,
+  and cancelling (from **Manage subscription**, which opens the Stripe Customer Portal) keeps Pro until the paid
+  period ends. A failed renewal doesn't extend Pro, so it lapses when the paid time runs out. The webhook always
+  re-reads the subscription from Stripe, so retried or out-of-order events are harmless.
+  To test locally: `stripe listen --forward-to 127.0.0.1:5000/stripe/webhook` with test-mode keys.
+- **Without Stripe:** set `PWNCTUAL_CHECKOUT_URL` to any payment link instead, and grant Pro by hand. With neither,
+  the button reads "Checkout opens soon".
 - **Granting Pro by hand:** `python -m pwnctual grant-pro LOGIN` (30 days by default, adds to any time left;
   `--days N` to change it) and `python -m pwnctual revoke-pro LOGIN`.
 - **1-on-1 calls:** Pro members book 15-minute calls at `/classes`. Slots run from 08:00 to 24:00 in

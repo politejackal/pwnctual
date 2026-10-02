@@ -10,6 +10,9 @@
       talk your questions through with, Pro is {{ PRO_PRICE }} a month for 1-on-1 calls.</p>
   </header>
 
+  {% if billing_note %}
+    <div class="banner ok" style="margin-bottom:24px"><span class="material-symbols-rounded">workspace_premium</span><span>{{ billing_note }}</span></div>
+  {% endif %}
   {{ plans() }}
 
   <section class="live-card">
@@ -30,7 +33,9 @@
     <details class="chal"><summary><span class="title-m">What do I get with Pro?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
       <div class="body muted">1-on-1 calls with a mentor for your questions and doubts. The lessons are the same for everyone; Pro is for when you want to talk something through with a person.</div></details>
     <details class="chal"><summary><span class="title-m">How do the 1-on-1 calls work?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
-      <div class="body muted">Pick a free 15-minute slot on the calls page, shown in your timezone, and say what you need help with. You join a video call with a mentor and go through it together. You can hold one booking at a time. Without Pro, you can still ask in the comments under each video.</div></details>
+      <div class="body muted">With Pro, pick a free 15-minute slot on the calls page, shown in your timezone, and say what you need help with. You join a video call with a mentor and go through it together. You can hold one booking at a time. Without Pro, you can still ask in the comments under each video.</div></details>
+    <details class="chal"><summary><span class="title-m">How do I cancel Pro?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
+      <div class="body muted">Pro renews every month. Press <b>Manage subscription</b> on this page to cancel or change your card. If you cancel, Pro stays on until the end of the month you've paid for, and any call you've booked for after that is no longer joinable.</div></details>
     <details class="chal"><summary><span class="title-m">Do I need anything installed?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
       <div class="body muted">Just a browser and a terminal. Lessons are videos with a written explanation, and the challenges are live machines you connect to (like OverTheWire), so there's nothing to install for the course itself.</div></details>
   </section>

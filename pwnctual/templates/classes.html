@@ -16,6 +16,13 @@
     </div>
   </header>
 
+  {% if not (IS_PRO or IS_ADMIN) %}
+  <div class="banner info pro-gate"><span class="material-symbols-rounded">workspace_premium</span>
+    <span>Booking calls is for pwnctual Pro members. You can look at the open times below;
+      {% if me %}<a href="/pricing">get Pro</a>{% else %}<a href="/login?next=/classes">sign in</a> and get Pro{% endif %} to book one.
+      Without Pro, you can still ask under each chapter's video.</span></div>
+  {% endif %}
+
   <section class="tz-card">
     <span class="plan-icon"><span class="material-symbols-rounded">schedule</span></span>
     <div class="tz-main">

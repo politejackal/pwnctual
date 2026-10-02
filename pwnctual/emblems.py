@@ -25,6 +25,12 @@ STYLE = {
     "ghost":  ("crest",     False, 1.0,  False,  False, True,  True,  True),
 }
 
+# Vertical centre of each emblem's visible artwork (measured from the rendered SVG).
+# Ornaments make every tier top- or bottom-heavy, so each viewBox is centred on its
+# own artwork rather than on the 200x200 frame.
+CENTER_Y = {"noob": 101.5, "shadow": 105.5, "demon": 89.8, "reaper": 103.3, "ghost": 93}
+VIEW = 256  # square; the ghost's wings span x -25..225
+
 WING = ("M58 80 C42 62 24 52 6 54 C12 60 16 64 18 70 C11 70 7 73 4 78 C13 80 19 84 22 90 "
         "C16 92 12 96 11 102 C22 102 32 104 42 110 C38 114 36 118 36 124 C44 120 52 118 58 118 Z")
 WING_LINES = "M46 76 C36 70 26 68 18 70 M46 90 C38 88 30 88 22 90 M48 104 C40 102 32 102 24 104"
@@ -131,5 +137,5 @@ def emblem(tier, size=96, animate=True):
         front.append(f'<path d="M100 150 L114 164 L100 182 L86 164 Z" fill="{glow}" stroke="{INK}" stroke-width="4" stroke-linejoin="round"/>'
                      f'<path d="M100 155 L108 164 L100 158 Z" fill="#FFFFFF" opacity=".9"/>')
 
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" class="emblem emblem-{key}" viewBox="-14 -8 228 222" width="{size}" height="{size}" role="img" aria-label="{tier['label']}">
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" class="emblem emblem-{key}" viewBox="{100 - VIEW / 2:g} {CENTER_Y[key] - VIEW / 2:g} {VIEW} {VIEW}" width="{size}" height="{size}" role="img" aria-label="{tier['label']}">
 {defs}{''.join(back)}{body_svg}{skull_svg}{''.join(front)}</svg>"""
