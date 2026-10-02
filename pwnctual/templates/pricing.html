@@ -4,10 +4,10 @@
 {% block main %}
 <div class="wrap pricing-page">
   <header class="pricing-head">
-    <span class="chip good"><span class="material-symbols-rounded">redeem</span>Week 1 is free, live classes included</span>
+    <span class="chip good"><span class="material-symbols-rounded">redeem</span>Chapter 1 is free, live classes included</span>
     <h1 class="display-s">Start free. Go Pro when you're hooked.</h1>
-    <p class="muted">The whole first week costs nothing, with no card needed, and you can book live classes free all
-      week. When you're ready for the rest of the 30-day course, Pro is {{ PRO_PRICE }} a month.</p>
+    <p class="muted">The whole first chapter costs nothing, with no card needed, and you can book live classes free while
+      you work through it. When you're ready for the rest of the course, Pro is {{ PRO_PRICE }} a month.</p>
   </header>
 
   {{ plans() }}
@@ -15,7 +15,7 @@
   <section class="live-card">
     <span class="live-icon"><span class="material-symbols-rounded">video_call</span></span>
     <div>
-      <div class="label">Free during week 1 · all month with Pro</div>
+      <div class="label">Free with chapter 1 · all month with Pro</div>
       <h2 class="headline">On-call live classes</h2>
       <p class="muted">Stuck on a bug, or a concept that won't click? Book a live call with a mentor and work
         through it together, screen-share and all.</p>
@@ -25,14 +25,14 @@
 
   <section class="faq">
     <h2 class="headline">Questions</h2>
-    <details class="chal"><summary><span class="title-m">Is week 1 really free?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
-      <div class="body muted">Yes. Sign in and do all seven days of Week 1, including every challenge, rank and flag, and book live classes whenever you're stuck, all without paying or adding a card.</div></details>
+    <details class="chal"><summary><span class="title-m">Is chapter 1 really free?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
+      <div class="body muted">Yes. Sign in and do all of chapter 1, including the video, the write-up, every challenge and your rank, and book live classes whenever you're stuck, all without paying or adding a card.</div></details>
     <details class="chal"><summary><span class="title-m">What do I get with Pro?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
-      <div class="body muted">The full 30-day course: weeks 2–4 and the Final Haunt, the boss-fight exam, plus live classes for the whole month instead of just your free week.</div></details>
+      <div class="body muted">Every chapter after the first, as soon as each one is released, plus live classes for the whole month instead of just your free chapter.</div></details>
     <details class="chal"><summary><span class="title-m">How do the live classes work?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
-      <div class="body muted">During your free week you can book live calls at no cost. With Pro they continue all month. You join a live video session with a mentor and go through your question together.</div></details>
+      <div class="body muted">While you're on the free chapter you can book live calls at no cost. With Pro they continue all month. You join a live video session with a mentor and go through your question together.</div></details>
     <details class="chal"><summary><span class="title-m">Do I need anything installed?</span><span class="material-symbols-rounded chev">expand_more</span></summary>
-      <div class="body muted">No. Everything runs in a GitHub Codespace in your browser. You'll need a free GitHub account for the workspace.</div></details>
+      <div class="body muted">Just a browser and a terminal. Lessons are videos with a written explanation, and the challenges are live machines you connect to (like OverTheWire), so there's nothing to install for the course itself.</div></details>
   </section>
 </div>
 {% endblock %}

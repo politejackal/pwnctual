@@ -20,28 +20,6 @@ CREATE TABLE IF NOT EXISTS solves (
     solved_at REAL NOT NULL,
     PRIMARY KEY (user_id, slug)
 );
-CREATE TABLE IF NOT EXISTS tokens (
-    token_hash TEXT PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    label TEXT,
-    created_at REAL NOT NULL,
-    last_used REAL
-);
-CREATE TABLE IF NOT EXISTS device_codes (
-    device_code TEXT PRIMARY KEY,
-    user_code TEXT UNIQUE NOT NULL,
-    user_id INTEGER,
-    token TEXT,
-    created_at REAL NOT NULL
-);
-CREATE TABLE IF NOT EXISTS attempts (
-    id TEXT PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    slug TEXT NOT NULL,
-    cases TEXT NOT NULL,
-    created_at REAL NOT NULL,
-    status TEXT NOT NULL DEFAULT 'open'
-);
 CREATE TABLE IF NOT EXISTS class_bookings (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,

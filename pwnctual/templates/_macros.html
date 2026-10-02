@@ -31,20 +31,19 @@
   <div class="plan">
     <div class="plan-top">
       <span class="plan-icon"><span class="material-symbols-rounded">school</span></span>
-      <div><div class="title-l">Week 1</div><div class="muted">Free forever</div></div>
+      <div><div class="title-l">Chapter 1</div><div class="muted">Free forever</div></div>
     </div>
     <div class="price"><span class="amount">$0</span><span class="per">no card needed</span></div>
     <ul class="feats">
-      <li><span class="material-symbols-rounded">check</span>Days 1–7: how computers work, from absolute zero</li>
-      <li><span class="material-symbols-rounded">check</span>All {{ FREE_SLUGS|length }} Week 1 challenges, auto-checked</li>
-      <li><span class="material-symbols-rounded">check</span>Your own Codespace workspace</li>
-      <li><span class="material-symbols-rounded">check</span>Ranks, flags and the leaderboard</li>
-      <li><span class="material-symbols-rounded">check</span><span><b>Free live classes</b> all through your free week</span></li>
+      <li><span class="material-symbols-rounded">check</span>The Terminal Awakening: start from absolute zero</li>
+      <li><span class="material-symbols-rounded">check</span>Video lesson, full write-up and live challenges</li>
+      <li><span class="material-symbols-rounded">check</span>Ranks and the leaderboard</li>
+      <li><span class="material-symbols-rounded">check</span><span><b>Free live classes</b> while you work through it</span></li>
     </ul>
     {% if me %}
       <a class="btn lg outlined" href="/course">Go to the course</a>
     {% else %}
-      <a class="btn lg outlined" href="/login?next=/course">Start week 1 free</a>
+      <a class="btn lg outlined" href="/login?next=/course">Start chapter 1 free</a>
     {% endif %}
   </div>
 
@@ -52,14 +51,13 @@
     <span class="plan-flag">Full course</span>
     <div class="plan-top">
       <span class="plan-icon"><span class="material-symbols-rounded">workspace_premium</span></span>
-      <div><div class="title-l">pwnctual Pro</div><div class="plan-sub">One month, all 30 days</div></div>
+      <div><div class="title-l">pwnctual Pro</div><div class="plan-sub">Every chapter</div></div>
     </div>
     <div class="price"><span class="amount">{{ PRO_PRICE }}</span><span class="per">/ month</span></div>
     <ul class="feats">
       <li><span class="material-symbols-rounded">check</span>Everything in the free plan</li>
-      <li><span class="material-symbols-rounded">check</span><span><b>Live classes all month long</b>, not just week 1</span></li>
-      <li><span class="material-symbols-rounded">check</span>Weeks 2–4: data wrangling, bits & bytes, hacker toolkit</li>
-      <li><span class="material-symbols-rounded">check</span><span><b>The Final Haunt</b>: a boss-fight exam to prove you're a Ghost</span></li>
+      <li><span class="material-symbols-rounded">check</span><span><b>Live classes all month long</b>, not just chapter 1</span></li>
+      <li><span class="material-symbols-rounded">check</span>Every chapter after the first, as soon as it's released</li>
     </ul>
     {% if IS_PRO %}
       <div class="btn lg pro-on" aria-disabled="true"><span class="material-symbols-rounded">verified</span>You're Pro until {{ pro_until }}</div>

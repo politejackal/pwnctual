@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set active_nav = 'classes' %}
 {% block title %}Live classes · pwnctual{% endblock %}
 {% block main %}
 <div class="wrap classes" id="classes-app" data-csrf="{{ csrf_token() }}" data-signed-in="{{ 1 if me else 0 }}">
@@ -6,10 +7,10 @@
     <div class="label">Live classes</div>
     <h1 class="display-s">Book a 15-minute live class</h1>
     <p class="muted">Stuck on a challenge or a concept? Pick a time and hop on a one-on-one call with a mentor.
-      Free during your first week, and all month with Pro.</p>
+      Free with chapter 1, and all month with Pro.</p>
     <div class="row" style="gap:8px">
       <span class="chip filled"><span class="material-symbols-rounded">timer</span>15 minutes</span>
-      <span class="chip good"><span class="material-symbols-rounded">redeem</span>Free during week 1</span>
+      <span class="chip good"><span class="material-symbols-rounded">redeem</span>Free with chapter 1</span>
       <span class="chip"><span class="material-symbols-rounded">public</span>Shown in your timezone</span>
       <span class="chip"><span class="material-symbols-rounded">looks_one</span>1 call at a time</span>
     </div>

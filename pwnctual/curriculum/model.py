@@ -1,14 +1,12 @@
 """Data model for the pwnctual curriculum.
 
-Hierarchy:  Path  ->  Module  ->  Challenge
-
-Every challenge is verified the same way: the server generates fresh, random
-test cases, the CLI runs the learner's program against them inside their
-Codespace, and the server compares the program's output with the expected
-answer it kept to itself. Keys that start with "_" never leave the server.
+The course is a list of chapters. Each chapter is one lesson: a recorded
+video, a written explanation of it, then live challenges hosted elsewhere
+(e.g. OverTheWire). Learners mark each challenge done themselves; if they get
+stuck they read the man pages or ask in the video's comments.
 """
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+from typing import Optional
 
 
 @dataclass
@@ -16,46 +14,24 @@ class Challenge:
     slug: str
     title: str
     points: int
-    description: str
-    gen: Callable  # gen(rng, index) -> case dict
-    cases: int = 3
-    check: str = "exact"  # exact | contains | files
-    starter: str = ""
+    url: str  # where the live challenge is hosted
+    description: str = ""
     # filled in by the registry
-    path: Optional["Path"] = None
-    module: Optional["Module"] = None
+    chapter: Optional["Chapter"] = None
     number: str = ""
 
 
 @dataclass
-class Module:
+class Chapter:
     id: str
     title: str
     summary: str
-    lecture: str
+    video: str  # recording URL (YouTube links are embedded); empty until it's published
+    lecture: str  # the written explanation, in Markdown
     challenges: list = field(default_factory=list)
-    path: Optional["Path"] = None
-    number: str = ""
+    free: bool = False  # free chapters are open to everyone; the rest need Pro
+    number: int = 0
 
     @property
     def points(self):
         return sum(c.points for c in self.challenges)
-
-
-@dataclass
-class Path:
-    id: str
-    title: str
-    tagline: str
-    icon: str
-    tone: str  # primary | secondary | tertiary | error
-    modules: list = field(default_factory=list)
-    number: int = 0
-
-    @property
-    def challenges(self):
-        return [c for m in self.modules for c in m.challenges]
-
-    @property
-    def points(self):
-        return sum(m.points for m in self.modules)

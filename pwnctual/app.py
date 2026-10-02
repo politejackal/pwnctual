@@ -3,7 +3,6 @@ import hashlib
 import hmac
 import json
 import os
-import random
 import secrets
 import sqlite3
 import time
@@ -18,8 +17,7 @@ from flask import (Flask, abort, g, jsonify, redirect, render_template, request,
 from markupsafe import Markup
 
 from . import db as dbm
-from .curriculum import CHALLENGES, MODULES, PATHS, TOTAL_POINTS
-from .curriculum.schedule import DAYS, FREE_SLUGS, WEEKS
+from .curriculum import CHALLENGES, CHAPTERS, CHAPTERS_BY_ID, FREE_SLUGS, TOTAL_POINTS
 from .emblems import emblem
 from . import classes as cls
 from . import shapes
@@ -73,9 +71,7 @@ GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_ISSUERS = ("https://accounts.google.com", "accounts.google.com")
 DEV_LOGIN = os.environ.get("PWNCTUAL_DEV") == "1"
-WORKSPACE_REPO = os.environ.get("PWNCTUAL_WORKSPACE_REPO", "your-org/pwnctual-workspace")
 PUBLIC_URL = os.environ.get("PWNCTUAL_PUBLIC_URL", "").rstrip("/")
-ATTEMPT_TTL = 15 * 60
 PRO_PRICE = os.environ.get("PWNCTUAL_PRO_PRICE", "$10")
 PRO_DAYS = 30
 # Paste a payment link (e.g. a Stripe Payment Link) to open checkout; until then
@@ -85,7 +81,6 @@ CHECKOUT_URL = os.environ.get("PWNCTUAL_CHECKOUT_URL", "")
 # and the logins allowed to see every booking at /classes/admin.
 CLASS_MEET_URL = os.environ.get("PWNCTUAL_CLASS_MEET_URL", "")
 ADMINS = {x.strip().lower() for x in os.environ.get("PWNCTUAL_ADMINS", "").split(",") if x.strip()}
-DEVICE_TTL = 10 * 60
 
 app.teardown_appcontext(dbm.close_db)
 dbm.init_db()
@@ -107,12 +102,27 @@ def md(text):
     return _md_cache[text]
 
 
+def video_embed(url):
+    """Embeddable player URL for a YouTube link, or None for anything else."""
+    u = urllib.parse.urlparse(url or "")
+    host = u.netloc.lower().removeprefix("www.").removeprefix("m.")
+    vid = None
+    if host == "youtu.be":
+        vid = u.path.strip("/")
+    elif host == "youtube.com":
+        if u.path == "/watch":
+            vid = urllib.parse.parse_qs(u.query).get("v", [None])[0]
+        elif u.path.startswith(("/embed/", "/shorts/", "/live/")):
+            vid = u.path.split("/")[2]
+    if not vid or not all(c.isalnum() or c in "-_" for c in vid):
+        return None
+    # The standard player (not youtube-nocookie) so the video shows ads and earns like a normal view;
+    # rel=0 keeps the end-screen suggestions to our own channel.
+    return f"https://www.youtube.com/embed/{vid}?rel=0"
+
+
 def now():
     return time.time()
-
-
-def sha(s):
-    return hashlib.sha256(s.encode()).hexdigest()
 
 
 def base_url():
@@ -139,11 +149,6 @@ def score_of(slugs):
 
 def user_rank(user_id):
     return rank_for(score_of(solved_slugs(user_id)), TOTAL_POINTS)
-
-
-def flag_for(user_id, slug):
-    mac = hmac.new(app.config["SECRET_KEY"].encode(), f"{user_id}:{slug}".encode(), hashlib.sha256)
-    return "pwn{" + mac.hexdigest()[:32] + "}"
 
 
 def csrf_token():
@@ -245,11 +250,11 @@ def inject():
     user = current_user()
     ctx = {
         "me": user, "csrf_token": csrf_token, "asset": asset, "md": md, "emblem": lambda t, size=96: Markup(emblem(t, size)),
-        "PATHS": PATHS, "TOTAL_POINTS": TOTAL_POINTS, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
-        "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID), "WORKSPACE_REPO": WORKSPACE_REPO,
+        "CHAPTERS": CHAPTERS, "TOTAL_POINTS": TOTAL_POINTS, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
+        "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID),
         "my_rank": None, "my_solved": {},
         "IS_PRO": is_pro(user), "FREE_SLUGS": FREE_SLUGS, "PRO_PRICE": PRO_PRICE, "PRO_DAYS": PRO_DAYS,
-        "CHECKOUT_URL": CHECKOUT_URL, "IS_ADMIN": is_admin(user),
+        "CHECKOUT_URL": CHECKOUT_URL, "video_embed": video_embed, "IS_ADMIN": is_admin(user),
         "pro_until": (time.strftime("%d %b %Y", time.localtime(user["pro_until"]))
                       if is_pro(user) else None),
     }
@@ -370,40 +375,17 @@ def pricing():
 @app.get("/course")
 def course():
     solved = solved_slugs(current_user()["id"]) if current_user() else {}
-    days, up_next = {}, None
-    for d in DAYS:
-        done = d.live and all(s in solved for s in d.slugs)
-        target = next((c for c in d.challenges if c.slug not in solved), d.challenges[0] if d.live else None)
-        if d.live and not done and up_next is None:
-            up_next = d.number
-        days[d.number] = {
-            "status": "done" if done else ("open" if d.live else "soon"),
-            "solved": sum(s in solved for s in d.slugs),
-            "href": f"/paths/{target.path.id}/{target.module.id}#{target.slug}" if target else None,
-        }
-    if up_next:
-        days[up_next]["status"] = "next"
-    live_days = [d for d in DAYS if d.live]
-    done_days = sum(days[d.number]["status"] == "done" for d in live_days)
-    return render_template("course.html", weeks=WEEKS, days=days, up_next=up_next,
-                           live_days=len(live_days), done_days=done_days,
-                           live_challenges=sum(len(d.slugs) for d in live_days))
+    up_next = next((ch for ch in CHAPTERS if any(c.slug not in solved for c in ch.challenges)), None)
+    return render_template("course.html", up_next=up_next if current_user() else None)
 
 
-@app.get("/paths/<path_id>")
-def path_page(path_id):
-    path = next((p for p in PATHS if p.id == path_id), None) or abort(404)
-    return render_template("path.html", path=path)
-
-
-@app.get("/paths/<path_id>/<module_id>")
-def module_page(path_id, module_id):
-    module = MODULES.get((path_id, module_id)) or abort(404)
-    mods = module.path.modules
-    i = mods.index(module)
-    return render_template("module.html", module=module, path=module.path,
-                           prev=mods[i - 1] if i > 0 else None,
-                           nxt=mods[i + 1] if i + 1 < len(mods) else None)
+@app.get("/chapters/<chapter_id>")
+def chapter_page(chapter_id):
+    chapter = CHAPTERS_BY_ID.get(chapter_id) or abort(404)
+    i = CHAPTERS.index(chapter)
+    return render_template("chapter.html", chapter=chapter,
+                           prev=CHAPTERS[i - 1] if i > 0 else None,
+                           nxt=CHAPTERS[i + 1] if i + 1 < len(CHAPTERS) else None)
 
 
 @app.get("/ranks")
@@ -440,40 +422,6 @@ def profile(login):
     recent = sorted(solved.items(), key=lambda kv: -kv[1])[:8]
     return render_template("profile.html", user=user, solved=solved, rank=rank,
                            recent=[(CHALLENGES[s], t) for s, t in recent])
-
-
-@app.get("/workspace")
-def workspace():
-    tokens = []
-    if current_user():
-        tokens = dbm.get_db().execute(
-            "SELECT rowid, label, created_at, last_used FROM tokens WHERE user_id=? ORDER BY created_at DESC",
-            (current_user()["id"],)).fetchall()
-    return render_template("workspace.html", tokens=tokens, base=base_url(),
-                           new_token=session.pop("new_token", None))
-
-
-@app.post("/workspace/tokens")
-@login_required
-def create_token():
-    check_csrf()
-    tok = "pwnc_" + secrets.token_urlsafe(32)
-    db = dbm.get_db()
-    db.execute("INSERT INTO tokens (token_hash, user_id, label, created_at) VALUES (?,?,?,?)",
-               (sha(tok), current_user()["id"], "manual token", now()))
-    db.commit()
-    session["new_token"] = tok
-    return redirect(url_for("workspace") + "#tokens")
-
-
-@app.post("/workspace/tokens/<int:rowid>/revoke")
-@login_required
-def revoke_token(rowid):
-    check_csrf()
-    db = dbm.get_db()
-    db.execute("DELETE FROM tokens WHERE rowid=? AND user_id=?", (rowid, current_user()["id"]))
-    db.commit()
-    return redirect(url_for("workspace") + "#tokens")
 
 
 # ------------------------------------------------------------------ auth
@@ -625,33 +573,6 @@ def logout():
     return redirect("/")
 
 
-# ------------------------------------------------------------------ device linking (CLI login)
-
-@app.route("/link", methods=["GET", "POST"])
-@login_required
-def link():
-    code = (request.values.get("code") or "").strip().upper()
-    status = None
-    if request.method == "POST":
-        check_csrf()
-        db = dbm.get_db()
-        row = db.execute("SELECT * FROM device_codes WHERE user_code=?", (code,)).fetchone()
-        if not row or now() - row["created_at"] > DEVICE_TTL:
-            status = "invalid"
-        elif row["user_id"]:
-            status = "used"
-        else:
-            tok = "pwnc_" + secrets.token_urlsafe(32)
-            uid = current_user()["id"]
-            db.execute("INSERT INTO tokens (token_hash, user_id, label, created_at) VALUES (?,?,?,?)",
-                       (sha(tok), uid, "codespace", now()))
-            db.execute("UPDATE device_codes SET user_id=?, token=? WHERE device_code=?",
-                       (uid, tok, row["device_code"]))
-            db.commit()
-            status = "ok"
-    return render_template("link.html", code=code, status=status)
-
-
 # ------------------------------------------------------------------ JSON API (browser)
 
 @app.get("/api/me/progress")
@@ -665,166 +586,24 @@ def api_progress():
                    rank_key=rank["tier"]["key"], rank_index=rank["tier"]["index"])
 
 
-# ------------------------------------------------------------------ JSON API (CLI)
-
-def cli_auth(fn):
-    @wraps(fn)
-    def wrapper(*a, **kw):
-        auth = request.headers.get("Authorization", "")
-        if not auth.startswith("Bearer "):
-            return jsonify(error="missing token, run: pwnctual login"), 401
-        db = dbm.get_db()
-        row = db.execute("SELECT user_id FROM tokens WHERE token_hash=?", (sha(auth[7:].strip()),)).fetchone()
-        if not row:
-            return jsonify(error="invalid token, run: pwnctual login"), 401
-        db.execute("UPDATE tokens SET last_used=? WHERE token_hash=?", (now(), sha(auth[7:].strip())))
-        db.commit()
-        g.cli_user = db.execute("SELECT * FROM users WHERE id=?", (row["user_id"],)).fetchone()
-        return fn(*a, **kw)
-    return wrapper
-
-
-@app.post("/api/cli/device")
-def device_start():
-    db = dbm.get_db()
-    db.execute("DELETE FROM device_codes WHERE created_at < ?", (now() - DEVICE_TTL,))
-    alphabet = "BCDFGHJKLMNPQRSTVWXZ"
-    user_code = "".join(secrets.choice(alphabet) for _ in range(4)) + "-" + \
-                "".join(secrets.choice(alphabet) for _ in range(4))
-    device_code = secrets.token_urlsafe(32)
-    db.execute("INSERT INTO device_codes (device_code, user_code, created_at) VALUES (?,?,?)",
-               (device_code, user_code, now()))
-    db.commit()
-    return jsonify(device_code=device_code, user_code=user_code, interval=3, expires_in=DEVICE_TTL,
-                   verify_url=f"{base_url()}/link", verify_url_complete=f"{base_url()}/link?code={user_code}")
-
-
-@app.post("/api/cli/device/poll")
-def device_poll():
-    code = (request.get_json(silent=True) or {}).get("device_code", "")
-    db = dbm.get_db()
-    row = db.execute("SELECT * FROM device_codes WHERE device_code=?", (code,)).fetchone()
-    if not row or now() - row["created_at"] > DEVICE_TTL:
-        return jsonify(error="expired"), 410
-    if not row["token"]:
-        return jsonify(status="pending")
-    db.execute("DELETE FROM device_codes WHERE device_code=?", (code,))
-    db.commit()
-    user = db.execute("SELECT login FROM users WHERE id=?", (row["user_id"],)).fetchone()
-    return jsonify(status="ok", token=row["token"], login=user["login"])
-
-
-def _rank_json(rank):
-    t, n = rank["tier"], rank["next"]
-    return {"label": t["label"], "key": t["key"], "index": t["index"], "score": rank["score"],
-            "next": n["label"] if n else None, "to_next": rank["to_next"], "motto": t["motto"]}
-
-
-@app.get("/api/cli/me")
-@cli_auth
-def cli_me():
-    solved = solved_slugs(g.cli_user["id"])
-    return jsonify(login=g.cli_user["login"], solved=len(solved), total=len(CHALLENGES),
-                   rank=_rank_json(rank_for(score_of(solved), TOTAL_POINTS)))
-
-
-@app.get("/api/cli/challenges")
-@cli_auth
-def cli_challenges():
-    solved = solved_slugs(g.cli_user["id"])
-    return jsonify(challenges=[{
-        "slug": c.slug, "number": c.number, "title": c.title, "points": c.points,
-        "module": c.module.title, "path": c.path.title, "solved": c.slug in solved,
-        "pro": c.slug not in FREE_SLUGS, "locked": not can_access(g.cli_user, c),
-    } for c in CHALLENGES.values()])
-
-
-@app.get("/api/cli/challenges/<slug>")
-@cli_auth
-def cli_challenge(slug):
-    c = CHALLENGES.get(slug) or abort(404)
-    return jsonify(slug=c.slug, number=c.number, title=c.title, points=c.points,
-                   description=c.description.strip(), starter=c.starter,
-                   url=f"{base_url()}/paths/{c.path.id}/{c.module.id}#{c.slug}")
-
-
-def _public(case):
-    return {k: v for k, v in case.items() if not k.startswith("_")}
-
-
-@app.post("/api/cli/attempts")
-@cli_auth
-def cli_attempt():
-    slug = (request.get_json(silent=True) or {}).get("slug", "")
+@app.post("/api/challenges/<slug>/done")
+def api_challenge_done(slug):
+    user = current_user()
+    if not user:
+        return jsonify(error="not logged in"), 401
+    check_csrf()
     c = CHALLENGES.get(slug)
     if not c:
-        return jsonify(error=f"unknown challenge '{slug}'"), 404
-    if not can_access(g.cli_user, c):
-        return jsonify(error=f"'{c.title}' is part of pwnctual Pro ({PRO_PRICE} for {PRO_DAYS} days). "
-                             f"Week 1 is free. Upgrade at {base_url()}/pricing"), 402
-    rng = random.Random(secrets.randbits(64))
-    cases = [c.gen(rng, i) for i in range(c.cases)]
-    attempt_id = secrets.token_urlsafe(18)
+        return jsonify(error="unknown challenge"), 404
+    if not can_access(user, c):
+        return jsonify(error=f"'{c.title}' is part of pwnctual Pro"), 402
+    before = user_rank(user["id"])
     db = dbm.get_db()
-    db.execute("DELETE FROM attempts WHERE created_at < ?", (now() - ATTEMPT_TTL,))
-    db.execute("INSERT INTO attempts (id, user_id, slug, cases, created_at) VALUES (?,?,?,?,?)",
-               (attempt_id, g.cli_user["id"], slug, json.dumps(cases), now()))
+    db.execute("INSERT OR IGNORE INTO solves (user_id, slug, solved_at) VALUES (?,?,?)", (user["id"], slug, now()))
     db.commit()
-    return jsonify(attempt=attempt_id, slug=slug, title=c.title, timeout=10,
-                   cases=[_public(x) for x in cases])
-
-
-def _norm(s):
-    s = (s or "").replace("\r\n", "\n").replace("\r", "\n")
-    return "\n".join(line.rstrip() for line in s.strip("\n").split("\n")).strip()
-
-
-def _check(chal, case, out):
-    stdout = out.get("stdout", "")
-    if chal.check == "contains":
-        return _norm(case["_expect"]) in stdout
-    if chal.check == "files":
-        files = out.get("files") or {}
-        return all(_norm(files.get(k)) == _norm(v) for k, v in case["_expect_files"].items())
-    return _norm(stdout) == _norm(case["_expect"])
-
-
-@app.post("/api/cli/attempts/<attempt_id>")
-@cli_auth
-def cli_submit(attempt_id):
-    db = dbm.get_db()
-    row = db.execute("SELECT * FROM attempts WHERE id=? AND user_id=?", (attempt_id, g.cli_user["id"])).fetchone()
-    if not row or row["status"] != "open" or now() - row["created_at"] > ATTEMPT_TTL:
-        return jsonify(error="attempt expired, run the check again"), 410
-    db.execute("UPDATE attempts SET status='done' WHERE id=?", (attempt_id,))
-    db.commit()
-    chal = CHALLENGES[row["slug"]]
-    cases = json.loads(row["cases"])
-    outputs = (request.get_json(silent=True) or {}).get("outputs") or []
-    if len(outputs) != len(cases):
-        return jsonify(error="wrong number of outputs"), 400
-
-    for i, (case, out) in enumerate(zip(cases, outputs)):
-        if not _check(chal, case, out):
-            return jsonify(ok=False, failed={
-                "index": i, "total": len(cases),
-                "stdin": case.get("stdin", ""),
-                "files": sorted((case.get("files") or {}).keys()),
-                "expected": case.get("_expect") if chal.check != "files" else case.get("_expect_files"),
-                "got": (out.get("stdout") or "")[:4000],
-                "stderr": (out.get("stderr") or "")[-4000:],
-                "exit_code": out.get("exit_code"),
-            })
-
-    uid = g.cli_user["id"]
-    before = user_rank(uid)
-    first = db.execute("INSERT OR IGNORE INTO solves (user_id, slug, solved_at) VALUES (?,?,?)",
-                       (uid, chal.slug, now())).rowcount == 1
-    db.commit()
-    after = user_rank(uid)
-    return jsonify(ok=True, first_solve=first, flag=flag_for(uid, chal.slug), points=chal.points,
-                   rank=_rank_json(after),
-                   promoted=after["tier"]["index"] > before["tier"]["index"])
+    after = user_rank(user["id"])
+    return jsonify(ok=True, points=c.points, rank=after["tier"]["label"], rank_key=after["tier"]["key"],
+                   rank_index=after["tier"]["index"], promoted=after["tier"]["index"] > before["tier"]["index"])
 
 
 @app.errorhandler(404)

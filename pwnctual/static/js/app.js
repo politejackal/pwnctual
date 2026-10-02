@@ -104,38 +104,39 @@
     store.set(key, String(cur));
   }
 
-  // ------------------------------------------------------------------ live solve updates (module pages)
-  let pollTimer = null;
-  function startPolling() {
-    clearInterval(pollTimer); pollTimer = null;
+  // ------------------------------------------------------------------ lesson challenges: mark done / stuck
+  document.addEventListener("click", async (e) => {
+    const stuck = e.target.closest(".stuck-toggle");
+    if (stuck) {
+      const panel = $(".stuck", stuck.closest(".body"));
+      panel.hidden = !panel.hidden;
+      stuck.setAttribute("aria-expanded", String(!panel.hidden));
+      return;
+    }
+    const b = e.target.closest("[data-done]"); if (!b || b.disabled) return;
     const list = $("#challenges");
-    if (!list || list.dataset.loggedIn !== "1") return;
-    const known = new Set($$(".chal.solved[data-slug]", list).map((d) => d.dataset.slug));
-    let rankIdx = parseInt(body.dataset.rank, 10);
-    pollTimer = setInterval(async () => {
-      if (document.hidden || !list.isConnected) return;
-      try {
-        const r = await fetch("/api/me/progress", { headers: { Accept: "application/json" } });
-        if (!r.ok) return;
-        const data = await r.json();
-        for (const slug of data.solved) {
-          if (known.has(slug)) continue;
-          known.add(slug);
-          const d = $(`.chal[data-slug="${CSS.escape(slug)}"]`, list);
-          if (d) {
-            d.classList.add("solved", "just-solved");
-            $(".state .material-symbols-rounded", d).textContent = "check";
-            snack(`<span class="material-symbols-rounded">flag</span>Flag captured: ${$(".title-m", d).textContent}`);
-          }
-        }
-        if (data.rank_index > rankIdx) {
-          rankIdx = data.rank_index;
-          store.set(`rank:${body.dataset.user}`, String(rankIdx));
-          rankUp(data.rank_index, data.rank, data.rank_key);
-        }
-      } catch {}
-    }, 4000);
-  }
+    b.disabled = true;
+    try {
+      const r = await fetch(`/api/challenges/${encodeURIComponent(b.dataset.done)}/done`, { method: "POST", credentials: "same-origin",
+        headers: { "X-CSRF-Token": list.dataset.csrf, Accept: "application/json" } });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      const d = b.closest(".chal");
+      d.classList.add("solved", "just-solved");
+      $(".state .material-symbols-rounded", d).textContent = "check";
+      $(".lbl", b).textContent = "Done";
+      snack(`<span class="material-symbols-rounded">flag</span>+${data.points} points: ${$(".title-m", d).textContent}`);
+      if (data.promoted) {
+        store.set(`rank:${body.dataset.user}`, String(data.rank_index));
+        rankUp(data.rank_index, data.rank, data.rank_key);
+      }
+      const next = d.nextElementSibling;
+      if (next?.matches(".chal:not(.solved)")) { d.open = false; next.open = true; }
+    } catch {
+      b.disabled = false;
+      snack("Couldn't save that. Please try again.");
+    }
+  });
 
   // ------------------------------------------------------------------ hero word rotator
   let rotTimer = null;
@@ -379,7 +380,6 @@
       for (const [u, sec] of units) if (Math.abs(s) >= sec || u === "second") { el.textContent = rtf.format(Math.round(s / sec), u); break; }
     });
     checkRankUp();
-    startPolling();
     onScroll();
   }
 
@@ -503,7 +503,7 @@
     go(u.href);
   });
 
-  // forms (sign in, sign out, tokens, CLI linking) submit in the background
+  // forms (sign in, sign out) submit in the background
   // and swap the page the same way, so the header cross-fades instead of
   // cutting when it changes from "Sign in" to your rank.
   document.addEventListener("submit", (e) => {

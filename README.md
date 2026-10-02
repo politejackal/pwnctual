@@ -5,11 +5,10 @@ ends with a profile you can get hired on. Inspired by pwn.college, styled with
 Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
 
 ```
-pwnctual/            Flask site (pages, auth, CLI API, checker)
-  curriculum/        Paths → Modules → Challenges (pure Python)
+pwnctual/            Flask site (pages, auth, lessons, ranks)
+  curriculum/        Chapters (video + write-up) → live challenges
   ranks.py           Ranked ladder + thresholds
   emblems.py         SVG skull emblems for every rank
-workspace/           GitHub Codespaces template: devcontainer + `pwnctual` CLI
 ```
 
 ## Run it locally
@@ -20,14 +19,6 @@ PWNCTUAL_DEV=1 python -m pwnctual          # http://127.0.0.1:5000
 ```
 
 `PWNCTUAL_DEV=1` enables a username-only sign-in so you can try everything without GitHub.
-Then, in another terminal:
-
-```bash
-export PWNCTUAL_URL=http://127.0.0.1:5000
-python workspace/bin/pwnctual login        # approve the code at /link
-python workspace/bin/pwnctual new hello-hacker
-python workspace/bin/pwnctual check hello-hacker
-```
 
 ## Deploy
 
@@ -38,18 +29,15 @@ python workspace/bin/pwnctual check hello-hacker
    - **GitHub:** create an OAuth app at github.com/settings/developers with callback `https://YOUR-SITE/auth/callback`.
    Accounts are matched only by each provider's own user ID, so a Google account and a GitHub account are
    separate pwnctual accounts even if the names match.
-2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically). Codespaces must be able to reach the site, so it needs a public URL.
+2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically).
 3. Run behind a real WSGI server, e.g. `gunicorn -w 4 "pwnctual.app:app"`.
-4. **Workspace template:** push `workspace/` to its own GitHub repo, mark it as a *template repository*,
-   set `PWNCTUAL_URL` in `.devcontainer/devcontainer.json` to your site, and point
-   `PWNCTUAL_WORKSPACE_REPO` at it. The "Launch Codespace" button opens `codespaces.new/<repo>`.
 
-## Free week and Pro
+## Free chapter and Pro
 
-Week 1 of the 30-day course is free for everyone, including on-call live classes during that free week. Weeks 2–4
-and live classes for the rest of the month are part of **pwnctual Pro**
-($10 for one month, set with `PWNCTUAL_PRO_PRICE`). The site and the CLI both enforce this: a free account can't
-start a Pro challenge. Which days count as free is set by `FREE_WEEKS` in `curriculum/schedule.py`.
+Chapter 1 is free for everyone, including on-call live classes while learners work through it. Every
+other chapter and live classes all month are part of **pwnctual Pro**
+($10 for one month, set with `PWNCTUAL_PRO_PRICE`). The site enforces this: a free account can't
+open or mark a Pro challenge. Mark a chapter free with `free=True` on its `Chapter`.
 
 - **Selling Pro:** set `PWNCTUAL_CHECKOUT_URL` to a payment link to enable the Pro button. Without it, the button
   reads "Checkout opens soon".
@@ -60,22 +48,17 @@ start a Pro challenge. Which days count as free is set by `FREE_WEEKS` in `curri
   be booked once, and each person can hold one upcoming booking. Set `PWNCTUAL_CLASS_MEET_URL` to your
   video-call link, and list your login in `PWNCTUAL_ADMINS` to see every booking at `/classes/admin`.
 
-## How checking works
+## How lessons work
 
-pwnctual never runs learner code on the server, and there are no static flags to share.
+The course is just a list of chapters, with no days or weeks. Each chapter is three steps on one page:
 
-1. `pwnctual check <slug>` asks the server for an attempt. The server generates **random test cases** and
-   keeps the expected answers (keys starting with `_`) to itself.
-2. The CLI runs the learner's program in their Codespace once per case (stdin, args, input files),
-   with a 10-second timeout, and sends back stdout, stderr and any requested output files.
-3. The server compares the results. On success it records the solve, returns a per-user HMAC flag,
-   and reports promotions. On failure it shows the failing input, the expected output and the learner's output.
-
-Attempts are single-use and expire after 15 minutes.
-
-CLI login uses a device-code flow: `pwnctual login` prints a code, the learner approves it at `/link` while
-signed in with GitHub, and the CLI receives a token. Only hashes of tokens are stored. Learners can also
-create and revoke tokens on the Workspace page.
+1. **Watch** the recording (`video`). YouTube links are embedded; anything else gets a "Watch" button.
+   Leave it empty until the video is published and the page shows "coming soon".
+2. **Read** the written explanation (`lecture`, Markdown).
+3. **Do the live challenges.** Each `Challenge` links out to where it is hosted (e.g. OverTheWire). Learners
+   solve it there, then press **I finished it** to record the solve and earn points (self-reported).
+   A **Stuck?** button tells them not to look up a walkthrough: read the `man` page first, then ask in the
+   comments of that chapter's video, where you'll reply.
 
 ## Ranks
 
@@ -89,23 +72,24 @@ create and revoke tokens on the Workspace page.
 
 Thresholds scale with the total number of points in the curriculum (`ranks.thresholds`), on a curve that
 makes early ranks quick and later ones hard. **Ghost requires clearing every challenge**, so each new
-path raises the bar.
+chapter raises the bar.
 
 ## Adding content
 
-Create `pwnctual/curriculum/p2_<name>.py` exporting `PATH`, then add it to `PATHS` in
-`curriculum/__init__.py`. Then put its challenge slugs on the matching days in
-`curriculum/schedule.py`, the 30-day course plan shown at `/course`. Days with slugs go live
-automatically, and days without them show as "coming soon". Each challenge needs a generator:
+Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER` (see `ch01_terminal.py`), then import it
+and add it to `CHAPTERS` in `curriculum/__init__.py`. Chapters are numbered in list order.
 
 ```python
-def gen(rng, i):            # i = case index, handy for covering every branch
-    n = rng.randint(1, 100)
-    return {"stdin": f"{n}\n", "_expect": str(n * 2)}
-
-Challenge("double-it", "Double It", 15, "Read n, print 2n.", gen, cases=3)
+CHAPTER = Chapter(
+    "data-flow", "Data Flow", "Pipes, redirection and filtering text.",
+    video="https://www.youtube.com/watch?v=VIDEO_ID",
+    lecture=LECTURE,   # Markdown
+    challenges=[
+        Challenge("bandit-4", "Bandit Level 3 → 4", 15,
+                  "https://overthewire.org/wargames/bandit/bandit4.html",
+                  "What the learner has to do, with hints but no answers."),
+    ],
+)
 ```
 
-A case can include `stdin`, `args`, `files` (`{name: text}` or `{name: {"b64": ...}}`) and `collect`
-(output files to send back). Set `check="contains"` for substring matching, or `check="files"` together
-with `_expect_files` to grade the files a program writes.
+Challenge slugs must stay stable once people have solved them, because solves are stored by slug.

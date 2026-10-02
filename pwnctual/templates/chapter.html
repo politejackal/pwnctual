@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% set active_nav = 'paths' %}
+{% block title %}{{ chapter.title }} · pwnctual{% endblock %}
+{% block main %}
+<div class="narrow">
+  <div class="crumbs">
+    <a href="/course">Course</a><span class="material-symbols-rounded">chevron_right</span>
+    <span>Chapter {{ chapter.number }}</span>
+  </div>
+  <div class="label">Chapter {{ chapter.number }} · {{ chapter.points }} points</div>
+  <h1 class="display-s" style="margin:8px 0 4px">{{ chapter.title }}</h1>
+  <div class="muted" style="font-size:18px">{{ chapter.summary }}</div>
+
+  <h2 class="headline lesson-step"><span class="step-num">1</span>Watch the lesson</h2>
+  {% set embed = video_embed(chapter.video) %}
+  {% if embed %}
+    <div class="video"><iframe src="{{ embed }}" title="{{ chapter.title }}" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe></div>
+  {% elif not chapter.video %}
+    <div class="video video-soon"><span class="material-symbols-rounded">videocam</span>
+      <span>The video for this chapter is coming soon.<br>Start with the write-up below.</span></div>
+  {% endif %}
+  {% if chapter.video %}
+  <a class="btn tonal" href="{{ chapter.video }}" target="_blank" rel="noopener" style="margin-top:12px">
+    <span class="material-symbols-rounded">play_circle</span>{{ 'Open on YouTube' if embed else 'Watch the recording' }}</a>
+  {% endif %}
+
+  <h2 class="headline lesson-step"><span class="step-num">2</span>Read the explanation</h2>
+  <div class="card filled prose lesson-text">{{ md(chapter.lecture) }}</div>
+
+  {% if not chapter.challenges %}
+  <div class="banner info" style="margin-top:40px"><span class="material-symbols-rounded">flag</span>
+    <span>This chapter has no challenges.{% if nxt %} Your next step is <a href="/chapters/{{ nxt.id }}">Chapter {{ nxt.number }}: {{ nxt.title }}</a>.{% endif %}</span></div>
+  {% else %}
+  <h2 class="headline lesson-step"><span class="step-num">3</span>Do the live challenges</h2>
+  <p class="muted">Each challenge opens on its own site. Solve it there, then come back and mark it done to earn your points.</p>
+  {% endif %}
+  <div id="challenges" data-logged-in="{{ 1 if me else 0 }}" data-csrf="{{ csrf_token() }}">
+    {% for c in chapter.challenges %}
+      {% set solved = c.slug in my_solved %}
+      <details class="chal {{ 'solved' if solved }}" id="{{ c.slug }}" data-slug="{{ c.slug }}">
+        <summary>
+          <span class="state"><span class="material-symbols-rounded">{{ 'check' if solved else 'flag' }}</span></span>
+          <span><span class="title-m">{{ c.title }}</span><br><span class="muted mono" style="font-size:13px">{{ c.number }}</span></span>
+          <span class="chip">{{ c.points }} points</span>
+          <span class="material-symbols-rounded chev">expand_more</span>
+        </summary>
+        <div class="body">
+          {% if c.description %}<div class="prose">{{ md(c.description) }}</div>{% endif %}
+          {% if c.slug not in FREE_SLUGS and not IS_PRO %}
+          <div class="banner info" style="margin-top:20px"><span class="material-symbols-rounded">workspace_premium</span>
+            <span>This challenge is part of <b>pwnctual Pro</b> ({{ PRO_PRICE }}/month). <a href="/pricing">See plans</a></span></div>
+          {% else %}
+          <div class="row" style="margin-top:20px">
+            <a class="btn" href="{{ c.url }}" target="_blank" rel="noopener"><span class="material-symbols-rounded">open_in_new</span>Open challenge</a>
+            {% if me %}
+              <button class="btn tertiary mark-done" data-done="{{ c.slug }}" {{ 'disabled' if solved }}>
+                <span class="material-symbols-rounded">check</span><span class="lbl">{{ 'Done' if solved else "I finished it" }}</span></button>
+            {% endif %}
+            <button class="btn text stuck-toggle" aria-expanded="false"><span class="material-symbols-rounded">help</span>Stuck?</button>
+          </div>
+          <div class="banner info stuck" hidden style="margin-top:16px"><span class="material-symbols-rounded">forum</span>
+            <span>Don't look up a walkthrough. First read the <code>man</code> page for the command you're using, and re-read the lesson.
+              Still stuck? Ask in the comments of
+              {% if chapter.video %}<a href="{{ chapter.video }}" target="_blank" rel="noopener">this chapter's video</a>{% else %}this chapter's video (coming soon){% endif %}.
+              Mention that you're on <b>{{ c.title }}</b> and what you've tried so far. I'm active there and I'll definitely reply.</span></div>
+          {% endif %}
+          {% if not me %}<div class="banner info" style="margin-top:16px"><span class="material-symbols-rounded">info</span><span><a href="/login?next=/chapters/{{ chapter.id }}">Sign in</a> to mark challenges done and earn points.</span></div>{% endif %}
+        </div>
+      </details>
+    {% endfor %}
+  </div>
+
+  <div class="row" style="margin-top:40px">
+    {% if prev %}<a class="btn outlined" href="/chapters/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>{{ prev.title }}</a>{% endif %}
+    <span class="spacer"></span>
+    {% if nxt %}<a class="btn" href="/chapters/{{ nxt.id }}">Next: {{ nxt.title }}<span class="material-symbols-rounded">arrow_forward</span></a>
+    {% else %}<span class="muted">More chapters are on the way.</span>{% endif %}
+  </div>
+</div>
+{% endblock %}
