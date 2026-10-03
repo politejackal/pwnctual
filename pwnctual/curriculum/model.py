@@ -3,8 +3,8 @@
 Hierarchy:  Path  ->  Module  ->  Challenge
 
 Every challenge is verified the same way: the server generates fresh, random
-test cases, the CLI runs the learner's program against them inside their
-Codespace, and the server compares the program's output with the expected
+test cases, the CLI runs the learner's program against them on their own
+computer, and the server compares the program's output with the expected
 answer it kept to itself. Keys that start with "_" never leave the server.
 """
 from dataclasses import dataclass, field

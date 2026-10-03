@@ -137,7 +137,7 @@ main { padding-bottom: 96px; min-height: calc(100vh - 160px); }
 .nav-c[data-k="paths"] { view-transition-name: nav-paths; } .bnav-c[data-k="paths"] { view-transition-name: bnav-paths; }
 .nav-c[data-k="ranks"] { view-transition-name: nav-ranks; } .bnav-c[data-k="ranks"] { view-transition-name: bnav-ranks; }
 .nav-c[data-k="leaderboard"] { view-transition-name: nav-leaderboard; } .bnav-c[data-k="leaderboard"] { view-transition-name: bnav-leaderboard; }
-.nav-c[data-k="workspace"] { view-transition-name: nav-workspace; } .bnav-c[data-k="workspace"] { view-transition-name: bnav-workspace; }
+.nav-c[data-k="setup"] { view-transition-name: nav-setup; } .bnav-c[data-k="setup"] { view-transition-name: bnav-setup; }
 .navgroup .material-symbols-rounded { font-size: 20px; }
 
 .mini-rank { display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-radius: var(--shape-full);

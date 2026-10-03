@@ -9,7 +9,7 @@ pwnctual/            Flask site (pages, auth, CLI API, checker)
   curriculum/        Paths → Modules → Challenges (pure Python)
   ranks.py           Ranked ladder + thresholds
   emblems.py         SVG skull emblems for every rank
-workspace/           GitHub Codespaces template: devcontainer + `pwnctual` CLI
+  cli.py             learner CLI, downloaded from /setup as pwnctual.py
 ```
 
 ## Run it locally
@@ -24,9 +24,9 @@ Then, in another terminal:
 
 ```bash
 export PWNCTUAL_URL=http://127.0.0.1:5000
-python workspace/bin/pwnctual login        # approve the code at /link
-python workspace/bin/pwnctual new hello-hacker
-python workspace/bin/pwnctual check hello-hacker
+python pwnctual/cli.py login        # approve the code at /link
+python pwnctual/cli.py new hello-hacker
+python pwnctual/cli.py check hello-hacker
 ```
 
 ## Deploy
@@ -38,11 +38,46 @@ python workspace/bin/pwnctual check hello-hacker
    - **GitHub:** create an OAuth app at github.com/settings/developers with callback `https://YOUR-SITE/auth/callback`.
    Accounts are matched only by each provider's own user ID, so a Google account and a GitHub account are
    separate pwnctual accounts even if the names match.
-2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically). Codespaces must be able to reach the site, so it needs a public URL.
+2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically). Set `PWNCTUAL_PUBLIC_URL` to the site's public address.
 3. Run behind a real WSGI server, e.g. `gunicorn -w 4 "pwnctual.app:app"`.
-4. **Workspace template:** push `workspace/` to its own GitHub repo, mark it as a *template repository*,
-   set `PWNCTUAL_URL` in `.devcontainer/devcontainer.json` to your site, and point
-   `PWNCTUAL_WORKSPACE_REPO` at it. The "Launch Codespace" button opens `codespaces.new/<repo>`.
+
+### Free hosting: PythonAnywhere
+
+The free plan keeps files between restarts, so the SQLite database just works. The site lives at
+`https://YOURNAME.pythonanywhere.com`.
+
+1. Sign up for a free *Beginner* account at pythonanywhere.com.
+2. **Account** page → *API token* → *Create a new API token*. This lets the setup script do the Web tab's
+   work for you.
+3. Open a **new Bash console** (Consoles tab) and run:
+   ```bash
+   git clone https://github.com/politejackal/pwnctual.git ~/pwnctual && bash ~/pwnctual/deploy/pythonanywhere.sh
+   ```
+   This creates a virtualenv, installs the requirements, creates `~/pwnctual/.env` with your public URL
+   and a random secret, creates the web app, sets its virtualenv, maps `/static/`, forces HTTPS, points
+   the WSGI file at `wsgi.py` and reloads. The site is now live.
+4. Turn on sign-in: add your keys to `~/pwnctual/.env` (step 1 above, with callbacks on
+   `https://YOURNAME.pythonanywhere.com`) and press *Reload* on the Web tab.
+
+Without an API token the script still sets up the code; create the web app by hand (*Web* tab → *Add a
+new web app* → *Manual configuration*), set the virtualenv to `/home/YOURNAME/.virtualenvs/pwnctual`, map
+`/static/` to `/home/YOURNAME/pwnctual/pwnctual/static`, and run the script again.
+
+To update the site later, run `bash ~/pwnctual/deploy/pythonanywhere.sh` again.
+Your `.env`, `.secret` and `pwnctual.db` are left alone.
+
+Free-plan limits: press *Run until 1 month from today* on the Web tab at least once a month or the
+site is switched off. Outbound requests only reach allowlisted sites (pythonanywhere.com/whitelist): GitHub
+sign-in works, so check that Google's OAuth hosts are on that list before enabling Google sign-in.
+Back up `pwnctual.db` now and then from the Files tab.
+
+### Render (paid, always on)
+
+`render.yaml` is a Render Blueprint for the full site. In the Render dashboard choose *New → Blueprint*,
+pick this repo, and fill in the sign-in keys it asks for. It runs gunicorn, keeps the SQLite database on a
+1 GB disk at `/var/data` (disks need the Starter plan), and generates `PWNCTUAL_SECRET`. The public URL
+defaults to the `https://<name>.onrender.com` address Render assigns; set `PWNCTUAL_PUBLIC_URL` if you add
+a custom domain. Use that URL in the OAuth callbacks from step 1.
 
 ## Free week and Pro
 
@@ -62,11 +97,12 @@ start a Pro challenge. Which days count as free is set by `FREE_WEEKS` in `curri
 
 ## How checking works
 
-pwnctual never runs learner code on the server, and there are no static flags to share.
+pwnctual never runs learner code on the server, and there are no static flags to share. Learners download the
+CLI from `/setup` as `pwnctual.py` (with the site's address filled in) and run it with their own Python.
 
 1. `pwnctual check <slug>` asks the server for an attempt. The server generates **random test cases** and
    keeps the expected answers (keys starting with `_`) to itself.
-2. The CLI runs the learner's program in their Codespace once per case (stdin, args, input files),
+2. The CLI runs the learner's program on their own computer once per case (stdin, args, input files),
    with a 10-second timeout, and sends back stdout, stderr and any requested output files.
 3. The server compares the results. On success it records the solve, returns a per-user HMAC flag,
    and reports promotions. On failure it shows the failing input, the expected output and the learner's output.
@@ -75,7 +111,7 @@ Attempts are single-use and expire after 15 minutes.
 
 CLI login uses a device-code flow: `pwnctual login` prints a code, the learner approves it at `/link` while
 signed in with GitHub, and the CLI receives a token. Only hashes of tokens are stored. Learners can also
-create and revoke tokens on the Workspace page.
+create and revoke tokens on the Setup page.
 
 ## Ranks
 

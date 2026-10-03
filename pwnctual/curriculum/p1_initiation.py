@@ -10,17 +10,20 @@ no idea what to type. That's fine. You don't need to know *anything* yet.
 
 ### Your machine
 
-You'll work inside a **GitHub Codespace**: a real Linux computer in the cloud
-that runs in your browser. Go to the [Workspace](/workspace) page, press
-**Launch Codespace**, and wait for VS Code to open. Everything is pre-installed.
+You'll work on your own computer: Windows, macOS or Linux all work. The
+[Setup](/setup) page walks you through it: install **Python 3** and download
+the `pwnctual.py` checker into a folder for the course.
 
-At the bottom you'll see a **terminal**. That's where you talk to the computer
-by typing commands. The `$` is the *prompt*: it means "I'm listening".
+Then open a **terminal** in that folder (*Terminal* on macOS and Linux,
+*PowerShell* on Windows). That's where you talk to the computer by typing
+commands. The `$` is the *prompt*: it means "I'm listening".
 
 ```bash
-$ python3 --version
+$ python --version
 Python 3.12.4
 ```
+
+On macOS and Linux the command may be `python3` instead of `python`.
 
 ### Python programs
 
@@ -35,7 +38,7 @@ print("this is line two")
 Save that as `demo.py` and run it:
 
 ```bash
-$ python3 demo.py
+$ python demo.py
 this is line one
 this is line two
 ```
@@ -55,14 +58,13 @@ print(name)
 
 ### How pwnctual checks your work
 
-You don't paste flags here. Instead, the `pwnctual` command inside your
-Codespace runs your program against **fresh random input** every time,
+You don't paste flags here. Instead, `pwnctual.py` runs your program against **fresh random input** every time,
 captures what it prints, and asks the server whether you got it right.
 Hard-coding an answer won't work. You actually have to solve it.
 
 ```bash
-$ pwnctual new hello-hacker      # creates hello-hacker.py for you
-$ pwnctual check hello-hacker    # runs it against the checker
+$ python pwnctual.py new hello-hacker      # creates hello-hacker.py for you
+$ python pwnctual.py check hello-hacker    # runs it against the checker
 ```
 
 When you pass, you capture a **flag**, earn **points**, and climb the ranks.
