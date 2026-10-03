@@ -18,17 +18,12 @@ pip install -r requirements.txt
 PWNCTUAL_DEV=1 python -m pwnctual          # http://127.0.0.1:5000
 ```
 
-`PWNCTUAL_DEV=1` enables a username-only sign-in so you can try everything without GitHub or Google.
+`PWNCTUAL_DEV=1` enables a username-only sign-in so you can try everything without GitHub.
 
 ## Deploy
 
-1. **Sign-in providers.** Configure one or both:
-   - **Google:** in Google Cloud Console, open *Google Auth Platform → Clients → Create client → Web application*.
-     Add the redirect URI `https://YOUR-SITE/auth/google/callback`, then set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
-     Requests only `openid email profile`, uses PKCE, and checks state, nonce, issuer, audience and expiry.
-   - **GitHub:** create an OAuth app at github.com/settings/developers with callback `https://YOUR-SITE/auth/callback`.
-   Accounts are matched only by each provider's own user ID, so a Google account and a GitHub account are
-   separate pwnctual accounts even if the names match.
+1. **Sign-in (GitHub).** Create an OAuth app at github.com/settings/developers with callback
+   `https://YOUR-SITE/auth/callback`, then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`.
 2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically). Set `PWNCTUAL_PUBLIC_URL` to the site's public address.
 3. Run behind a real WSGI server, e.g. `gunicorn -w 4 "pwnctual.app:app"`.
 
@@ -58,8 +53,8 @@ To update the site later, run `bash ~/pwnctual/deploy/pythonanywhere.sh` again.
 Your `.env`, `.secret` and `pwnctual.db` are left alone.
 
 Free-plan limits: press *Run until 1 month from today* on the Web tab at least once a month or the
-site is switched off. Outbound requests only reach allowlisted sites (pythonanywhere.com/whitelist): GitHub
-sign-in works, so check that Google's OAuth hosts are on that list before enabling Google sign-in.
+site is switched off. Outbound requests only reach allowlisted sites (pythonanywhere.com/whitelist); GitHub
+sign-in works.
 Back up `pwnctual.db` now and then from the Files tab.
 
 ### Your own domain, free: Cloudflare in front of PythonAnywhere
@@ -80,8 +75,7 @@ opens the `pythonanywhere.com` address directly.
    that change the Worker redeploy it.
 4. **PythonAnywhere:** in a Bash console run
    `PWNCTUAL_PUBLIC_URL=https://pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh`.
-5. **Sign-in:** GitHub OAuth app callback → `https://pwnctual.com/auth/callback`; Google client → add
-   `https://pwnctual.com/auth/google/callback`.
+5. **Sign-in:** set the GitHub OAuth app's callback to `https://pwnctual.com/auth/callback`.
 
 The Worker free plan allows 100,000 requests a day.
 
