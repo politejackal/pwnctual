@@ -2,7 +2,7 @@ from .model import Chapter, Challenge
 
 BANDIT = "https://overthewire.org/wargames/bandit"
 
-WRITEUP = r"""
+NOTES = r"""
 This chapter gets you from zero to logged in on a real server. Read it once, then
 keep it open while you play: everything the first four Bandit levels need is here.
 
@@ -139,7 +139,7 @@ done.
 CHAPTER = Chapter(
     "first-contact", "First Contact",
     "Meet the terminal, log in to a real server with SSH, and clear your first Bandit levels.",
-    writeup=WRITEUP,
+    notes=NOTES,
     video_id="",  # lecture coming soon: paste its YouTube video ID here
     challenges=[
         Challenge("bandit-0", "Bandit Level 0", f"{BANDIT}/bandit0.html",
