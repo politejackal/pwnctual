@@ -28,7 +28,7 @@
 
 {# "Stuck?" button: opens the help dialog for this chapter's video (and challenge, if given). #}
 {% macro stuck_button(chapter, challenge=None, cls='btn tonal') -%}
-<button type="button" class="{{ cls }}" data-stuck data-video="{{ chapter.video_url }}" data-video-id="{{ chapter.video_id }}"
+<button type="button" class="{{ cls }}" data-stuck data-video="{{ chapter.help_video_url }}" data-video-id="{{ chapter.help_video_id }}"
   data-chapter="Chapter {{ chapter.number }}: {{ chapter.title }}"{% if challenge %} data-challenge="{{ challenge.title }}"{% endif %}>
   <span class="material-symbols-rounded">help</span>Stuck?</button>
 {%- endmacro %}

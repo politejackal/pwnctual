@@ -109,6 +109,11 @@ chapter raises the bar.
 
 ## Adding a chapter
 
+Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video and a short "how this works"
+writeup, no challenges. A chapter with `video_id=""` shows "lecture coming soon" and opens its writeup and
+challenges straight away; its **Stuck?** button points to Chapter 0's video until it gets its own. Chapter 1's
+lecture isn't out yet: paste its video ID into `curriculum/ch01_first_contact.py` when it is.
+
 Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to `CHAPTERS` in
 `curriculum/__init__.py`:
 
@@ -117,8 +122,8 @@ from .model import Chapter, Challenge
 
 CHAPTER = Chapter(
     "chapter-id", "Chapter Title", "One-line summary.",
-    video_id="YOUTUBE_VIDEO_ID",   # the part after youtu.be/ or watch?v=
     writeup=r"""Markdown shown after the lecture ends.""",
+    video_id="YOUTUBE_VIDEO_ID",   # the part after youtu.be/ or watch?v=
     challenges=[
         Challenge("bandit-4", "Bandit Level 3 → 4",
                   "https://overthewire.org/wargames/bandit/bandit4.html",

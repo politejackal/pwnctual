@@ -21,7 +21,7 @@
 
   <h2 class="headline" style="margin:40px 0 16px">Progress</h2>
   <div class="module-list">
-    {% for ch in CHAPTERS %}
+    {% for ch in CHAPTERS if ch.challenges %}
       {% set d = ch.challenges|selectattr('slug', 'in', solved)|list|length %}
       {% set full = d == ch.challenges|length %}
       <a class="card module-row {{ 'done' if full }}" href="/learn/{{ ch.id }}">

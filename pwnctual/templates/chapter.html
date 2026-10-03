@@ -18,11 +18,12 @@
   <ol class="chapter-steps" aria-label="Chapter steps">
     <li><span class="material-symbols-rounded">smart_display</span>Watch the lecture</li>
     <li><span class="material-symbols-rounded">menu_book</span>Read the writeup</li>
-    <li><span class="material-symbols-rounded">flag</span>Clear the challenges</li>
+    {% if chapter.challenges %}<li><span class="material-symbols-rounded">flag</span>Clear the challenges</li>{% endif %}
   </ol>
 
   <section class="lecture" aria-labelledby="lecture-title">
     <h2 class="headline" id="lecture-title">Lecture</h2>
+    {% if chapter.video_id %}
     <div class="video-frame">
       <iframe id="lecture-player" src="https://www.youtube.com/embed/{{ chapter.video_id }}?enablejsapi=1&rel=0&playsinline=1&origin={{ origin|urlencode }}"
         title="Chapter {{ chapter.number }} lecture: {{ chapter.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -34,16 +35,27 @@
       <span class="spacer"></span>
       <span class="muted lecture-note">Watching here counts as a view on YouTube, and that keeps pwnctual free. If it helped, a like and a sub go a long way.</span>
     </div>
+    {% else %}
+    <div class="lock-card">
+      <span class="material-symbols-rounded">videocam</span>
+      <div>
+        <div class="title-m">The lecture for this chapter is coming soon</div>
+        <div class="muted">You don't have to wait: the writeup below has everything you need, and the challenges are open.</div>
+      </div>
+    </div>
+    {% endif %}
   </section>
 
+  {% if chapter.video_id %}
   <div class="lock-card" id="lock-card"{% if watched %} hidden{% endif %}>
     <span class="material-symbols-rounded">lock</span>
     <div>
-      <div class="title-m">The writeup and challenges unlock when the lecture ends</div>
-      <div class="muted">Watch to the end and they'll appear right here.
-        <button type="button" class="linkish" id="already-watched">Already watched it? Show them now</button></div>
+      <div class="title-m">The writeup{{ ' and challenges unlock' if chapter.challenges else ' unlocks' }} when the lecture ends</div>
+      <div class="muted">Watch to the end and {{ 'they' if chapter.challenges else 'it' }}'ll appear right here.
+        <button type="button" class="linkish" id="already-watched">Already watched it? Show {{ 'them' if chapter.challenges else 'it' }} now</button></div>
     </div>
   </div>
+  {% endif %}
 
   <div class="after-lecture{{ '' if watched else ' locked' }}" id="after-lecture">
     <section class="writeup" id="writeup" aria-labelledby="writeup-title">
@@ -51,6 +63,7 @@
       <div class="prose">{{ md(chapter.writeup) }}</div>
     </section>
 
+    {% if chapter.challenges %}
     <section id="challenges" aria-labelledby="challenges-title">
       <h2 class="headline" id="challenges-title" style="margin:48px 0 8px">Challenges</h2>
       <p class="muted" style="margin:0 0 20px">These levels live on <a href="https://overthewire.org" target="_blank" rel="noopener">OverTheWire</a>.
@@ -87,14 +100,17 @@
           {% else %}The next chapter is on its way. Keep your Bandit notes handy: it picks up where this one ends.{% endif %}</span>
       </div>
     </section>
+    {% elif nxt %}
+    <div class="row" style="margin-top:32px"><a class="btn lg" href="/learn/{{ nxt.id }}"><span class="material-symbols-rounded">arrow_forward</span>On to Chapter {{ nxt.number }}: {{ nxt.title }}</a></div>
+    {% endif %}
   </div>
 
   <section style="margin-top:48px">{{ stuck_card(chapter) }}</section>
 
   <div class="row" style="margin-top:40px">
-    {% if prev %}<a class="btn outlined" href="/learn/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% endif %}
+    {% if prev is not none %}<a class="btn outlined" href="/learn/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% endif %}
     <span class="spacer"></span>
-    {% if nxt %}<a class="btn" href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
+    {% if nxt is not none %}<a class="btn" href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
   </div>
 </div>
 <noscript><style>.after-lecture.locked { display: block !important; } #lock-card { display: none; }</style></noscript>

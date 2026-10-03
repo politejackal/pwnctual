@@ -338,7 +338,8 @@ def chapter_page(chapter_id):
     user = current_user()
     i = CHAPTERS.index(chapter)
     return render_template("chapter.html", chapter=chapter, origin=base_url(),
-                           watched=bool(user) and chapter.id in watched_chapters(user["id"]),
+                           # no lecture yet: nothing to watch, so the writeup and challenges are open
+                           watched=not chapter.video_id or (bool(user) and chapter.id in watched_chapters(user["id"])),
                            prev=CHAPTERS[i - 1] if i > 0 else None,
                            nxt=CHAPTERS[i + 1] if i + 1 < len(CHAPTERS) else None)
 
