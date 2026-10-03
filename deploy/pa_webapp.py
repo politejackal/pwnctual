@@ -50,10 +50,17 @@ try:
     if domain not in existing:
         call("POST", domain_name=domain, python_version=python_version)
         print(f"created web app {domain}")
-    call("PATCH", f"{domain}/", virtualenv_path=venv, force_https="true")
+    # Your own domain has no HTTPS certificate until you create one on the Web tab,
+    # and forcing HTTPS before that would break the site, so it's left to you there.
+    own_domain = not domain.endswith(".pythonanywhere.com")
+    call("PATCH", f"{domain}/", virtualenv_path=venv, **({} if own_domain else {"force_https": "true"}))
     statics = call("GET", f"{domain}/static_files/")
     if not any(s["url"] == "/static/" for s in statics):
         call("POST", f"{domain}/static_files/", url="/static/", path=static_dir)
-    print("web app configured: virtualenv, /static/ mapping, HTTPS")
+    print("web app configured: virtualenv, /static/ mapping" + ("" if own_domain else ", HTTPS"))
+    if own_domain:
+        cname = next((w.get("cname") for w in call("GET") if w["domain_name"] == domain), None)
+        print(f"DNS: add a CNAME record for {domain} pointing to {cname or 'the value on the Web tab'}")
+        print("Then on the Web tab: create a Let's Encrypt certificate, and turn on Force HTTPS")
 except urllib.error.HTTPError as e:
     sys.exit(f"PythonAnywhere API error {e.code}: {e.read().decode()[:300]}")

@@ -22,7 +22,7 @@ keeps the challenge yours to solve.
 
 ### It's free
 
-The whole course is free forever. No card, no trial, no catch. Watching the
+The whole course is free forever. Watching the
 lectures here or on YouTube is what keeps it that way.
 
 Ready? Chapter 1 is next.

@@ -31,7 +31,7 @@
     </div>
     <div class="row lecture-foot">
       <a class="btn outlined sm" href="{{ chapter.video_url }}" target="_blank" rel="noopener"><span class="material-symbols-rounded">open_in_new</span>Watch on YouTube</a>
-      {{ stuck_button(chapter, cls='btn tonal sm') }}
+      {% if chapter.challenges %}{{ stuck_button(chapter, cls='btn tonal sm') }}{% endif %}
       <span class="spacer"></span>
       <span class="muted lecture-note">Watching here counts as a view on YouTube, and that keeps pwnctual free. If it helped, a like and a sub go a long way.</span>
     </div>
@@ -105,7 +105,7 @@
     {% endif %}
   </div>
 
-  <section style="margin-top:48px">{{ stuck_card(chapter) }}</section>
+  {% if chapter.challenges %}<section style="margin-top:48px">{{ stuck_card(chapter) }}</section>{% endif %}
 
   <div class="row" style="margin-top:40px">
     {% if prev is not none %}<a class="btn outlined" href="/learn/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% endif %}
