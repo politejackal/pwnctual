@@ -104,38 +104,127 @@
     store.set(key, String(cur));
   }
 
-  // ------------------------------------------------------------------ live solve updates (module pages)
-  let pollTimer = null;
-  function startPolling() {
-    clearInterval(pollTimer); pollTimer = null;
-    const list = $("#challenges");
-    if (!list || list.dataset.loggedIn !== "1") return;
-    const known = new Set($$(".chal.solved[data-slug]", list).map((d) => d.dataset.slug));
-    let rankIdx = parseInt(body.dataset.rank, 10);
-    pollTimer = setInterval(async () => {
-      if (document.hidden || !list.isConnected) return;
-      try {
-        const r = await fetch("/api/me/progress", { headers: { Accept: "application/json" } });
-        if (!r.ok) return;
-        const data = await r.json();
-        for (const slug of data.solved) {
-          if (known.has(slug)) continue;
-          known.add(slug);
-          const d = $(`.chal[data-slug="${CSS.escape(slug)}"]`, list);
-          if (d) {
-            d.classList.add("solved", "just-solved");
-            $(".state .material-symbols-rounded", d).textContent = "check";
-            snack(`<span class="material-symbols-rounded">flag</span>Flag captured: ${$(".title-m", d).textContent}`);
-          }
-        }
-        if (data.rank_index > rankIdx) {
-          rankIdx = data.rank_index;
-          store.set(`rank:${body.dataset.user}`, String(rankIdx));
-          rankUp(data.rank_index, data.rank, data.rank_key);
-        }
-      } catch {}
-    }, 4000);
+  // ------------------------------------------------------------------ chapters: lecture -> writeup -> challenges
+  // The lecture is a real YouTube embed (so every watch counts as a view). When
+  // the video ends, the writeup and challenges unlock. Signed-in learners have
+  // that remembered on the server; everyone else in this browser.
+  let ytReady = null;
+  function loadYouTube() {
+    if (window.YT?.Player) return Promise.resolve(window.YT);
+    if (!ytReady) {
+      ytReady = new Promise((resolve) => {
+        const prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => { prev?.(); resolve(window.YT); };
+      });
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      tag.onerror = () => { ytReady = null; };
+      document.head.append(tag);
+    }
+    return ytReady;
   }
+
+  async function postJSON(url, data, csrf) {
+    const r = await fetch(url, { method: "POST", credentials: "same-origin", body: JSON.stringify(data || {}),
+      headers: { "Content-Type": "application/json", Accept: "application/json", "X-CSRF-Token": csrf } });
+    const out = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(out.error || "Something went wrong. Please try again.");
+    return out;
+  }
+
+  function initChapter() {
+    const ch = $("#chapter");
+    if (!ch) return;
+    const id = ch.dataset.chapter, signedIn = ch.dataset.signedIn === "1", csrf = ch.dataset.csrf;
+    const after = $("#after-lecture"), lock = $("#lock-card");
+
+    const unlock = (animate) => {
+      if (!after.classList.contains("locked")) return;
+      after.classList.remove("locked");
+      lock.hidden = true;
+      if (animate && !reducedMotion()) after.classList.add("unlocking");
+    };
+    const markWatched = (scroll) => {
+      const fresh = after.classList.contains("locked");
+      unlock(true);
+      store.set(`watched:${id}`, "1");
+      if (signedIn && ch.dataset.watched !== "1") {
+        ch.dataset.watched = "1";
+        postJSON(`/api/chapters/${encodeURIComponent(id)}/watched`, {}, csrf).catch(() => {});
+      }
+      if (fresh) {
+        snack('<span class="material-symbols-rounded">lock_open</span>Writeup and challenges unlocked');
+        if (scroll) $("#writeup").scrollIntoView({ behavior: reducedMotion() ? "instant" : "smooth", block: "start" });
+      }
+    };
+
+    if (ch.dataset.watched === "1" || store.get(`watched:${id}`) === "1") markWatched(false);
+    $("#already-watched")?.addEventListener("click", () => markWatched(true));
+
+    const frame = $("#lecture-player");
+    if (frame && after.classList.contains("locked")) {
+      loadYouTube().then((YT) => {
+        if (!frame.isConnected) return;  // navigated away meanwhile
+        new YT.Player(frame, { events: { onStateChange: (e) => { if (e.data === YT.PlayerState.ENDED) markWatched(true); } } });
+      }).catch(() => {});
+    }
+
+    // honor system: "I finished it" is all it takes
+    $$("[data-done]", ch).forEach((btn) => btn.addEventListener("click", async () => {
+      const slug = btn.dataset.done, done = btn.getAttribute("aria-pressed") !== "true";
+      btn.disabled = true;
+      try {
+        const res = await postJSON(`/api/challenges/${encodeURIComponent(slug)}/done`, { done }, csrf);
+        const d = btn.closest(".chal");
+        d.classList.toggle("solved", res.done);
+        d.classList.toggle("just-solved", res.done);
+        $(".state .material-symbols-rounded", d).textContent = res.done ? "check" : "flag";
+        btn.setAttribute("aria-pressed", String(res.done));
+        btn.classList.toggle("tertiary", res.done); btn.classList.toggle("tonal", !res.done);
+        $(".material-symbols-rounded", btn).textContent = res.done ? "task_alt" : "check";
+        $(".done-label", btn).textContent = res.done ? "Finished" : "I finished it";
+        $("#chapter-done").hidden = !res.chapter_done;
+        if (res.done) snack(`<span class="material-symbols-rounded">flag</span>Nice work: ${$(".title-m", d).textContent} done`);
+        body.dataset.rank = String(res.rank_index);
+        body.dataset.rankLabel = res.rank; body.dataset.rankKey = res.rank_key;
+        store.set(`rank:${body.dataset.user}`, String(res.rank_index));
+        if (res.promoted) rankUp(res.rank_index, res.rank, res.rank_key);
+        cache.clear();  // other pages now show stale progress
+      } catch (err) {
+        snack(err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }));
+  }
+
+  // ------------------------------------------------------------------ "Stuck?" dialog
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-stuck]"); if (!b) return;
+    const dlg = $("#stuck-dialog"); if (!dlg) return;
+    const where = b.dataset.challenge || b.dataset.chapter;
+    const text = `Stuck on: ${where}${b.dataset.challenge ? ` (${b.dataset.chapter})` : ""}\nWhat I'm trying to do: \nWhat I tried: \nWhat happened: `;
+    $("#stuck-where").textContent = where;
+    $("#stuck-template").textContent = text;
+    $("#stuck-copy").dataset.copy = text;
+    $("#stuck-video").href = b.dataset.video;
+    $("#stuck-comment").href = b.dataset.video;
+    $("#stuck-thumb").src = `https://i.ytimg.com/vi/${encodeURIComponent(b.dataset.videoId)}/hqdefault.jpg`;
+    dlg.showModal();
+  });
+  document.addEventListener("click", (e) => {
+    const dlg = e.target.closest?.("#stuck-dialog");
+    if (dlg && e.target === dlg) {  // a click on the dialog box itself is padding; outside it is the backdrop
+      const r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    }
+    const copy = e.target.closest("#stuck-copy");
+    if (copy) {  // the snackbar sits under the dialog, so confirm on the button itself
+      const label = copy.lastChild;
+      label.textContent = "Copied";
+      setTimeout(() => { label.textContent = "Copy"; }, 2000);
+    }
+  });
 
   // ------------------------------------------------------------------ hero word rotator
   let rotTimer = null;
@@ -378,8 +467,8 @@
       const s = (parseFloat(el.dataset.t) * 1000 - Date.now()) / 1000;
       for (const [u, sec] of units) if (Math.abs(s) >= sec || u === "second") { el.textContent = rtf.format(Math.round(s / sec), u); break; }
     });
+    initChapter();
     checkRankUp();
-    startPolling();
     onScroll();
   }
 

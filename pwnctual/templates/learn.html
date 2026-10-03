@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% set active_nav = 'learn' %}
+{% block title %}Chapters · pwnctual{% endblock %}
+{% block main %}
+<div class="wrap">
+  <header class="learn-head">
+    <div class="label">The course</div>
+    <h1 class="display-s">Learn to hack, one chapter at a time.</h1>
+    <p class="lede muted">Each chapter is a lecture on YouTube, a writeup that unlocks when the video ends, and real challenges on
+      OverTheWire. When you finish a challenge, tell us and we'll take your word for it.</p>
+    <div class="row" style="gap:8px">
+      <span class="chip good"><span class="material-symbols-rounded">redeem</span>Free forever</span>
+      <span class="chip filled"><span class="material-symbols-rounded">smart_display</span>Video lectures</span>
+      <span class="chip filled"><span class="material-symbols-rounded">menu_book</span>Writeups</span>
+      <span class="chip filled"><span class="material-symbols-rounded">flag</span>OverTheWire challenges</span>
+      <span class="chip"><span class="material-symbols-rounded">handshake</span>Honor system</span>
+    </div>
+    {% if not me %}
+      <div class="banner info" style="margin-top:24px"><span class="material-symbols-rounded">info</span>
+        <span><a href="/login?next=/learn">Sign in</a> to save your progress, earn points and climb the ranks. Watching and playing work without an account.</span></div>
+    {% endif %}
+  </header>
+  {% include "_chapter_cards.html" %}
+</div>
+{% endblock %}

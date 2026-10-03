@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}pwnctual{% endblock %}</title>
-<meta name="description" content="pwnctual: learn to hack from absolute zero, all the way to vulnerability research.">
+<meta name="description" content="pwnctual: learn to hack from absolute zero. Free forever.">
 <script>
   try { var t = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
         document.documentElement.dataset.theme = t; } catch (e) {}
@@ -20,10 +20,9 @@
 <body data-user="{{ me.login if me else '' }}" data-rank="{{ my_rank.tier.index if my_rank else '' }}" data-rank-label="{{ my_rank.tier.label if my_rank else '' }}" data-rank-key="{{ my_rank.tier.key if my_rank else '' }}">
 {% set nav = [
   ('index', '/', 'home', 'Home'),
-  ('paths', '/course', 'school', 'Learn'),
+  ('learn', '/learn', 'school', 'Learn'),
   ('ranks', '/ranks', 'skull', 'Ranks'),
   ('leaderboard', '/leaderboard', 'leaderboard', 'Leaderboard'),
-  ('setup', '/setup', 'terminal', 'Setup'),
 ] %}
 {% set active = active_nav|default('') %}
 <header class="topbar">
@@ -53,9 +52,9 @@
 
 <footer>
   <div class="wrap row">
-    <span>pwnctual · Learn to hack. Leave no trace.</span>
+    <span>pwnctual · Free forever. Learn to hack. Leave no trace.</span>
     <span class="spacer"></span>
-    <a href="/course">Course</a><a href="/classes">Live classes</a><a href="/pricing">Pricing</a><a href="/ranks">Ranks</a><a href="/setup">Setup</a>
+    <a href="/learn">Chapters</a><a href="/ranks">Ranks</a><a href="/leaderboard">Leaderboard</a><a href="/classes">Live classes</a>
   </div>
 </footer>
 
@@ -64,6 +63,37 @@
     <a href="{{ href }}" class="{{ 'active' if active == key }}"{% if active == key %} aria-current="page"{% endif %}><span class="pill">{% if active == key %}<span class="bnav-ind" aria-hidden="true"></span>{% endif %}<span class="material-symbols-rounded bnav-c" data-k="{{ key }}">{{ icon }}</span></span>{{ label }}</a>
   {% endfor %}
 </nav>
+
+<dialog class="stuck-dialog" id="stuck-dialog" aria-labelledby="stuck-title">
+  <form method="dialog" class="stuck-close"><button class="btn text icon-btn" aria-label="Close"><span class="material-symbols-rounded">close</span></button></form>
+  <div class="label" id="stuck-where">Stuck?</div>
+  <h2 class="headline" id="stuck-title">Stuck? Good. That's learning.</h2>
+  <p>Getting stuck is how learning works in this field. Every hacker spends most of their time stuck; the skill you're building is
+    getting unstuck. Nobody is timing you.</p>
+  <div class="banner bad"><span class="material-symbols-rounded">block</span>
+    <span><b>Please don't search for a walkthrough.</b> It hands you the answer and takes away the lesson: you'd clear the level and learn
+      nothing from it.</span></div>
+  <p><b>Ask in the comments of the lecture video on YouTube instead.</b> Say exactly where you're stuck:</p>
+  <ul class="stuck-list">
+    <li>which challenge you're on</li>
+    <li>what you're trying to do</li>
+    <li>the commands you tried</li>
+    <li>what happened: the exact error or output</li>
+  </ul>
+  <p class="muted">Never post a level's password. We'll reply with a hint that points you the right way without spoiling the challenge,
+    so you still get to solve it yourself and actually learn something.</p>
+  <a class="stuck-video" id="stuck-video" href="#" target="_blank" rel="noopener">
+    <img id="stuck-thumb" alt="" loading="lazy">
+    <span class="stuck-play"><span class="material-symbols-rounded">play_arrow</span></span>
+  </a>
+  <div class="label" style="margin-top:16px">Start your comment with this</div>
+  <pre class="stuck-template" id="stuck-template"></pre>
+  <div class="row" style="gap:8px;margin-top:12px">
+    <button type="button" class="btn tonal copy" id="stuck-copy" data-copy=""><span class="material-symbols-rounded">content_copy</span>Copy</button>
+    <span class="spacer"></span>
+    <a class="btn" id="stuck-comment" href="#" target="_blank" rel="noopener"><span class="material-symbols-rounded">comment</span>Comment on YouTube</a>
+  </div>
+</dialog>
 
 <div class="snackbar" id="snackbar"></div>
 <script src="{{ asset('js/app.js') }}"></script>

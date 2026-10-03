@@ -5,9 +5,9 @@
 {% block main %}
 <div class="narrow">
   <h1 class="display-s" style="margin:40px 0 8px">Ranked</h1>
-  <p class="muted" style="font-size:18px;max-width:640px">Every solve earns points. Collect enough and you climb through five ranks:
+  <p class="muted" style="font-size:18px;max-width:640px">Every challenge you finish earns points. Collect enough and you climb through five ranks:
     Noob, Shadow, Demon, Reaper and, at the very top, Ghost. To become a <b class="ghost-name">Ghost</b> you have to clear everything. When a new
-    path drops, the bar goes up.</p>
+    chapter drops, the bar goes up.</p>
 
   {% if me %}<div class="card filled" style="margin:32px 0">{{ rank_card(my_rank) }}</div>{% endif %}
 
