@@ -3,51 +3,54 @@ from .model import Chapter, Challenge
 BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
-- **The GUI illusion:** Graphical User Interfaces (GUIs) are just a translation
+- **The GUI Illusion:** Graphical User Interfaces (GUIs) are just a translation
   layer. Every click triggers a hidden command.
-- **Where vulnerabilities live:** Bugs and vulnerabilities don't live in the
-  GUI. They live at the low level, where system actions break down or
+- **Vulnerability Location:** Bugs and vulnerabilities don't live in the GUI;
+  they live at the low level where system actions break down or
   miscommunicate.
-- **The terminal:** A direct text interface to the computer's core. No mouse,
-  pure control.
+- **The Terminal:** A direct text interface to the computer's core. No mouse,
+  pure text control.
 
-### The hacker's grammar
+### The Hacker's Grammar
 
-To talk to the terminal, you structure text in three parts:
+To talk to the terminal, you structure text using specific components:
 
-- **Command (the verb):** the action you want to take. Example: `ssh`.
-- **Flag (the adjective):** modifies *how* the action is performed. Usually
-  preceded by a dash (`-`).
-- **Argument (the noun):** the target of your action.
+- **Command (The Verb):** The action you want to take (e.g., `paint`).
+- **Argument (The Noun):** The target of your action (e.g., `car`).
+- **Flag (The Category):** Preceded by a dash (`-`), this tells the machine
+  what feature you want to modify (e.g., `-color`).
+- **Value (The Adjective):** The exact specification for that flag (e.g.,
+  `red` or `blue`).
 
 ```bash
-Command -Flag Argument
-read -quickly book
+Command -Flag Value Argument
+paint -color red car
 ```
 
 ### SSH (Secure Shell)
 
-**Purpose:** your *grappling hook*. SSH creates a secure, encrypted tunnel to
+**Purpose:** Your "grappling hook." It creates a secure, encrypted tunnel to
 execute commands on a remote computer over the internet.
 
 ```bash
-ssh username@hostname -p port_number
+ssh -p port_number username@hostname
 ```
 
-- `ssh`: the command.
-- `username`: the account you are logging into.
-- `hostname`: the web address or IP of the target machine.
-- `-p`: the flag used to specify a port (a digital door).
+- `ssh`: The command (Verb).
+- `-p`: The flag indicating we are modifying the port (Category).
+- `port_number`: The exact digital door we are using (Adjective).
+- `username@hostname`: The account and web address of the target machine
+  (Noun/Target).
 
 Example:
 
 ```bash
-ssh john@targetmachine.com -p 2220
+ssh -p 2220 john@targetmachine.com
 ```
 
 ### Mission 0
 
-- **Target:** [OverTheWire, Bandit Level 0](https://overthewire.org/wargames/bandit/bandit0.html)
+- **Target:** [OverTheWire (Bandit Level 0)](https://overthewire.org/wargames/bandit/bandit0.html)
 - **Objective:** Gather the hostname, port, username, and password from the
   Bandit website and construct the correct `ssh` command to successfully log
   into the server.
