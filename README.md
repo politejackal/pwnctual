@@ -47,18 +47,21 @@ The free plan keeps files between restarts, so the SQLite database just works. T
 `https://YOURNAME.pythonanywhere.com`.
 
 1. Sign up for a free *Beginner* account at pythonanywhere.com.
-2. **Web** tab → *Add a new web app* → *Manual configuration* → *Python 3.12*.
-3. Open a **Bash console** and run:
+2. **Account** page → *API token* → *Create a new API token*. This lets the setup script do the Web tab's
+   work for you.
+3. Open a **new Bash console** (Consoles tab) and run:
    ```bash
-   git clone https://github.com/politejackal/pwnctual.git ~/pwnctual
-   bash ~/pwnctual/deploy/pythonanywhere.sh
+   git clone https://github.com/politejackal/pwnctual.git ~/pwnctual && bash ~/pwnctual/deploy/pythonanywhere.sh
    ```
    This creates a virtualenv, installs the requirements, creates `~/pwnctual/.env` with your public URL
-   and a random secret, points the web app's WSGI file at `wsgi.py`, and reloads the site.
-4. **Web** tab: set *Virtualenv* to `/home/YOURNAME/.virtualenvs/pwnctual`, add a static file mapping
-   `/static/` → `/home/YOURNAME/pwnctual/pwnctual/static`, turn on *Force HTTPS*, and press *Reload*.
-5. Add your sign-in keys to `~/pwnctual/.env` (step 1 above, with callbacks on
-   `https://YOURNAME.pythonanywhere.com`), then press *Reload* again.
+   and a random secret, creates the web app, sets its virtualenv, maps `/static/`, forces HTTPS, points
+   the WSGI file at `wsgi.py` and reloads. The site is now live.
+4. Turn on sign-in: add your keys to `~/pwnctual/.env` (step 1 above, with callbacks on
+   `https://YOURNAME.pythonanywhere.com`) and press *Reload* on the Web tab.
+
+Without an API token the script still sets up the code; create the web app by hand (*Web* tab → *Add a
+new web app* → *Manual configuration*), set the virtualenv to `/home/YOURNAME/.virtualenvs/pwnctual`, map
+`/static/` to `/home/YOURNAME/pwnctual/pwnctual/static`, and run the script again.
 
 To update the site later, run `bash ~/pwnctual/deploy/pythonanywhere.sh` again.
 Your `.env`, `.secret` and `pwnctual.db` are left alone.

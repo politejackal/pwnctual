@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
-# Set up or update pwnctual on PythonAnywhere. Run it from a PythonAnywhere Bash console:
+# Set up or update pwnctual on PythonAnywhere. In a PythonAnywhere Bash console:
 #
 #   git clone https://github.com/politejackal/pwnctual.git ~/pwnctual   # first time only
 #   bash ~/pwnctual/deploy/pythonanywhere.sh
 #
-# Safe to re-run: it pulls the latest code, updates packages, keeps your .env and
-# database, rewrites the WSGI file and reloads the site.
+# With an API token (Account page -> API token -> Create, then open a new console)
+# it also creates and configures the web app, so there is nothing to click on the
+# Web tab. Safe to re-run: it pulls the latest code, updates packages, keeps your
+# .env and database, rewrites the WSGI file and reloads the site.
 set -euo pipefail
 
-PY="${PWNCTUAL_PYTHON:-python3.12}"
+PY="${PWNCTUAL_PYTHON:-}"
+if [ -z "$PY" ]; then
+  for v in python3.12 python3.13 python3.11 python3.10; do
+    if command -v "$v" >/dev/null; then PY="$v"; break; fi
+  done
+fi
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 VENV="$HOME/.virtualenvs/pwnctual"
-DOMAIN="${PWNCTUAL_DOMAIN:-$USER.pythonanywhere.com}"
+DOMAIN="${PWNCTUAL_DOMAIN:-$USER.${PYTHONANYWHERE_DOMAIN:-pythonanywhere.com}}"
 WSGI_FILE="/var/www/$(echo "$DOMAIN" | tr '.' '_')_wsgi.py"
 
 cd "$APP_DIR"
@@ -33,6 +40,10 @@ if [ ! -f .env ]; then
   echo "Created $APP_DIR/.env: add your GitHub/Google sign-in keys there."
 fi
 
+if [ -n "${API_TOKEN:-}" ]; then
+  "$VENV/bin/python" deploy/pa_webapp.py "$DOMAIN" "$(echo "$PY" | tr -d '.')" "$VENV" "$APP_DIR/pwnctual/static"
+fi
+
 if [ -f "$WSGI_FILE" ]; then
   cat > "$WSGI_FILE" <<WSGI
 import sys
@@ -42,8 +53,10 @@ WSGI
   touch "$WSGI_FILE"   # reloads the web app
   echo "Updated $WSGI_FILE and reloaded https://$DOMAIN"
 else
-  echo "!! $WSGI_FILE not found. Create the web app first (Web tab -> Add a new web app ->"
-  echo "   Manual configuration -> ${PY#python}), then run this script again."
+  echo "!! $WSGI_FILE not found. Either create an API token (Account page -> API token ->"
+  echo "   Create), open a NEW Bash console and run this script again, or create the web app"
+  echo "   by hand (Web tab -> Add a new web app -> Manual configuration -> ${PY#python})."
 fi
 
-echo "Virtualenv for the Web tab: $VENV"
+echo "Virtualenv: $VENV"
+echo "Site: https://$DOMAIN"
