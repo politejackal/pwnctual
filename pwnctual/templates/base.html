@@ -83,12 +83,12 @@
   <p class="muted">Never post a level's password. We'll reply with a hint that points you the right way without spoiling the challenge,
     so you still get to solve it yourself and actually learn something.</p>
   <a class="stuck-video" id="stuck-video" href="#" target="_blank" rel="noopener">
-    <img id="stuck-thumb" alt="" loading="lazy">
+    <img id="stuck-thumb" alt="" loading="lazy" onerror="this.classList.add('failed')" onload="this.classList.remove('failed')">
     <span class="stuck-play"><span class="material-symbols-rounded">play_arrow</span></span>
   </a>
   <div class="label" style="margin-top:16px">Start your comment with this</div>
   <pre class="stuck-template" id="stuck-template"></pre>
-  <div class="row" style="gap:8px;margin-top:12px">
+  <div class="row stuck-actions" style="gap:8px;margin-top:12px">
     <button type="button" class="btn tonal copy" id="stuck-copy" data-copy=""><span class="material-symbols-rounded">content_copy</span>Copy</button>
     <span class="spacer"></span>
     <a class="btn" id="stuck-comment" href="#" target="_blank" rel="noopener"><span class="material-symbols-rounded">comment</span>Comment on YouTube</a>

@@ -3,7 +3,7 @@
 {% block title %}{{ user.login }} · pwnctual{% endblock %}
 {% block main %}
 <div class="narrow">
-  <div class="row" style="margin:40px 0 24px;gap:16px">
+  <div class="row profile-head" style="margin:40px 0 24px;gap:16px">
     {{ avatar(user, 64) }}
     <div><h1 class="headline">{{ user.login }}</h1>
       {% if user.github_id %}<a class="muted" href="https://github.com/{{ user.login }}" rel="noopener">github.com/{{ user.login }}</a>{% endif %}</div>
