@@ -44,6 +44,13 @@ python workspace/bin/pwnctual check hello-hacker
    set `PWNCTUAL_URL` in `.devcontainer/devcontainer.json` to your site, and point
    `PWNCTUAL_WORKSPACE_REPO` at it. The "Launch Codespace" button opens `codespaces.new/<repo>`.
 
+### Static preview on GitHub Pages
+
+`.github/workflows/pages.yml` publishes a static copy of the public pages (home, course, paths and modules,
+ranks, pricing) on every push to `main`. It runs `python scripts/freeze.py`, which renders the site
+logged out with an empty leaderboard. Sign-in, the CLI, bookings and anything else that needs the server
+only work on the Flask deployment above. One-time setup: *Settings → Pages → Source: GitHub Actions*.
+
 ## Free week and Pro
 
 Week 1 of the 30-day course is free for everyone, including on-call live classes during that free week. Weeks 2–4
