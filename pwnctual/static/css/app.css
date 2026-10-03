@@ -54,6 +54,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; overflow-x: clip; scrollbar-gutter: stable; }
 body {
   margin: 0; background: var(--surface); color: var(--on-surface);
@@ -390,7 +391,14 @@ a.card:hover .badge { border-radius: 50%; }
 .lb-row.top1 { background: var(--primary-container); color: var(--on-primary-container); }
 .lb-row.top1 .pos, .lb-row.top2 .pos, .lb-row.top3 .pos { color: inherit; }
 .lb-row .score { font-weight: 800; font-variant-numeric: tabular-nums; }
-@media (max-width: 640px) { .lb-row { grid-template-columns: 36px 40px 1fr auto; } .lb-row .rk { display: none; } }
+.lb-row .who { flex-wrap: nowrap; min-width: 0; }
+.lb-row .who > span:last-child { min-width: 0; }
+.lb-row .who b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 640px) {
+  .lb-row { grid-template-columns: 28px 40px minmax(0, 1fr) auto; gap: 10px; padding: 10px 16px 10px 10px; }
+  .lb-row .rk { display: none; }
+  .lb-row .who .avatar { display: none; }
+}
 
 /* ---------------------------------------------------------------- forms */
 .field { display: flex; flex-direction: column; gap: 6px; }
@@ -413,10 +421,11 @@ a.card:hover .badge { border-radius: 50%; }
 .rankup .emblem { width: 180px; height: 180px; margin: 8px auto 16px; display: block; animation: rise 1.2s var(--spring-fast); }
 @keyframes rise { from { transform: scale(.2) rotate(-40deg); opacity: 0; } }
 
-.snackbar { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 120px); z-index: 90; background: var(--inverse-surface); color: var(--inverse-on-surface);
-  padding: 14px 20px; border-radius: 16px; font-weight: 600; transition: transform .5s var(--spring); display: flex; gap: 10px; align-items: center; }
-.snackbar.show { transform: translate(-50%, 0); }
-@media (max-width: 860px) { .snackbar { bottom: 96px; } }
+.snackbar { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, calc(100% + 48px)); z-index: 90; background: var(--inverse-surface); color: var(--inverse-on-surface);
+  width: max-content; max-width: calc(100vw - 32px); padding: 14px 20px; border-radius: 16px; font-weight: 600; display: flex; gap: 10px; align-items: center;
+  visibility: hidden; transition: transform .5s var(--spring), visibility 0s .5s; }
+.snackbar.show { transform: translate(-50%, 0); visibility: visible; transition: transform .5s var(--spring); }
+@media (max-width: 860px) { .snackbar { bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, calc(100% + 140px)); } }
 
 /* ---------------------------------------------------------------- footer */
 footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; color: var(--on-surface-variant); font-size: 14px; }
@@ -563,3 +572,26 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
 .stuck-play .material-symbols-rounded { font-size: 32px; }
 .stuck-template { margin: 8px 0 0; padding: 14px 16px; border-radius: var(--shape-l); background: var(--surface-container-lowest);
   border: 1px solid var(--outline-variant); font: 14px/1.6 var(--mono); white-space: pre-wrap; }
+
+/* ---------------------------------------------------------------- mobile polish */
+/* long words (usernames, env var names) wrap instead of running off the screen */
+.headline, .display-s, .banner, .label { overflow-wrap: anywhere; }
+.banner code { word-break: break-all; }
+.profile-head { flex-wrap: nowrap; align-items: center; }
+.profile-head > div { min-width: 0; }
+.profile-head .muted { overflow-wrap: anywhere; }
+@media (max-width: 640px) { .profile-head { flex-wrap: wrap; } }
+/* table commands stay on one line */
+.prose td code { white-space: nowrap; }
+.lock-card .linkish { display: block; margin-top: 6px; text-align: left; }
+.stuck-video img.failed { visibility: hidden; }
+@media (max-width: 640px) {
+  .chapter-steps li { height: 32px; padding: 0 12px 0 8px; font-size: 13px; gap: 6px; }
+  .chapter-steps .material-symbols-rounded { font-size: 18px; }
+  .stuck-dialog { padding: 24px 20px; }
+  .stuck-actions { flex-direction: column; align-items: stretch; }
+  .stuck-actions .spacer { display: none; }
+  .lecture-foot .spacer { display: none; }
+  footer .wrap { gap: 8px 16px; }
+  footer .spacer { flex-basis: 100%; height: 0; }
+}
