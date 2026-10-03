@@ -76,13 +76,6 @@ pick this repo, and fill in the sign-in keys it asks for. It runs gunicorn, keep
 defaults to the `https://<name>.onrender.com` address Render assigns; set `PWNCTUAL_PUBLIC_URL` if you add
 a custom domain. Use that URL in the OAuth callbacks from step 1.
 
-### Static preview on GitHub Pages
-
-`.github/workflows/pages.yml` publishes a static copy of the public pages (home, course, paths and modules,
-ranks, pricing) on every push to `main`. It runs `python scripts/freeze.py`, which renders the site
-logged out with an empty leaderboard. Sign-in, the CLI, bookings and anything else that needs the server
-only work on the Flask deployment above. One-time setup: *Settings → Pages → Source: GitHub Actions*.
-
 ## Free week and Pro
 
 Week 1 of the 30-day course is free for everyone, including on-call live classes during that free week. Weeks 2–4
