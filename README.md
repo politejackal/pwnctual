@@ -1,7 +1,7 @@
 # 💀 pwnctual
 
 Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, notes,
-and real challenges on [OverTheWire](https://overthewire.org).
+and real hands-on challenges on practice servers such as [OverTheWire](https://overthewire.org).
 Styled with Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
 
 ```
