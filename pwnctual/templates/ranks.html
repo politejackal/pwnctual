@@ -5,7 +5,7 @@
 {% block main %}
 <div class="narrow">
   <h1 class="display-s" style="margin:40px 0 8px">Ranked</h1>
-  <p class="muted" style="font-size:18px;max-width:640px">Every challenge you finish earns points. Collect enough and you climb through five ranks:
+  <p class="muted" style="font-size:18px;max-width:640px">Every challenge you complete counts. Complete enough and you climb through five ranks:
     Noob, Shadow, Demon, Reaper and, at the very top, Ghost. To become a <b class="ghost-name">Ghost</b> you have to clear everything. When a new
     chapter drops, the bar goes up.</p>
 
@@ -22,7 +22,7 @@
             {% if here %}<span class="chip good"><span class="material-symbols-rounded">my_location</span>You are here</span>{% endif %}</div>
           <div class="{{ '' if here else 'muted' }}">{{ t.motto }}</div>
           <div class="ladder-divs">
-            <span class="div-pill {{ 'here' if here else ('reached' if t.index < cur) }}">{{ t.min }} points</span>
+            <span class="div-pill {{ 'here' if here else ('reached' if t.index < cur) }}">{{ t.min }} {{ "challenge" if t.min == 1 else "challenges" }}</span>
           </div>
         </div>
       </div>

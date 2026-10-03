@@ -17,7 +17,7 @@
     <div class="muted">{{ rank.tier.motto }}</div>
     {{ wavy(rank.progress) }}
     <div class="row muted" style="font-size:14px">
-      <span><b style="color:var(--on-surface)">{{ rank.score }}</b> points</span>
+      <span><b style="color:var(--on-surface)">{{ rank.score }}</b> {{ "challenge" if rank.score == 1 else "challenges" }} completed</span>
       <span class="spacer"></span>
       {% if rank.next %}<span>{{ rank.to_next }} to <b style="color:var(--on-surface)">{{ rank.next.label }}</b></span>
       {% else %}<span>Apex reached. Nothing left to haunt.</span>{% endif %}

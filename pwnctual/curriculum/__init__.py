@@ -23,4 +23,4 @@ for ci, chapter in enumerate(CHAPTERS):
 if not CHAPTERS[0].video_id:
     raise ValueError("Chapter 0 needs a video: it's where Stuck? sends people for chapters without one")
 
-TOTAL_POINTS = sum(c.points for c in CHALLENGES.values())
+TOTAL_CHALLENGES = len(CHALLENGES)

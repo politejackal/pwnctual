@@ -13,8 +13,7 @@
         {{ emblem(r.rank.tier, 48) }}
         <span class="row who" style="gap:12px">{{ avatar(r.user, 36) }}<span style="min-width:0"><b>{{ r.user.login }}</b><br>
           <span class="{{ 'ghost-name' if r.rank.tier.key == 'ghost' else 'muted' }}" style="font-size:13px">{{ r.rank.tier.label }}</span></span></span>
-        <span class="chip rk">{{ r.solves }} finished</span>
-        <span class="score">{{ r.score }}</span>
+        <span class="score">{{ r.score }} <span class="muted" style="font-weight:400;font-size:13px">completed</span></span>
       </a>
     {% endfor %}
   </div>

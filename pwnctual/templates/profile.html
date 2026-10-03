@@ -13,9 +13,8 @@
   </div>
   <div class="card filled">{{ rank_card(rank) }}</div>
 
-  <div class="grid grid-3" style="margin-top:16px">
-    <div class="card tone-primary"><div class="label" style="color:inherit;opacity:.8">Points</div><div class="display-s">{{ rank.score }}</div></div>
-    <div class="card tone-tertiary"><div class="label" style="color:inherit;opacity:.8">Solved</div><div class="display-s">{{ solved|length }}<span style="font-size:22px;opacity:.7"> / {{ CHAPTERS|map(attribute='challenges')|map('length')|sum }}</span></div></div>
+  <div class="grid grid-2" style="margin-top:16px">
+    <div class="card tone-primary"><div class="label" style="color:inherit;opacity:.8">Challenges completed</div><div class="display-s">{{ rank.score }}<span style="font-size:22px;opacity:.7"> / {{ TOTAL_CHALLENGES }}</span></div></div>
     <div class="card tone-secondary"><div class="label" style="color:inherit;opacity:.8">Ladder</div><div class="display-s">#{{ rank.tier.index + 1 }}<span style="font-size:22px;opacity:.7"> / {{ RANK_COUNT }}</span></div></div>
   </div>
 
@@ -45,7 +44,7 @@
       <a class="lb-row" style="grid-template-columns:48px 1fr auto" href="/learn/{{ c.chapter.id }}#{{ c.slug }}">
         <span class="avatar" style="background:var(--tertiary);color:var(--on-tertiary)"><span class="material-symbols-rounded">flag</span></span>
         <span><b>{{ c.title }}</b><br><span class="muted mono" style="font-size:13px">{{ c.number }} · <span class="ago" data-t="{{ t }}"></span></span></span>
-        <span class="score">+{{ c.points }}</span>
+        <span class="material-symbols-rounded" style="color:var(--tertiary)">check</span>
       </a>
     {% endfor %}
   </div>

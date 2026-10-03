@@ -95,7 +95,7 @@ Each chapter page has three parts:
    channel. A "Watch on YouTube" link sits under it.
 2. **Notes.** The same ideas in Markdown, always visible under the lecture.
 3. **Challenges.** Links to OverTheWire levels. There is no checker: when a learner presses
-   **I finished it**, we take their word for it and award the points. They can undo it too.
+   **I finished it**, we take their word for it and it counts toward their rank. They can undo it too.
 
 **Stuck?** buttons open a dialog that sends learners to the lecture's YouTube comments with a ready-made
 comment template (which challenge, what they tried, what happened). It tells them that getting stuck is
@@ -118,7 +118,7 @@ list your login in `PWNCTUAL_ADMINS` to see every booking at `/classes/admin`.
 | Reaper | emerald crest, crossed scythes, wings |
 | **Ghost** | prismatic crest, crown, spectral wings, rotating halo |
 
-Thresholds scale with the total number of points in the curriculum (`ranks.thresholds`), on a curve that
+Thresholds scale with the total number of challenges in the curriculum (`ranks.thresholds`), on a curve that
 makes early ranks quick and later ones hard. **Ghost requires clearing every challenge**, so each new
 chapter raises the bar.
 
@@ -146,4 +146,4 @@ CHAPTER = Chapter(
 )
 ```
 
-Challenge slugs must be unique across all chapters; each is worth 10 points unless you set `points=`.
+Challenge slugs must be unique across all chapters.

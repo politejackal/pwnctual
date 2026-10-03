@@ -1,4 +1,4 @@
-"""Ranked ladder, Brawl Stars style: five ranks from Noob to Ghost. Points come from solved challenges.
+"""Ranked ladder, Brawl Stars style: five ranks from Noob to Ghost. Your score is the number of challenges completed.
 
 Thresholds scale with the curriculum, so Ghost always means "cleared it all".
 """
@@ -25,6 +25,9 @@ TIERS = _tiers()
 
 def thresholds(total):
     n = len(TIERS) - 1
+    if 0 < total < n:
+        # Too few challenges for a step per rank: ranks share thresholds, and clearing everything is still Ghost.
+        return [0] + [min(total, max(1, math.ceil(total * (i / n) ** 1.5))) for i in range(1, n)] + [total]
     mins = [0 if i == 0 else max(i, math.ceil(total * (i / n) ** 1.5)) for i in range(n)]
     for i in range(1, n):
         mins[i] = max(mins[i], mins[i - 1] + 1)

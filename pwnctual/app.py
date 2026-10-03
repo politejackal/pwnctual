@@ -14,7 +14,7 @@ from flask import (Flask, abort, g, jsonify, redirect, render_template, request,
 from markupsafe import Markup
 
 from . import db as dbm
-from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTERS, TOTAL_POINTS
+from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTERS, TOTAL_CHALLENGES
 from .emblems import emblem
 from . import classes as cls
 from . import shapes
@@ -129,11 +129,12 @@ def solved_slugs(user_id):
 
 
 def score_of(slugs):
-    return sum(CHALLENGES[s].points for s in slugs if s in CHALLENGES)
+    """Your score is how many challenges you've completed."""
+    return sum(1 for s in slugs if s in CHALLENGES)
 
 
 def user_rank(user_id):
-    return rank_for(score_of(solved_slugs(user_id)), TOTAL_POINTS)
+    return rank_for(score_of(solved_slugs(user_id)), TOTAL_CHALLENGES)
 
 
 def csrf_token():
@@ -205,13 +206,13 @@ def inject():
     user = current_user()
     ctx = {
         "me": user, "csrf_token": csrf_token, "asset": asset, "md": md, "emblem": lambda t, size=96: Markup(emblem(t, size)),
-        "CHAPTERS": CHAPTERS, "TOTAL_POINTS": TOTAL_POINTS, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
+        "CHAPTERS": CHAPTERS, "TOTAL_CHALLENGES": TOTAL_CHALLENGES, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
         "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID),
         "my_rank": None, "my_solved": {}, "IS_ADMIN": is_admin(user),
     }
     if user:
         ctx["my_solved"] = solved_slugs(user["id"])
-        ctx["my_rank"] = rank_for(score_of(ctx["my_solved"]), TOTAL_POINTS)
+        ctx["my_rank"] = rank_for(score_of(ctx["my_solved"]), TOTAL_CHALLENGES)
     return ctx
 
 
@@ -219,7 +220,7 @@ def inject():
 
 @app.get("/")
 def index():
-    return render_template("index.html", ladder=ladder(TOTAL_POINTS), hero=HERO)
+    return render_template("index.html", ladder=ladder(TOTAL_CHALLENGES), hero=HERO)
 
 
 @app.get("/emblem/<int:index>.svg")
@@ -350,7 +351,7 @@ def old_pages(_rest=None):
 
 @app.get("/ranks")
 def ranks_page():
-    return render_template("ranks.html", ladder=ladder(TOTAL_POINTS))
+    return render_template("ranks.html", ladder=ladder(TOTAL_CHALLENGES))
 
 
 def leaderboard_rows(limit=100):
@@ -359,11 +360,10 @@ def leaderboard_rows(limit=100):
     per = {}
     for r in db.execute("SELECT user_id, slug, solved_at FROM solves").fetchall():
         if r["slug"] in CHALLENGES:
-            e = per.setdefault(r["user_id"], {"score": 0, "solves": 0, "last": 0})
-            e["score"] += CHALLENGES[r["slug"]].points
-            e["solves"] += 1
+            e = per.setdefault(r["user_id"], {"score": 0, "last": 0})
+            e["score"] += 1
             e["last"] = max(e["last"], r["solved_at"])
-    rows = [dict(user=users[uid], **e, rank=rank_for(e["score"], TOTAL_POINTS))
+    rows = [dict(user=users[uid], **e, rank=rank_for(e["score"], TOTAL_CHALLENGES))
             for uid, e in per.items() if uid in users]
     rows.sort(key=lambda x: (-x["score"], x["last"]))
     return rows[:limit]
@@ -378,7 +378,7 @@ def leaderboard():
 def profile(login):
     user = dbm.get_db().execute("SELECT * FROM users WHERE login=?", (login,)).fetchone() or abort(404)
     solved = solved_slugs(user["id"])
-    rank = rank_for(score_of(solved), TOTAL_POINTS)
+    rank = rank_for(score_of(solved), TOTAL_CHALLENGES)
     recent = sorted(solved.items(), key=lambda kv: -kv[1])[:8]
     return render_template("profile.html", user=user, solved=solved, rank=rank,
                            recent=[(CHALLENGES[s], t) for s, t in recent])
@@ -476,7 +476,7 @@ def api_progress():
     if not user:
         return jsonify(error="not logged in"), 401
     solved = solved_slugs(user["id"])
-    rank = rank_for(score_of(solved), TOTAL_POINTS)
+    rank = rank_for(score_of(solved), TOTAL_CHALLENGES)
     return jsonify(solved=sorted(solved), score=rank["score"], rank=rank["tier"]["label"],
                    rank_key=rank["tier"]["key"], rank_index=rank["tier"]["index"])
 
