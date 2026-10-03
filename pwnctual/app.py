@@ -1,5 +1,3 @@
-import base64
-import hashlib
 import hmac
 import json
 import os
@@ -64,11 +62,6 @@ app.config.update(
 )
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", "")
 GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", "")
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
-GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
-GOOGLE_ISSUERS = ("https://accounts.google.com", "accounts.google.com")
 DEV_LOGIN = os.environ.get("PWNCTUAL_DEV") == "1"
 # Render sets RENDER_EXTERNAL_URL to the service's https://….onrender.com address.
 PUBLIC_URL = (os.environ.get("PWNCTUAL_PUBLIC_URL") or os.environ.get("RENDER_EXTERNAL_URL", "")).rstrip("/")
@@ -84,11 +77,12 @@ PUBLIC_HOST = urllib.parse.urlsplit(PUBLIC_URL).netloc.lower()
 
 @app.before_request
 def canonical_host():
-    """Send visitors on any other address (like the old *.pythonanywhere.com one) to the public URL.
+    """Send visitors on any other address (like the bare *.pythonanywhere.com one) to the public URL.
 
     Sign-in only works on the public URL, because that's where the providers send people back to.
+    Requests forwarded by the Cloudflare Worker (cloudflare/worker.js) say which host the visitor used.
     """
-    host = request.host.lower()
+    host = (request.headers.get("X-Pwnctual-Host") or request.host).lower()
     if not PUBLIC_HOST or host == PUBLIC_HOST or host.split(":")[0] in ("localhost", "127.0.0.1"):
         return None
     return redirect(PUBLIC_URL + request.full_path.rstrip("?"), 308 if request.method != "GET" else 301)
@@ -154,9 +148,9 @@ def check_csrf():
         abort(400, "bad csrf token")
 
 
-# Accounts are matched only by each provider's own stable ID (GitHub user id,
-# Google "sub"), never by display name, so one provider can't sign into an
-# account created through another. Logins (profile URLs) are made unique.
+# Accounts are matched by GitHub's stable user ID, never by display name.
+# Logins (profile URLs) are made unique. (Accounts made with the old Google
+# sign-in keep their google_sub but can no longer sign in.)
 
 def _unique_login(base, exclude_id=None):
     base = "".join(c for c in (base or "") if c.isalnum() or c in "-_")[:32].strip("-_") or "hacker"
@@ -190,19 +184,6 @@ def user_from_github(gh):
     return row["id"]
 
 
-def user_from_google(claims):
-    db = dbm.get_db()
-    row = db.execute("SELECT * FROM users WHERE google_sub=?", (claims["sub"],)).fetchone()
-    if row is None:
-        handle = (claims.get("email") or "").split("@")[0] or claims.get("given_name") or "hacker"
-        return _create_user(handle, claims.get("name"), claims.get("picture"),
-                            google_sub=claims["sub"], email=claims.get("email"))
-    db.execute("UPDATE users SET name=?, avatar_url=?, email=? WHERE id=?",
-               (claims.get("name"), claims.get("picture"), claims.get("email"), row["id"]))
-    db.commit()
-    return row["id"]
-
-
 def user_from_dev(login):
     row = dbm.get_db().execute(
         "SELECT * FROM users WHERE login=? AND github_id IS NULL AND google_sub IS NULL", (login,)).fetchone()
@@ -225,7 +206,7 @@ def inject():
     ctx = {
         "me": user, "csrf_token": csrf_token, "asset": asset, "md": md, "emblem": lambda t, size=96: Markup(emblem(t, size)),
         "CHAPTERS": CHAPTERS, "TOTAL_POINTS": TOTAL_POINTS, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
-        "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID),
+        "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID),
         "my_rank": None, "my_solved": {}, "IS_ADMIN": is_admin(user),
     }
     if user:
@@ -465,71 +446,6 @@ def auth_callback():
         return auth_failed("Couldn't reach GitHub. Please try again.", nxt)
     session.clear()
     session["uid"] = user_from_github(gh)
-    return redirect(nxt)
-
-
-# ------------------------------------------------------------------ Google sign-in (OpenID Connect)
-
-def _b64url(data):
-    return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
-
-
-def _jwt_claims(token):
-    payload = token.split(".")[1]
-    return json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
-
-
-@app.get("/auth/google")
-def auth_google():
-    if not GOOGLE_CLIENT_ID:
-        abort(503, "Google sign-in is not configured")
-    state, nonce, verifier = secrets.token_urlsafe(24), secrets.token_urlsafe(24), secrets.token_urlsafe(48)
-    session["g_oauth"] = {"state": state, "nonce": nonce, "verifier": verifier,
-                          "next": _safe_next(request.args.get("next"))}
-    q = urllib.parse.urlencode({
-        "client_id": GOOGLE_CLIENT_ID,
-        "redirect_uri": base_url() + url_for("auth_google_callback"),
-        "response_type": "code",
-        "scope": "openid email profile",
-        "state": state,
-        "nonce": nonce,
-        "code_challenge": _b64url(hashlib.sha256(verifier.encode()).digest()),
-        "code_challenge_method": "S256",
-        "prompt": "select_account",
-    })
-    return redirect(f"{GOOGLE_AUTH_URL}?{q}")
-
-
-@app.get("/auth/google/callback")
-def auth_google_callback():
-    flow = session.pop("g_oauth", None)
-    if not flow or not hmac.compare_digest(request.args.get("state", ""), flow["state"]):
-        return auth_failed("Your Google sign-in expired. Please try again.")
-    nxt = flow["next"]
-    if request.args.get("error"):
-        return auth_failed("Google sign-in was cancelled.", nxt)
-    try:
-        tok = _http_json(GOOGLE_TOKEN_URL, {
-            "code": request.args.get("code", ""),
-            "client_id": GOOGLE_CLIENT_ID,
-            "client_secret": GOOGLE_CLIENT_SECRET,
-            "redirect_uri": base_url() + url_for("auth_google_callback"),
-            "grant_type": "authorization_code",
-            "code_verifier": flow["verifier"],
-        })
-        # The ID token came straight from Google's token endpoint over TLS, which
-        # OpenID Connect accepts in place of a signature check; validate its claims.
-        claims = _jwt_claims(tok["id_token"])
-    except (urllib.error.URLError, KeyError, ValueError, IndexError):
-        return auth_failed("Google sign-in failed. Please try again.", nxt)
-    if (claims.get("iss") not in GOOGLE_ISSUERS or claims.get("aud") != GOOGLE_CLIENT_ID
-            or claims.get("exp", 0) < now() or not hmac.compare_digest(str(claims.get("nonce", "")), flow["nonce"])
-            or not claims.get("sub")):
-        return auth_failed("Google sign-in couldn't be verified. Please try again.", nxt)
-    if claims.get("email") and not claims.get("email_verified"):
-        return auth_failed("Please verify your Google email address first.", nxt)
-    session.clear()
-    session["uid"] = user_from_google(claims)
     return redirect(nxt)
 
 

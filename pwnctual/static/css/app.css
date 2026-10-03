@@ -426,12 +426,6 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Google sign-in button, per Google's branding guidelines: white in light mode,
-   dark in dark mode, official four-colour G, unmodified. */
-.btn.gsi { width: 100%; --bg: #FFFFFF; --fg: #1F1F1F; box-shadow: inset 0 0 0 1px #747775;
-  font-family: "Google Sans Flex", "Google Sans", Roboto, sans-serif; }
-:root:not([data-theme="light"]) .btn.gsi { --bg: #131314; --fg: #E3E3E3; box-shadow: inset 0 0 0 1px #8E918F; }
-
 /* ---------------------------------------------------------------- free badge, live classes */
 .free-badge { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 8px; min-height: 40px; padding: 8px 18px 8px 12px; margin-bottom: 20px; line-height: 1.3;
   border-radius: var(--shape-full); background: var(--tertiary-container); color: var(--on-tertiary-container);

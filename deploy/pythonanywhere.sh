@@ -4,9 +4,11 @@
 #   git clone https://github.com/politejackal/pwnctual.git ~/pwnctual   # first time only
 #   bash ~/pwnctual/deploy/pythonanywhere.sh
 #
-# On your own domain (needs a paid PythonAnywhere plan), say which one:
+# The public site is https://pwnctual.com, served through a Cloudflare Worker
+# (cloudflare/worker.js) in front of the free YOURNAME.pythonanywhere.com app.
+# Once that's set up, switch .env over to it with:
 #
-#   PWNCTUAL_DOMAIN=www.pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh
+#   PWNCTUAL_PUBLIC_URL=https://pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh
 #
 # With an API token (Account page -> API token -> Create, then open a new console)
 # it also creates and configures the web app, so there is nothing to click on the
@@ -42,10 +44,15 @@ if [ ! -f .env ]; then
     -e "s|^PWNCTUAL_SECRET=.*|PWNCTUAL_SECRET=$secret|" \
     .env
   echo "Created $APP_DIR/.env: add your GitHub/Google sign-in keys there."
-elif [ -n "${PWNCTUAL_DOMAIN:-}" ]; then
-  # moving to a new domain: sign-in callbacks and links must use it
-  sed -i "s|^PWNCTUAL_PUBLIC_URL=.*|PWNCTUAL_PUBLIC_URL=https://$DOMAIN|" .env
-  echo "Set PWNCTUAL_PUBLIC_URL=https://$DOMAIN in $APP_DIR/.env"
+fi
+if [ -n "${PWNCTUAL_PUBLIC_URL:-}" ]; then
+  # sign-in callbacks and links must use the public address
+  if grep -q "^PWNCTUAL_PUBLIC_URL=" .env; then
+    sed -i "s|^PWNCTUAL_PUBLIC_URL=.*|PWNCTUAL_PUBLIC_URL=$PWNCTUAL_PUBLIC_URL|" .env
+  else
+    echo "PWNCTUAL_PUBLIC_URL=$PWNCTUAL_PUBLIC_URL" >> .env
+  fi
+  echo "Public URL: $PWNCTUAL_PUBLIC_URL"
 fi
 
 if [ -n "${API_TOKEN:-}" ]; then

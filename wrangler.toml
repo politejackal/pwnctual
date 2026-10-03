@@ -1,0 +1,14 @@
+# Cloudflare Worker that serves pwnctual.com from PythonAnywhere (see cloudflare/worker.js).
+# Deployed by .github/workflows/cloudflare.yml on every push to main that changes it.
+name = "pwnctual"
+main = "cloudflare/worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = false
+routes = [
+  { pattern = "pwnctual.com", custom_domain = true },
+  { pattern = "www.pwnctual.com", custom_domain = true },
+]
+
+[vars]
+ORIGIN = "https://politejackal.pythonanywhere.com"
+CANONICAL_HOST = "pwnctual.com"
