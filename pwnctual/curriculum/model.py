@@ -17,7 +17,6 @@ class Challenge:
     title: str
     url: str       # the challenge page on OverTheWire
     brief: str     # one line on what the level is about, never the answer
-    points: int = 10
     platform: str = "OverTheWire"  # the site that hosts it, shown on its card
     # filled in by the registry
     chapter: Optional["Chapter"] = None
@@ -35,10 +34,6 @@ class Chapter:
     # filled in by the registry
     number: int = 0
     help_video_id: str = ""  # where "Stuck?" sends people: this lecture, or Chapter 0's until it has one
-
-    @property
-    def points(self):
-        return sum(c.points for c in self.challenges)
 
     @property
     def video_url(self):

@@ -10,7 +10,7 @@
     <a href="/learn">Chapters</a><span class="material-symbols-rounded">chevron_right</span>
     <span>Chapter {{ chapter.number }}</span>
   </div>
-  <div class="label">Chapter {{ chapter.number }} · {{ chapter.points }} points</div>
+  <div class="label">Chapter {{ chapter.number }} · {{ chapter.challenges|length }} {{ "challenge" if chapter.challenges|length == 1 else "challenges" }}</div>
   <h1 class="display-s" style="margin:8px 0 4px">{{ chapter.title }}</h1>
   <div class="muted" style="font-size:18px">{{ chapter.summary }}</div>
 
@@ -64,7 +64,6 @@
           <summary>
             <span class="state"><span class="material-symbols-rounded">{{ 'check' if solved else 'flag' }}</span></span>
             <span><span class="title-m">{{ c.title }}</span><br><span class="muted mono" style="font-size:13px">{{ c.number }} · {{ c.platform }}</span></span>
-            <span class="chip">{{ c.points }} points</span>
             <span class="material-symbols-rounded chev">expand_more</span>
           </summary>
           <div class="body">

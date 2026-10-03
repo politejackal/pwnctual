@@ -72,7 +72,7 @@
       <a class="rank-step {{ 'apex' if t.key == 'ghost' }}" href="/ranks">
         {{ emblem(t, 120) }}
         <span class="title-m {{ 'ghost-name' if t.key == 'ghost' }}">{{ t.name }}</span>
-        <span class="muted" style="font-size:13px">{{ t.min }} points</span>
+        <span class="muted" style="font-size:13px">{{ t.min }} {{ "challenge" if t.min == 1 else "challenges" }}</span>
       </a>
     {% endfor %}
   </div>
