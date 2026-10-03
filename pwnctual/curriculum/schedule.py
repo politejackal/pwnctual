@@ -53,7 +53,7 @@ FREE_WEEKS = {1}
 
 WEEKS = [
     Week(1, "Initiation", "From a blinking cursor to your first real programs.", "skull", "primary", [
-        Day(1, "First contact", "Launch your Codespace, meet the terminal, run your first program.", ["hello-hacker"], 60),
+        Day(1, "First contact", "Set up your computer, meet the terminal, run your first program.", ["hello-hacker"], 60),
         Day(2, "Input and output", "Read from stdin, write to stdout, greet a hacker by name.", ["echo-chamber", "callsign"]),
         Day(3, "Numbers and variables", "Types, conversions and arithmetic.", ["add-two", "calculator"]),
         Day(4, "Math for hackers", "Huge integers, key spaces and formatting numbers.", ["power-of-two", "bandwidth"]),

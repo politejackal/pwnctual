@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""pwnctual CLI: link your Codespace, fetch challenges, check solutions.
+"""pwnctual CLI: link your computer, fetch challenges, check solutions.
 
+Download it from the Setup page and run it with Python 3:  python pwnctual.py login
 Only uses the Python standard library.
 """
 import argparse
@@ -19,7 +20,8 @@ import webbrowser
 VERSION = "1.0.0"
 CONFIG_DIR = os.path.join(os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"), "pwnctual")
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
-DEFAULT_URL = "http://localhost:5000"
+DEFAULT_URL = "http://localhost:5000"  # the site fills in its own address when you download this file
+CMD = "python pwnctual.py"
 
 USE_COLOR = sys.stdout.isatty() and os.environ.get("NO_COLOR") is None
 if os.name == "nt":
@@ -134,11 +136,10 @@ def cmd_login(args):
     print("  Open   " + c(CYAN, start["verify_url_complete"]))
     print("  Code   " + c(BOLD + ";" + PURPLE, start["user_code"]))
     print()
-    if not os.environ.get("CODESPACES"):
-        try:
-            webbrowser.open(start["verify_url_complete"])
-        except Exception:
-            pass
+    try:
+        webbrowser.open(start["verify_url_complete"])
+    except Exception:
+        pass
     print(c(DIM, "  Waiting for approval (Ctrl+C to cancel)"), end="", flush=True)
     deadline = time.time() + start.get("expires_in", 600)
     while time.time() < deadline:
@@ -152,7 +153,7 @@ def cmd_login(args):
             return
         if res.get("error"):
             break
-    die("\ncode expired, run `pwnctual login` again")
+    die(f"\ncode expired, run `{CMD} login` again")
 
 
 def cmd_logout(_args):
@@ -208,8 +209,8 @@ def cmd_new(args):
     header = "\n".join("# " + line if line else "#" for line in ch["description"].splitlines())
     with open(path, "w", encoding="utf-8") as f:
         f.write(f"# pwnctual :: {ch['number']} {ch['title']}\n#\n{header}\n#\n"
-                f"# check it with:  pwnctual check {args.slug}\n\n{ch.get('starter') or ''}")
-    print(c(GREEN, "✓ ") + f"created {c(BOLD, path)}  ·  edit it, then run {c(CYAN, 'pwnctual check ' + args.slug)}")
+                f"# check it with:  {CMD} check {args.slug}\n\n{ch.get('starter') or ''}")
+    print(c(GREEN, "✓ ") + f"created {c(BOLD, path)}  ·  edit it, then run {c(CYAN, f'{CMD} check {args.slug}')}")
 
 
 def run_case(script, case, timeout):
@@ -254,7 +255,7 @@ def show_block(title, text, color=None):
 def cmd_check(args):
     script = os.path.abspath(args.file or f"{args.slug}.py")
     if not os.path.exists(script):
-        die(f"no such file: {script}\n  create one with: pwnctual new {args.slug}")
+        die(f"no such file: {script}\n  create one with: {CMD} new {args.slug}")
     att = api("POST", "/api/cli/attempts", body={"slug": args.slug})
     print(c(BOLD, f"\n  {att['title']}") + c(DIM, f"  ·  running {len(att['cases'])} randomized test(s)\n"))
     outputs = []
@@ -299,7 +300,7 @@ def main():
     ap.add_argument("--version", action="version", version=VERSION)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    p = sub.add_parser("login", help="link this machine to your pwnctual account")
+    p = sub.add_parser("login", help="link this computer to your pwnctual account")
     p.add_argument("--token", help="use an access token instead of the browser flow")
     p.add_argument("--url", help="pwnctual server URL")
     p.set_defaults(fn=cmd_login)

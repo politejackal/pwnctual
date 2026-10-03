@@ -26,7 +26,7 @@ os.environ.pop("PWNCTUAL_DEV", None)
 from pwnctual.app import app  # noqa: E402
 from pwnctual.ranks import TIERS  # noqa: E402
 
-SKIP = re.compile(r"^/(auth|api|static|link|workspace|u)(/|$)")
+SKIP = re.compile(r"^/(auth|api|static|link|setup|workspace|u)(/|$)|^/pwnctual\.py$")
 URL_ATTR = re.compile(r'((?:href|src|action)=")(/(?!/)[^"]*)"')
 JS_URL = re.compile(r'((?:fetch\(\s*[`"])|src=")(/(?!/))')
 

@@ -38,9 +38,9 @@
           <div class="banner info" style="margin-top:20px"><span class="material-symbols-rounded">workspace_premium</span>
             <span>This challenge is part of <b>pwnctual Pro</b> ({{ PRO_PRICE }}/month). <a href="/pricing">See plans</a></span></div>
           {% else %}
-          <div class="label" style="margin-top:24px">In your Codespace</div>
-          <div class="cmd"><code>pwnctual new {{ c.slug }}</code><button class="btn tonal copy" data-copy="pwnctual new {{ c.slug }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
-          <div class="cmd"><code>pwnctual check {{ c.slug }}</code><button class="btn tonal copy" data-copy="pwnctual check {{ c.slug }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+          <div class="label" style="margin-top:24px">In your terminal (<a href="/setup">setup</a>)</div>
+          <div class="cmd"><code>python pwnctual.py new {{ c.slug }}</code><button class="btn tonal copy" data-copy="python pwnctual.py new {{ c.slug }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
+          <div class="cmd"><code>python pwnctual.py check {{ c.slug }}</code><button class="btn tonal copy" data-copy="python pwnctual.py check {{ c.slug }}" aria-label="Copy"><span class="material-symbols-rounded">content_copy</span></button></div>
           {% endif %}
           {% if not me %}<div class="banner info" style="margin-top:16px"><span class="material-symbols-rounded">info</span><span><a href="/login">Sign in</a> to track your solves and earn points.</span></div>{% endif %}
         </div>

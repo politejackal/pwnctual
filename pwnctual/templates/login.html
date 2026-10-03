@@ -27,8 +27,6 @@
         <span>No sign-in provider is configured. Set <code class="mono">GOOGLE_CLIENT_ID</code>/<code class="mono">GOOGLE_CLIENT_SECRET</code>
           or <code class="mono">GITHUB_CLIENT_ID</code>/<code class="mono">GITHUB_CLIENT_SECRET</code> in <code class="mono">.env</code>.</span></div>
     {% endif %}
-    <p class="muted" style="font-size:13px;margin-top:20px">Your Codespace runs on GitHub, so you'll need a free GitHub
-      account for the workspace whichever way you sign in here.</p>
     {% if DEV_LOGIN %}
       <form method="post" action="/auth/dev" style="margin-top:28px;text-align:left" class="stack">
         <div class="label">Dev mode · local login</div>

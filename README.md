@@ -9,7 +9,7 @@ pwnctual/            Flask site (pages, auth, CLI API, checker)
   curriculum/        Paths → Modules → Challenges (pure Python)
   ranks.py           Ranked ladder + thresholds
   emblems.py         SVG skull emblems for every rank
-workspace/           GitHub Codespaces template: devcontainer + `pwnctual` CLI
+  cli.py             learner CLI, downloaded from /setup as pwnctual.py
 ```
 
 ## Run it locally
@@ -24,9 +24,9 @@ Then, in another terminal:
 
 ```bash
 export PWNCTUAL_URL=http://127.0.0.1:5000
-python workspace/bin/pwnctual login        # approve the code at /link
-python workspace/bin/pwnctual new hello-hacker
-python workspace/bin/pwnctual check hello-hacker
+python pwnctual/cli.py login        # approve the code at /link
+python pwnctual/cli.py new hello-hacker
+python pwnctual/cli.py check hello-hacker
 ```
 
 ## Deploy
@@ -38,11 +38,8 @@ python workspace/bin/pwnctual check hello-hacker
    - **GitHub:** create an OAuth app at github.com/settings/developers with callback `https://YOUR-SITE/auth/callback`.
    Accounts are matched only by each provider's own user ID, so a Google account and a GitHub account are
    separate pwnctual accounts even if the names match.
-2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically). Codespaces must be able to reach the site, so it needs a public URL.
+2. Copy `.env.example` to `.env` and fill it in (the app loads it automatically). Set `PWNCTUAL_PUBLIC_URL` to the site's public address.
 3. Run behind a real WSGI server, e.g. `gunicorn -w 4 "pwnctual.app:app"`.
-4. **Workspace template:** push `workspace/` to its own GitHub repo, mark it as a *template repository*,
-   set `PWNCTUAL_URL` in `.devcontainer/devcontainer.json` to your site, and point
-   `PWNCTUAL_WORKSPACE_REPO` at it. The "Launch Codespace" button opens `codespaces.new/<repo>`.
 
 ### Free hosting: PythonAnywhere
 
@@ -104,11 +101,12 @@ start a Pro challenge. Which days count as free is set by `FREE_WEEKS` in `curri
 
 ## How checking works
 
-pwnctual never runs learner code on the server, and there are no static flags to share.
+pwnctual never runs learner code on the server, and there are no static flags to share. Learners download the
+CLI from `/setup` as `pwnctual.py` (with the site's address filled in) and run it with their own Python.
 
 1. `pwnctual check <slug>` asks the server for an attempt. The server generates **random test cases** and
    keeps the expected answers (keys starting with `_`) to itself.
-2. The CLI runs the learner's program in their Codespace once per case (stdin, args, input files),
+2. The CLI runs the learner's program on their own computer once per case (stdin, args, input files),
    with a 10-second timeout, and sends back stdout, stderr and any requested output files.
 3. The server compares the results. On success it records the solve, returns a per-user HMAC flag,
    and reports promotions. On failure it shows the failing input, the expected output and the learner's output.
@@ -117,7 +115,7 @@ Attempts are single-use and expire after 15 minutes.
 
 CLI login uses a device-code flow: `pwnctual login` prints a code, the learner approves it at `/link` while
 signed in with GitHub, and the CLI receives a token. Only hashes of tokens are stored. Learners can also
-create and revoke tokens on the Workspace page.
+create and revoke tokens on the Setup page.
 
 ## Ranks
 

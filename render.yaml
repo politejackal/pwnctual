@@ -33,8 +33,6 @@ services:
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
-      - key: PWNCTUAL_WORKSPACE_REPO
-        sync: false
       - key: PWNCTUAL_ADMINS
         sync: false
       - key: PWNCTUAL_CLASS_TZ

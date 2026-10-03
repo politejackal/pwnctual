@@ -73,7 +73,6 @@ GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_ISSUERS = ("https://accounts.google.com", "accounts.google.com")
 DEV_LOGIN = os.environ.get("PWNCTUAL_DEV") == "1"
-WORKSPACE_REPO = os.environ.get("PWNCTUAL_WORKSPACE_REPO", "your-org/pwnctual-workspace")
 # Render sets RENDER_EXTERNAL_URL to the service's https://….onrender.com address.
 PUBLIC_URL = (os.environ.get("PWNCTUAL_PUBLIC_URL") or os.environ.get("RENDER_EXTERNAL_URL", "")).rstrip("/")
 ATTEMPT_TTL = 15 * 60
@@ -247,7 +246,7 @@ def inject():
     ctx = {
         "me": user, "csrf_token": csrf_token, "asset": asset, "md": md, "emblem": lambda t, size=96: Markup(emblem(t, size)),
         "PATHS": PATHS, "TOTAL_POINTS": TOTAL_POINTS, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
-        "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID), "WORKSPACE_REPO": WORKSPACE_REPO,
+        "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID), "GOOGLE_ENABLED": bool(GOOGLE_CLIENT_ID),
         "my_rank": None, "my_solved": {},
         "IS_PRO": is_pro(user), "FREE_SLUGS": FREE_SLUGS, "PRO_PRICE": PRO_PRICE, "PRO_DAYS": PRO_DAYS,
         "CHECKOUT_URL": CHECKOUT_URL, "IS_ADMIN": is_admin(user),
@@ -444,17 +443,32 @@ def profile(login):
 
 
 @app.get("/workspace")
-def workspace():
+def old_workspace():
+    return redirect(url_for("setup"), 301)
+
+
+@app.get("/setup")
+def setup():
     tokens = []
     if current_user():
         tokens = dbm.get_db().execute(
             "SELECT rowid, label, created_at, last_used FROM tokens WHERE user_id=? ORDER BY created_at DESC",
             (current_user()["id"],)).fetchall()
-    return render_template("workspace.html", tokens=tokens, base=base_url(),
+    return render_template("setup.html", tokens=tokens, base=base_url(),
                            new_token=session.pop("new_token", None))
 
 
-@app.post("/workspace/tokens")
+@app.get("/pwnctual.py")
+def cli_download():
+    """The CLI, with this site's address filled in so `python pwnctual.py login` works as is."""
+    with open(os.path.join(os.path.dirname(__file__), "cli.py"), encoding="utf-8") as f:
+        src = f.read().replace('DEFAULT_URL = "http://localhost:5000"', f"DEFAULT_URL = {base_url()!r}", 1)
+    resp = app.response_class(src, mimetype="text/x-python")
+    resp.headers["Content-Disposition"] = "attachment; filename=pwnctual.py"
+    return resp
+
+
+@app.post("/setup/tokens")
 @login_required
 def create_token():
     check_csrf()
@@ -464,17 +478,17 @@ def create_token():
                (sha(tok), current_user()["id"], "manual token", now()))
     db.commit()
     session["new_token"] = tok
-    return redirect(url_for("workspace") + "#tokens")
+    return redirect(url_for("setup") + "#tokens")
 
 
-@app.post("/workspace/tokens/<int:rowid>/revoke")
+@app.post("/setup/tokens/<int:rowid>/revoke")
 @login_required
 def revoke_token(rowid):
     check_csrf()
     db = dbm.get_db()
     db.execute("DELETE FROM tokens WHERE rowid=? AND user_id=?", (rowid, current_user()["id"]))
     db.commit()
-    return redirect(url_for("workspace") + "#tokens")
+    return redirect(url_for("setup") + "#tokens")
 
 
 # ------------------------------------------------------------------ auth
@@ -645,7 +659,7 @@ def link():
             tok = "pwnc_" + secrets.token_urlsafe(32)
             uid = current_user()["id"]
             db.execute("INSERT INTO tokens (token_hash, user_id, label, created_at) VALUES (?,?,?,?)",
-                       (sha(tok), uid, "codespace", now()))
+                       (sha(tok), uid, "cli", now()))
             db.execute("UPDATE device_codes SET user_id=?, token=? WHERE device_code=?",
                        (uid, tok, row["device_code"]))
             db.commit()
@@ -673,11 +687,11 @@ def cli_auth(fn):
     def wrapper(*a, **kw):
         auth = request.headers.get("Authorization", "")
         if not auth.startswith("Bearer "):
-            return jsonify(error="missing token, run: pwnctual login"), 401
+            return jsonify(error="missing token, run: python pwnctual.py login"), 401
         db = dbm.get_db()
         row = db.execute("SELECT user_id FROM tokens WHERE token_hash=?", (sha(auth[7:].strip()),)).fetchone()
         if not row:
-            return jsonify(error="invalid token, run: pwnctual login"), 401
+            return jsonify(error="invalid token, run: python pwnctual.py login"), 401
         db.execute("UPDATE tokens SET last_used=? WHERE token_hash=?", (now(), sha(auth[7:].strip())))
         db.commit()
         g.cli_user = db.execute("SELECT * FROM users WHERE id=?", (row["user_id"],)).fetchone()
