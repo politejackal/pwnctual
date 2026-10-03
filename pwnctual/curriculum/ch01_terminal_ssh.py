@@ -57,7 +57,7 @@ ssh -p 2220 john@targetmachine.com
 """
 
 CHAPTER = Chapter(
-    "first-contact", "The Terminal & SSH",
+    "the-terminal-and-ssh", "The Terminal & SSH",
     "Why the terminal is where hacking happens, the grammar of a command, and logging in to a real server with SSH.",
     notes=NOTES,
     video_id="",  # lecture coming soon: paste its YouTube video ID here
