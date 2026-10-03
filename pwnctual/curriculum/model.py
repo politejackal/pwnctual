@@ -2,8 +2,8 @@
 
 Hierarchy:  Chapter  ->  Challenge
 
-Every chapter is a YouTube lecture, notes, and a handful of OverTheWire
-challenges. A chapter can be just a video (Chapter 0, the roadmap) or have no
+Every chapter is a YouTube lecture, notes, and a handful of challenges
+hosted on outside practice sites (OverTheWire for now). A chapter can be just a video (Chapter 0, the roadmap) or have no
 video yet. Nothing is auto-checked:
 when a learner says they finished a challenge, we take their word for it.
 """
@@ -18,6 +18,7 @@ class Challenge:
     url: str       # the challenge page on OverTheWire
     brief: str     # one line on what the level is about, never the answer
     points: int = 10
+    platform: str = "OverTheWire"  # the site that hosts it, shown on its card
     # filled in by the registry
     chapter: Optional["Chapter"] = None
     number: str = ""
