@@ -3,21 +3,19 @@ from .model import Chapter, Challenge
 BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
-### Core concepts
-
 - **The GUI illusion:** Graphical User Interfaces (GUIs) are just a translation
   layer. Every click triggers a hidden command.
 - **Where vulnerabilities live:** Bugs and vulnerabilities don't live in the
   GUI. They live at the low level, where system actions break down or
   miscommunicate.
 - **The terminal:** A direct text interface to the computer's core. No mouse,
-  pure text control.
+  pure control.
 
 ### The hacker's grammar
 
 To talk to the terminal, you structure text in three parts:
 
-- **Command (the verb):** the action you want to take.
+- **Command (the verb):** the action you want to take. Example: `ssh`.
 - **Flag (the adjective):** modifies *how* the action is performed. Usually
   preceded by a dash (`-`).
 - **Argument (the noun):** the target of your action.

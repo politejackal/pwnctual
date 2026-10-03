@@ -16,7 +16,7 @@
 
   <ol class="chapter-steps" aria-label="Chapter steps">
     <li><span class="material-symbols-rounded">smart_display</span>Watch the lecture</li>
-    {% if chapter.notes %}<li><span class="material-symbols-rounded">menu_book</span>Read the notes</li>{% endif %}
+    {% if chapter.notes %}<li><span class="material-symbols-rounded">menu_book</span>Read the core concepts</li>{% endif %}
     {% if chapter.challenges %}<li><span class="material-symbols-rounded">flag</span>Clear the challenges</li>{% endif %}
   </ol>
 
@@ -39,7 +39,7 @@
       <span class="material-symbols-rounded">videocam</span>
       <div>
         <div class="title-m">The lecture for this chapter is coming soon</div>
-        <div class="muted">You don't have to wait: the notes below have everything you need, and the challenges are open.</div>
+        <div class="muted">You don't have to wait: the core concepts below have everything you need, and the challenges are open.</div>
       </div>
     </div>
     {% endif %}
@@ -48,7 +48,7 @@
   <div class="after-lecture" id="after-lecture">
     {% if chapter.notes %}
     <section class="notes" id="notes" aria-labelledby="notes-title">
-      <h2 class="headline" id="notes-title">Notes</h2>
+      <h2 class="headline" id="notes-title">Core Concepts</h2>
       <div class="prose">{{ md(chapter.notes) }}</div>
     </section>
     {% endif %}
