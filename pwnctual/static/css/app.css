@@ -546,8 +546,8 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
   background: var(--surface-container-highest); color: var(--on-surface-variant); }
 
 @keyframes unlock { from { opacity: 0; transform: translateY(24px); } }
-.writeup { margin-top: 48px; }
-.writeup .prose > :first-child { margin-top: 8px; }
+.notes { margin-top: 48px; }
+.notes .prose > :first-child { margin-top: 8px; }
 .chapter-done[hidden] { display: none; }
 .stuck-card { margin-top: 8px; }
 

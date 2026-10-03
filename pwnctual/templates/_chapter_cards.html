@@ -8,7 +8,7 @@
       <div style="opacity:.8">{{ ch.summary }}</div>
       <div class="meta">
         {% if ch.challenges %}
-        <div class="row" style="font-size:14px;font-weight:650"><span>{{ 'Lecture · ' if ch.video_id else 'Lecture soon · ' }}writeup · {{ ch.challenges|length }} challenges</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
+        <div class="row" style="font-size:14px;font-weight:650"><span>{{ 'Lecture · ' if ch.video_id else 'Lecture soon · ' }}notes · {{ ch.challenges|length }} challenges</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
         <div class="progress-line"><i style="width:{{ (100 * done / ch.challenges|length)|round }}%"></i></div>
         {% else %}
         <div class="row" style="font-size:14px;font-weight:650"><span>Video · start here</span></div>

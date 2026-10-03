@@ -2,7 +2,7 @@
 
 Hierarchy:  Chapter  ->  Challenge
 
-Every chapter is a YouTube lecture, a writeup, and a handful of OverTheWire
+Every chapter is a YouTube lecture, notes, and a handful of OverTheWire
 challenges. A chapter can be just a video (Chapter 0, the roadmap) or have no
 video yet. Nothing is auto-checked:
 when a learner says they finished a challenge, we take their word for it.
@@ -28,7 +28,7 @@ class Chapter:
     id: str
     title: str
     summary: str
-    writeup: str = ""   # markdown, shown under the lecture; empty for none
+    notes: str = ""     # markdown, shown under the lecture; empty for none
     video_id: str = ""  # YouTube video ID of the lecture; empty while it's being made
     challenges: list = field(default_factory=list)
     # filled in by the registry
