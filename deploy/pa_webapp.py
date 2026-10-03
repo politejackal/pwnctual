@@ -1,5 +1,8 @@
 """Create and configure the pwnctual web app through the PythonAnywhere API.
 
+    pa_webapp.py DOMAIN PYTHON_VERSION VENV STATIC_DIR    create/configure
+    pa_webapp.py DOMAIN reload                            full reload
+
 Run by deploy/pythonanywhere.sh inside a PythonAnywhere console. It does what the
 Web tab would: create the web app (manual config), set the virtualenv, map /static/,
 force HTTPS and reload. Needs an API token: Account page -> API token -> Create.
@@ -14,7 +17,7 @@ import urllib.request
 
 user = os.environ["USER"]
 token = os.environ.get("API_TOKEN", "")
-domain, python_version, venv, static_dir = sys.argv[1:5]
+domain = sys.argv[1]
 host = os.environ.get("PYTHONANYWHERE_SITE", "www." + os.environ.get("PYTHONANYWHERE_DOMAIN", "pythonanywhere.com"))
 base = f"https://{host}/api/v0/user/{user}/webapps/"
 
@@ -31,6 +34,17 @@ def call(method, endpoint="", **data):
 if not token:
     sys.exit("no API token: open the Account page -> API token -> Create, then open a NEW Bash console and rerun")
 
+if sys.argv[2:] == ["reload"]:
+    # Virtualenv and static mappings only take effect on a full reload;
+    # touching the WSGI file restarts the workers without applying them.
+    try:
+        call("POST", f"{domain}/reload/")
+    except urllib.error.HTTPError as e:
+        sys.exit(f"PythonAnywhere API error {e.code}: {e.read().decode()[:300]}")
+    print(f"reloaded https://{domain}")
+    sys.exit()
+
+python_version, venv, static_dir = sys.argv[2:5]
 try:
     existing = {w["domain_name"] for w in call("GET")}
     if domain not in existing:

@@ -50,8 +50,13 @@ import sys
 sys.path.insert(0, "$APP_DIR")
 from wsgi import application  # noqa: E402,F401
 WSGI
-  touch "$WSGI_FILE"   # reloads the web app
-  echo "Updated $WSGI_FILE and reloaded https://$DOMAIN"
+  echo "Updated $WSGI_FILE"
+  if [ -n "${API_TOKEN:-}" ]; then
+    "$VENV/bin/python" deploy/pa_webapp.py "$DOMAIN" reload
+  else
+    touch "$WSGI_FILE"
+    echo "Press Reload on the Web tab to apply the changes."
+  fi
 else
   echo "!! $WSGI_FILE not found. Either create an API token (Account page -> API token ->"
   echo "   Create), open a NEW Bash console and run this script again, or create the web app"
