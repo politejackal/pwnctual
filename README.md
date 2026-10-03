@@ -62,26 +62,28 @@ site is switched off. Outbound requests only reach allowlisted sites (pythonanyw
 sign-in works, so check that Google's OAuth hosts are on that list before enabling Google sign-in.
 Back up `pwnctual.db` now and then from the Files tab.
 
-### Your own domain on PythonAnywhere
+### Your own domain, free: Cloudflare in front of PythonAnywhere
 
-Custom domains need a paid PythonAnywhere plan. The site goes on `www.` (DNS can't point a bare domain like
-`pwnctual.com` at PythonAnywhere), and the bare domain forwards to it. Using `www.pwnctual.com` as the example:
+The free PythonAnywhere plan only serves `YOURNAME.pythonanywhere.com`. A free Cloudflare Worker
+(`cloudflare/worker.js`) sits on `pwnctual.com` and forwards every request there, so visitors only ever see
+`pwnctual.com`. `www.` and `http://` redirect to `https://pwnctual.com`, and the app redirects anyone who
+opens the `pythonanywhere.com` address directly.
 
-1. **Upgrade** your PythonAnywhere account (Account page). If your plan allows only one web app, delete the
-   old `YOURNAME.pythonanywhere.com` one on the Web tab first. Your code, `.env` and database stay.
-2. In a Bash console run
-   `PWNCTUAL_DOMAIN=www.pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh`. It creates the web app for
-   the domain, sets `PWNCTUAL_PUBLIC_URL=https://www.pwnctual.com` in `.env`, and prints the CNAME target
-   (`webapp-….pythonanywhere.com`, also shown on the Web tab).
-3. **At your registrar** (e.g. Spaceship → Domain → Advanced DNS): add a `CNAME` record, host `www`, value
-   the CNAME target. Then add a URL redirect for the bare domain (`@`) to `https://www.pwnctual.com`.
-4. Once DNS is live (minutes to a few hours), on the Web tab create a Let's Encrypt certificate under
-   *HTTPS*, switch on *Force HTTPS* and press *Reload*.
-5. **Sign-in:** change the GitHub OAuth app's callback to `https://www.pwnctual.com/auth/callback` and add
-   `https://www.pwnctual.com/auth/google/callback` to the Google client's redirect URIs.
+1. **Cloudflare:** sign up (free), *Add a domain* → `pwnctual.com` → Free plan. Cloudflare shows two
+   nameservers.
+2. **Registrar (Spaceship):** domain → *Nameservers* → custom → paste Cloudflare's two. Wait until Cloudflare
+   says the domain is *Active* (minutes to a few hours).
+3. **Let GitHub deploy the Worker:** in Cloudflare, *My Profile → API Tokens → Create Token → "Edit
+   Cloudflare Workers"* template (all accounts, zone `pwnctual.com`). In GitHub, *Settings → Secrets and
+   variables → Actions*, add `CLOUDFLARE_API_TOKEN` (the token) and `CLOUDFLARE_ACCOUNT_ID` (shown on the
+   Cloudflare dashboard's right side). Then *Actions → Cloudflare Worker → Run workflow*. Pushes to `main`
+   that change the Worker redeploy it.
+4. **PythonAnywhere:** in a Bash console run
+   `PWNCTUAL_PUBLIC_URL=https://pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh`.
+5. **Sign-in:** GitHub OAuth app callback → `https://pwnctual.com/auth/callback`; Google client → add
+   `https://pwnctual.com/auth/google/callback`.
 
-The app sends visitors on any other address (such as the old `*.pythonanywhere.com` one) to
-`PWNCTUAL_PUBLIC_URL`, because sign-in only works there.
+The Worker free plan allows 100,000 requests a day.
 
 ### Render (paid, always on)
 

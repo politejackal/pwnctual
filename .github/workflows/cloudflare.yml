@@ -1,0 +1,17 @@
+# Deploys the Cloudflare Worker that puts the site on pwnctual.com.
+# Needs repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+name: Cloudflare Worker
+on:
+  push:
+    branches: [main]
+    paths: [cloudflare/**, wrangler.toml, .github/workflows/cloudflare.yml]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
