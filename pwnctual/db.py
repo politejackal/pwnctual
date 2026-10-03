@@ -14,33 +14,19 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_url TEXT,
     created_at REAL NOT NULL
 );
+-- challenges the learner says they finished (honor system, nothing is checked)
 CREATE TABLE IF NOT EXISTS solves (
     user_id INTEGER NOT NULL,
     slug TEXT NOT NULL,
     solved_at REAL NOT NULL,
     PRIMARY KEY (user_id, slug)
 );
-CREATE TABLE IF NOT EXISTS tokens (
-    token_hash TEXT PRIMARY KEY,
+-- chapters whose lecture the learner finished watching (unlocks the writeup)
+CREATE TABLE IF NOT EXISTS watched (
     user_id INTEGER NOT NULL,
-    label TEXT,
-    created_at REAL NOT NULL,
-    last_used REAL
-);
-CREATE TABLE IF NOT EXISTS device_codes (
-    device_code TEXT PRIMARY KEY,
-    user_code TEXT UNIQUE NOT NULL,
-    user_id INTEGER,
-    token TEXT,
-    created_at REAL NOT NULL
-);
-CREATE TABLE IF NOT EXISTS attempts (
-    id TEXT PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    slug TEXT NOT NULL,
-    cases TEXT NOT NULL,
-    created_at REAL NOT NULL,
-    status TEXT NOT NULL DEFAULT 'open'
+    chapter_id TEXT NOT NULL,
+    watched_at REAL NOT NULL,
+    PRIMARY KEY (user_id, chapter_id)
 );
 CREATE TABLE IF NOT EXISTS class_bookings (
     id INTEGER PRIMARY KEY,
@@ -73,7 +59,6 @@ MIGRATIONS = [
     # (column, DDL) added after the first release; applied in place on old databases
     ("google_sub", "ALTER TABLE users ADD COLUMN google_sub TEXT"),
     ("email", "ALTER TABLE users ADD COLUMN email TEXT"),
-    ("pro_until", "ALTER TABLE users ADD COLUMN pro_until REAL"),
 ]
 
 

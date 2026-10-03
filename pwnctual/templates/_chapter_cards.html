@@ -1,0 +1,21 @@
+<div class="grid grid-2">
+  {% for ch in CHAPTERS %}
+    {% set done = ch.challenges|selectattr('slug', 'in', my_solved)|list|length %}
+    <a class="card path-card tone-{{ loop.cycle('primary', 'tertiary', 'secondary') }}" href="/learn/{{ ch.id }}">
+      <span class="material-symbols-rounded" style="font-size:40px">smart_display</span>
+      <div class="label" style="color:inherit;opacity:.8;margin-top:16px">Chapter {{ ch.number }}</div>
+      <div class="headline">{{ ch.title }}</div>
+      <div style="opacity:.8">{{ ch.summary }}</div>
+      <div class="meta">
+        <div class="row" style="font-size:14px;font-weight:650"><span>Lecture · writeup · {{ ch.challenges|length }} challenges</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
+        <div class="progress-line"><i style="width:{{ (100 * done / ch.challenges|length)|round }}%"></i></div>
+      </div>
+      <div class="num">{{ '%02d'|format(ch.number) }}</div>
+    </a>
+  {% endfor %}
+  <div class="card outlined path-card">
+    <span class="material-symbols-rounded" style="font-size:40px;color:var(--on-surface-variant)">hourglass_top</span>
+    <div class="headline" style="margin-top:16px">Next chapter</div>
+    <div class="muted">New chapters are on the way, free like the rest. Every new challenge raises the bar for Ghost.</div>
+  </div>
+</div>

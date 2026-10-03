@@ -1,15 +1,14 @@
 # 💀 pwnctual
 
-Learn to hack, from absolute zero to vulnerability research: a six-year path where every year
-ends with a profile you can get hired on. Inspired by pwn.college, styled with
-Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
+Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, a writeup
+that unlocks when the video ends, and real challenges on [OverTheWire](https://overthewire.org).
+Styled with Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
 
 ```
-pwnctual/            Flask site (pages, auth, CLI API, checker)
-  curriculum/        Paths → Modules → Challenges (pure Python)
+pwnctual/            Flask site (pages, auth, progress API, live classes)
+  curriculum/        Chapters → Challenges (pure Python)
   ranks.py           Ranked ladder + thresholds
   emblems.py         SVG skull emblems for every rank
-  cli.py             learner CLI, downloaded from /setup as pwnctual.py
 ```
 
 ## Run it locally
@@ -19,15 +18,7 @@ pip install -r requirements.txt
 PWNCTUAL_DEV=1 python -m pwnctual          # http://127.0.0.1:5000
 ```
 
-`PWNCTUAL_DEV=1` enables a username-only sign-in so you can try everything without GitHub.
-Then, in another terminal:
-
-```bash
-export PWNCTUAL_URL=http://127.0.0.1:5000
-python pwnctual/cli.py login        # approve the code at /link
-python pwnctual/cli.py new hello-hacker
-python pwnctual/cli.py check hello-hacker
-```
+`PWNCTUAL_DEV=1` enables a username-only sign-in so you can try everything without GitHub or Google.
 
 ## Deploy
 
@@ -79,39 +70,28 @@ pick this repo, and fill in the sign-in keys it asks for. It runs gunicorn, keep
 defaults to the `https://<name>.onrender.com` address Render assigns; set `PWNCTUAL_PUBLIC_URL` if you add
 a custom domain. Use that URL in the OAuth callbacks from step 1.
 
-## Free week and Pro
+## How the course works
 
-Week 1 of the 30-day course is free for everyone, including on-call live classes during that free week. Weeks 2–4
-and live classes for the rest of the month are part of **pwnctual Pro**
-($10 for one month, set with `PWNCTUAL_PRO_PRICE`). The site and the CLI both enforce this: a free account can't
-start a Pro challenge. Which days count as free is set by `FREE_WEEKS` in `curriculum/schedule.py`.
+Each chapter page has three parts:
 
-- **Selling Pro:** set `PWNCTUAL_CHECKOUT_URL` to a payment link to enable the Pro button. Without it, the button
-  reads "Checkout opens soon".
-- **Granting Pro by hand:** `python -m pwnctual grant-pro LOGIN` (30 days by default, adds to any time left;
-  `--days N` to change it) and `python -m pwnctual revoke-pro LOGIN`.
-- **Live classes:** learners book 15-minute calls at `/classes`. Slots run from 08:00 to 24:00 in
-  `PWNCTUAL_CLASS_TZ` (default `Asia/Riyadh`), and each learner sees them in their own timezone. A slot can only
-  be booked once, and each person can hold one upcoming booking. Set `PWNCTUAL_CLASS_MEET_URL` to your
-  video-call link, and list your login in `PWNCTUAL_ADMINS` to see every booking at `/classes/admin`.
+1. **Lecture.** The YouTube video, embedded with the official player so every watch counts as a view on the
+   channel. A "Watch on YouTube" link sits under it.
+2. **Writeup.** Unlocks when the video ends (detected with the YouTube IFrame API). Signed-in learners have
+   this remembered on the server, everyone else in their browser. An "Already watched it?" link unlocks it
+   by hand for returning learners.
+3. **Challenges.** Links to OverTheWire levels. There is no checker: when a learner presses
+   **I finished it**, we take their word for it and award the points. They can undo it too.
 
-## How checking works
+**Stuck?** buttons open a dialog that sends learners to the lecture's YouTube comments with a ready-made
+comment template (which challenge, what they tried, what happened). It tells them that getting stuck is
+part of learning and asks them not to look up walkthroughs, so replies can nudge without spoiling.
 
-pwnctual never runs learner code on the server, and there are no static flags to share. Learners download the
-CLI from `/setup` as `pwnctual.py` (with the site's address filled in) and run it with their own Python.
+## Live classes
 
-1. `pwnctual check <slug>` asks the server for an attempt. The server generates **random test cases** and
-   keeps the expected answers (keys starting with `_`) to itself.
-2. The CLI runs the learner's program on their own computer once per case (stdin, args, input files),
-   with a 10-second timeout, and sends back stdout, stderr and any requested output files.
-3. The server compares the results. On success it records the solve, returns a per-user HMAC flag,
-   and reports promotions. On failure it shows the failing input, the expected output and the learner's output.
-
-Attempts are single-use and expire after 15 minutes.
-
-CLI login uses a device-code flow: `pwnctual login` prints a code, the learner approves it at `/link` while
-signed in with GitHub, and the CLI receives a token. Only hashes of tokens are stored. Learners can also
-create and revoke tokens on the Setup page.
+Learners book free 15-minute calls at `/classes`. Slots run from 08:00 to 24:00 in `PWNCTUAL_CLASS_TZ`
+(default `Asia/Riyadh`), and each learner sees them in their own timezone. A slot can only be booked once,
+and each person can hold one upcoming booking. Set `PWNCTUAL_CLASS_MEET_URL` to your video-call link, and
+list your login in `PWNCTUAL_ADMINS` to see every booking at `/classes/admin`.
 
 ## Ranks
 
@@ -125,23 +105,26 @@ create and revoke tokens on the Setup page.
 
 Thresholds scale with the total number of points in the curriculum (`ranks.thresholds`), on a curve that
 makes early ranks quick and later ones hard. **Ghost requires clearing every challenge**, so each new
-path raises the bar.
+chapter raises the bar.
 
-## Adding content
+## Adding a chapter
 
-Create `pwnctual/curriculum/p2_<name>.py` exporting `PATH`, then add it to `PATHS` in
-`curriculum/__init__.py`. Then put its challenge slugs on the matching days in
-`curriculum/schedule.py`, the 30-day course plan shown at `/course`. Days with slugs go live
-automatically, and days without them show as "coming soon". Each challenge needs a generator:
+Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to `CHAPTERS` in
+`curriculum/__init__.py`:
 
 ```python
-def gen(rng, i):            # i = case index, handy for covering every branch
-    n = rng.randint(1, 100)
-    return {"stdin": f"{n}\n", "_expect": str(n * 2)}
+from .model import Chapter, Challenge
 
-Challenge("double-it", "Double It", 15, "Read n, print 2n.", gen, cases=3)
+CHAPTER = Chapter(
+    "chapter-id", "Chapter Title", "One-line summary.",
+    video_id="YOUTUBE_VIDEO_ID",   # the part after youtu.be/ or watch?v=
+    writeup=r"""Markdown shown after the lecture ends.""",
+    challenges=[
+        Challenge("bandit-4", "Bandit Level 3 → 4",
+                  "https://overthewire.org/wargames/bandit/bandit4.html",
+                  "One line on what the level is about, never the answer."),
+    ],
+)
 ```
 
-A case can include `stdin`, `args`, `files` (`{name: text}` or `{name: {"b64": ...}}`) and `collect`
-(output files to send back). Set `check="contains"` for substring matching, or `check="files"` together
-with `_expect_files` to grade the files a program writes.
+Challenge slugs must be unique across all chapters; each is worth 10 points unless you set `points=`.

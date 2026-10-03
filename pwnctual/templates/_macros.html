@@ -26,48 +26,23 @@
 </div>
 {%- endmacro %}
 
-{% macro plans() -%}
-<div class="plans">
-  <div class="plan">
-    <div class="plan-top">
-      <span class="plan-icon"><span class="material-symbols-rounded">school</span></span>
-      <div><div class="title-l">Week 1</div><div class="muted">Free forever</div></div>
-    </div>
-    <div class="price"><span class="amount">$0</span><span class="per">no card needed</span></div>
-    <ul class="feats">
-      <li><span class="material-symbols-rounded">check</span>Days 1–7: how computers work, from absolute zero</li>
-      <li><span class="material-symbols-rounded">check</span>All {{ FREE_SLUGS|length }} Week 1 challenges, auto-checked</li>
-      <li><span class="material-symbols-rounded">check</span>Works on your own computer: Windows, macOS or Linux</li>
-      <li><span class="material-symbols-rounded">check</span>Ranks, flags and the leaderboard</li>
-      <li><span class="material-symbols-rounded">check</span><span><b>Free live classes</b> all through your free week</span></li>
-    </ul>
-    {% if me %}
-      <a class="btn lg outlined" href="/course">Go to the course</a>
-    {% else %}
-      <a class="btn lg outlined" href="/login?next=/course">Start week 1 free</a>
-    {% endif %}
-  </div>
+{# "Stuck?" button: opens the help dialog for this chapter's video (and challenge, if given). #}
+{% macro stuck_button(chapter, challenge=None, cls='btn tonal') -%}
+<button type="button" class="{{ cls }}" data-stuck data-video="{{ chapter.video_url }}" data-video-id="{{ chapter.video_id }}"
+  data-chapter="Chapter {{ chapter.number }}: {{ chapter.title }}"{% if challenge %} data-challenge="{{ challenge.title }}"{% endif %}>
+  <span class="material-symbols-rounded">help</span>Stuck?</button>
+{%- endmacro %}
 
-  <div class="plan pro">
-    <span class="plan-flag">Full course</span>
-    <div class="plan-top">
-      <span class="plan-icon"><span class="material-symbols-rounded">workspace_premium</span></span>
-      <div><div class="title-l">pwnctual Pro</div><div class="plan-sub">One month, all 30 days</div></div>
-    </div>
-    <div class="price"><span class="amount">{{ PRO_PRICE }}</span><span class="per">/ month</span></div>
-    <ul class="feats">
-      <li><span class="material-symbols-rounded">check</span>Everything in the free plan</li>
-      <li><span class="material-symbols-rounded">check</span><span><b>Live classes all month long</b>, not just week 1</span></li>
-      <li><span class="material-symbols-rounded">check</span>Weeks 2–4: data wrangling, bits & bytes, hacker toolkit</li>
-      <li><span class="material-symbols-rounded">check</span><span><b>The Final Haunt</b>: a boss-fight exam to prove you're a Ghost</span></li>
-    </ul>
-    {% if IS_PRO %}
-      <div class="btn lg pro-on" aria-disabled="true"><span class="material-symbols-rounded">verified</span>You're Pro until {{ pro_until }}</div>
-    {% elif CHECKOUT_URL %}
-      <a class="btn lg" href="{{ CHECKOUT_URL }}" data-reload rel="noopener"><span class="material-symbols-rounded">workspace_premium</span>Get Pro for {{ PRO_PRICE }}</a>
-    {% else %}
-      <div class="btn lg pro-soon" aria-disabled="true"><span class="material-symbols-rounded">schedule</span>Checkout opens soon</div>
-    {% endif %}
+{% macro stuck_card(chapter) -%}
+<div class="live-card stuck-card">
+  <span class="live-icon"><span class="material-symbols-rounded">psychology_alt</span></span>
+  <div>
+    <div class="label">Stuck?</div>
+    <h2 class="headline">Getting stuck is learning</h2>
+    <p class="muted">Everyone in this field gets stuck, all the time. Don't go looking for a walkthrough: it hands you the answer and takes
+      away the lesson. Instead, <b>comment on the lecture video on YouTube</b> with the challenge you're on and exactly where you're stuck.
+      We'll reply with a nudge that keeps the challenge yours to solve.</p>
   </div>
+  {{ stuck_button(chapter, cls='btn lg') }}
 </div>
 {%- endmacro %}
