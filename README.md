@@ -126,7 +126,7 @@ chapter raises the bar.
 
 Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no notes and no
 challenges. A chapter with `video_id=""` shows "lecture coming soon" above its notes and challenges; its **Stuck?** button points to Chapter 0's video until it gets its own. Chapter 1's
-lecture isn't out yet: paste its video ID into `curriculum/ch01_first_contact.py` when it is.
+lecture isn't out yet: paste its video ID into `curriculum/ch01_terminal_ssh.py` when it is.
 
 Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to `CHAPTERS` in
 `curriculum/__init__.py`:

@@ -1,8 +1,8 @@
 """Course registry. To add a chapter, create a module exporting CHAPTER and list it here."""
-from . import ch00_roadmap, ch01_first_contact
+from . import ch00_roadmap, ch01_terminal_ssh
 
 # Numbered from 0: Chapter 0 is the course roadmap video.
-CHAPTERS = [ch00_roadmap.CHAPTER, ch01_first_contact.CHAPTER]
+CHAPTERS = [ch00_roadmap.CHAPTER, ch01_terminal_ssh.CHAPTER]
 
 CHALLENGES = {}
 CHAPTER_BY_ID = {}

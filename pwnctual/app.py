@@ -323,8 +323,14 @@ def learn():
     return render_template("learn.html")
 
 
+# Chapters that changed their URL: old id -> new id.
+RENAMED_CHAPTERS = {"first-contact": "the-terminal-and-ssh"}
+
+
 @app.get("/learn/<chapter_id>")
 def chapter_page(chapter_id):
+    if chapter_id in RENAMED_CHAPTERS:
+        return redirect(url_for("chapter_page", chapter_id=RENAMED_CHAPTERS[chapter_id]), 301)
     chapter = CHAPTER_BY_ID.get(chapter_id) or abort(404)
     i = CHAPTERS.index(chapter)
     return render_template("chapter.html", chapter=chapter,
