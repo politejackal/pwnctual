@@ -74,7 +74,8 @@ GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_ISSUERS = ("https://accounts.google.com", "accounts.google.com")
 DEV_LOGIN = os.environ.get("PWNCTUAL_DEV") == "1"
 WORKSPACE_REPO = os.environ.get("PWNCTUAL_WORKSPACE_REPO", "your-org/pwnctual-workspace")
-PUBLIC_URL = os.environ.get("PWNCTUAL_PUBLIC_URL", "").rstrip("/")
+# Render sets RENDER_EXTERNAL_URL to the service's https://….onrender.com address.
+PUBLIC_URL = (os.environ.get("PWNCTUAL_PUBLIC_URL") or os.environ.get("RENDER_EXTERNAL_URL", "")).rstrip("/")
 ATTEMPT_TTL = 15 * 60
 PRO_PRICE = os.environ.get("PWNCTUAL_PRO_PRICE", "$10")
 PRO_DAYS = 30

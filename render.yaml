@@ -1,0 +1,41 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Dashboard → New → Blueprint → pick this repo. Render asks for the sync: false values.
+services:
+  - type: web
+    name: pwnctual
+    runtime: python
+    # A persistent disk (for the SQLite database) needs a paid plan. On "free"
+    # remove the disk block and PWNCTUAL_DB: accounts and solves then reset on
+    # every deploy or restart.
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    # --preload runs the schema setup once before the workers fork.
+    startCommand: gunicorn --preload -w 2 --threads 4 -b 0.0.0.0:$PORT "pwnctual.app:app"
+    healthCheckPath: /
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: PWNCTUAL_DB
+        value: /var/data/pwnctual.db
+      - key: PWNCTUAL_SECRET
+        generateValue: true
+      - key: PWNCTUAL_SECURE_COOKIES
+        value: "1"
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: PWNCTUAL_WORKSPACE_REPO
+        sync: false
+      - key: PWNCTUAL_ADMINS
+        sync: false
+      - key: PWNCTUAL_CLASS_TZ
+        value: Asia/Riyadh

@@ -44,6 +44,14 @@ python workspace/bin/pwnctual check hello-hacker
    set `PWNCTUAL_URL` in `.devcontainer/devcontainer.json` to your site, and point
    `PWNCTUAL_WORKSPACE_REPO` at it. The "Launch Codespace" button opens `codespaces.new/<repo>`.
 
+### Render
+
+`render.yaml` is a Render Blueprint for the full site. In the Render dashboard choose *New → Blueprint*,
+pick this repo, and fill in the sign-in keys it asks for. It runs gunicorn, keeps the SQLite database on a
+1 GB disk at `/var/data` (disks need the Starter plan), and generates `PWNCTUAL_SECRET`. The public URL
+defaults to the `https://<name>.onrender.com` address Render assigns; set `PWNCTUAL_PUBLIC_URL` if you add
+a custom domain. Use that URL in the OAuth callbacks from step 1.
+
 ### Static preview on GitHub Pages
 
 `.github/workflows/pages.yml` publishes a static copy of the public pages (home, course, paths and modules,
