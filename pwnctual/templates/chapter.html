@@ -4,8 +4,7 @@
 {% block title %}Chapter {{ chapter.number }}: {{ chapter.title }} · pwnctual{% endblock %}
 {% block main %}
 {% set all_done = chapter.challenges|rejectattr('slug', 'in', my_solved)|list|length == 0 %}
-<div class="narrow chapter" id="chapter" data-chapter="{{ chapter.id }}" data-watched="{{ 1 if watched else 0 }}"
-  data-signed-in="{{ 1 if me else 0 }}" data-csrf="{{ csrf_token() }}">
+<div class="narrow chapter" id="chapter" data-chapter="{{ chapter.id }}" data-csrf="{{ csrf_token() }}">
   <div class="crumbs">
     <a href="/">Home</a><span class="material-symbols-rounded">chevron_right</span>
     <a href="/learn">Chapters</a><span class="material-symbols-rounded">chevron_right</span>
@@ -17,7 +16,7 @@
 
   <ol class="chapter-steps" aria-label="Chapter steps">
     <li><span class="material-symbols-rounded">smart_display</span>Watch the lecture</li>
-    <li><span class="material-symbols-rounded">menu_book</span>Read the writeup</li>
+    {% if chapter.writeup %}<li><span class="material-symbols-rounded">menu_book</span>Read the writeup</li>{% endif %}
     {% if chapter.challenges %}<li><span class="material-symbols-rounded">flag</span>Clear the challenges</li>{% endif %}
   </ol>
 
@@ -25,7 +24,7 @@
     <h2 class="headline" id="lecture-title">Lecture</h2>
     {% if chapter.video_id %}
     <div class="video-frame">
-      <iframe id="lecture-player" src="https://www.youtube.com/embed/{{ chapter.video_id }}?enablejsapi=1&rel=0&playsinline=1&origin={{ origin|urlencode }}"
+      <iframe id="lecture-player" src="https://www.youtube.com/embed/{{ chapter.video_id }}?rel=0&playsinline=1"
         title="Chapter {{ chapter.number }} lecture: {{ chapter.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
@@ -46,22 +45,13 @@
     {% endif %}
   </section>
 
-  {% if chapter.video_id %}
-  <div class="lock-card" id="lock-card"{% if watched %} hidden{% endif %}>
-    <span class="material-symbols-rounded">lock</span>
-    <div>
-      <div class="title-m">The writeup{{ ' and challenges unlock' if chapter.challenges else ' unlocks' }} when the lecture ends</div>
-      <div class="muted">Watch to the end and {{ 'they' if chapter.challenges else 'it' }}'ll appear right here.
-        <button type="button" class="linkish" id="already-watched">Already watched it? Show {{ 'them' if chapter.challenges else 'it' }} now</button></div>
-    </div>
-  </div>
-  {% endif %}
-
-  <div class="after-lecture{{ '' if watched else ' locked' }}" id="after-lecture">
+  <div class="after-lecture" id="after-lecture">
+    {% if chapter.writeup %}
     <section class="writeup" id="writeup" aria-labelledby="writeup-title">
       <h2 class="headline" id="writeup-title">Writeup</h2>
       <div class="prose">{{ md(chapter.writeup) }}</div>
     </section>
+    {% endif %}
 
     {% if chapter.challenges %}
     <section id="challenges" aria-labelledby="challenges-title">
@@ -113,5 +103,4 @@
     {% if nxt is not none %}<a class="btn" href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
   </div>
 </div>
-<noscript><style>.after-lecture.locked { display: block !important; } #lock-card { display: none; }</style></noscript>
 {% endblock %}

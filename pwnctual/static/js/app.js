@@ -104,26 +104,7 @@
     store.set(key, String(cur));
   }
 
-  // ------------------------------------------------------------------ chapters: lecture -> writeup -> challenges
-  // The lecture is a real YouTube embed (so every watch counts as a view). When
-  // the video ends, the writeup and challenges unlock. Signed-in learners have
-  // that remembered on the server; everyone else in this browser.
-  let ytReady = null;
-  function loadYouTube() {
-    if (window.YT?.Player) return Promise.resolve(window.YT);
-    if (!ytReady) {
-      ytReady = new Promise((resolve) => {
-        const prev = window.onYouTubeIframeAPIReady;
-        window.onYouTubeIframeAPIReady = () => { prev?.(); resolve(window.YT); };
-      });
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      tag.onerror = () => { ytReady = null; };
-      document.head.append(tag);
-    }
-    return ytReady;
-  }
-
+  // ------------------------------------------------------------------ chapters
   async function postJSON(url, data, csrf) {
     const r = await fetch(url, { method: "POST", credentials: "same-origin", body: JSON.stringify(data || {}),
       headers: { "Content-Type": "application/json", Accept: "application/json", "X-CSRF-Token": csrf } });
@@ -135,40 +116,7 @@
   function initChapter() {
     const ch = $("#chapter");
     if (!ch) return;
-    const id = ch.dataset.chapter, signedIn = ch.dataset.signedIn === "1", csrf = ch.dataset.csrf;
-    const after = $("#after-lecture"), lock = $("#lock-card");
-
-    const unlock = (animate) => {
-      if (!after.classList.contains("locked")) return;
-      after.classList.remove("locked");
-      lock.hidden = true;
-      if (animate && !reducedMotion()) after.classList.add("unlocking");
-    };
-    const markWatched = (scroll) => {
-      const fresh = after.classList.contains("locked");
-      unlock(true);
-      store.set(`watched:${id}`, "1");
-      if (signedIn && ch.dataset.watched !== "1") {
-        ch.dataset.watched = "1";
-        postJSON(`/api/chapters/${encodeURIComponent(id)}/watched`, {}, csrf).catch(() => {});
-      }
-      if (fresh) {
-        snack('<span class="material-symbols-rounded">lock_open</span>Writeup and challenges unlocked');
-        if (scroll) $("#writeup").scrollIntoView({ behavior: reducedMotion() ? "instant" : "smooth", block: "start" });
-      }
-    };
-
-    if (ch.dataset.watched === "1" || store.get(`watched:${id}`) === "1") markWatched(false);
-    $("#already-watched")?.addEventListener("click", () => markWatched(true));
-
-    const frame = $("#lecture-player");
-    if (frame && after.classList.contains("locked")) {
-      loadYouTube().then((YT) => {
-        if (!frame.isConnected) return;  // navigated away meanwhile
-        new YT.Player(frame, { events: { onStateChange: (e) => { if (e.data === YT.PlayerState.ENDED) markWatched(true); } } });
-      }).catch(() => {});
-    }
-
+    const csrf = ch.dataset.csrf;
     // honor system: "I finished it" is all it takes
     $$("[data-done]", ch).forEach((btn) => btn.addEventListener("click", async () => {
       const slug = btn.dataset.done, done = btn.getAttribute("aria-pressed") !== "true";

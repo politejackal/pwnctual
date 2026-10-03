@@ -318,11 +318,6 @@ def classes_admin():
     return render_template("classes_admin.html", bookings=bookings, mentor_tz=cls.MENTOR_TZ_NAME)
 
 
-def watched_chapters(user_id):
-    rows = dbm.get_db().execute("SELECT chapter_id FROM watched WHERE user_id=?", (user_id,)).fetchall()
-    return {r["chapter_id"] for r in rows}
-
-
 @app.get("/learn")
 def learn():
     return render_template("learn.html")
@@ -331,11 +326,8 @@ def learn():
 @app.get("/learn/<chapter_id>")
 def chapter_page(chapter_id):
     chapter = CHAPTER_BY_ID.get(chapter_id) or abort(404)
-    user = current_user()
     i = CHAPTERS.index(chapter)
-    return render_template("chapter.html", chapter=chapter, origin=base_url(),
-                           # no lecture yet: nothing to watch, so the writeup and challenges are open
-                           watched=not chapter.video_id or (bool(user) and chapter.id in watched_chapters(user["id"])),
+    return render_template("chapter.html", chapter=chapter,
                            prev=CHAPTERS[i - 1] if i > 0 else None,
                            nxt=CHAPTERS[i + 1] if i + 1 < len(CHAPTERS) else None)
 
@@ -489,18 +481,6 @@ def _api_user():
         abort(401)
     check_csrf()
     return user
-
-
-@app.post("/api/chapters/<chapter_id>/watched")
-def api_watched(chapter_id):
-    user = _api_user()
-    if chapter_id not in CHAPTER_BY_ID:
-        abort(404)
-    db = dbm.get_db()
-    db.execute("INSERT OR IGNORE INTO watched (user_id, chapter_id, watched_at) VALUES (?,?,?)",
-               (user["id"], chapter_id, now()))
-    db.commit()
-    return jsonify(ok=True)
 
 
 @app.post("/api/challenges/<slug>/done")
