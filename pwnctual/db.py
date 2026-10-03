@@ -21,13 +21,6 @@ CREATE TABLE IF NOT EXISTS solves (
     solved_at REAL NOT NULL,
     PRIMARY KEY (user_id, slug)
 );
--- chapters whose lecture the learner finished watching (unlocks the writeup)
-CREATE TABLE IF NOT EXISTS watched (
-    user_id INTEGER NOT NULL,
-    chapter_id TEXT NOT NULL,
-    watched_at REAL NOT NULL,
-    PRIMARY KEY (user_id, chapter_id)
-);
 CREATE TABLE IF NOT EXISTS class_bookings (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,

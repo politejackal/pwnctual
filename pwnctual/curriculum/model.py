@@ -2,10 +2,9 @@
 
 Hierarchy:  Chapter  ->  Challenge
 
-Every chapter is a YouTube lecture, a writeup that unlocks once the lecture is
-watched, and a handful of OverTheWire challenges. A chapter can be just a video
-(Chapter 0, the roadmap) or have no video yet (its writeup and challenges are
-then open straight away). Nothing is auto-checked:
+Every chapter is a YouTube lecture, a writeup, and a handful of OverTheWire
+challenges. A chapter can be just a video (Chapter 0, the roadmap) or have no
+video yet. Nothing is auto-checked:
 when a learner says they finished a challenge, we take their word for it.
 """
 from dataclasses import dataclass, field
@@ -29,7 +28,7 @@ class Chapter:
     id: str
     title: str
     summary: str
-    writeup: str = ""   # markdown, shown after the lecture
+    writeup: str = ""   # markdown, shown under the lecture; empty for none
     video_id: str = ""  # YouTube video ID of the lecture; empty while it's being made
     challenges: list = field(default_factory=list)
     # filled in by the registry

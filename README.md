@@ -1,7 +1,7 @@
 # 💀 pwnctual
 
-Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, a writeup
-that unlocks when the video ends, and real challenges on [OverTheWire](https://overthewire.org).
+Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, a writeup,
+and real challenges on [OverTheWire](https://overthewire.org).
 Styled with Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
 
 ```
@@ -93,9 +93,7 @@ Each chapter page has three parts:
 
 1. **Lecture.** The YouTube video, embedded with the official player so every watch counts as a view on the
    channel. A "Watch on YouTube" link sits under it.
-2. **Writeup.** Unlocks when the video ends (detected with the YouTube IFrame API). Signed-in learners have
-   this remembered on the server, everyone else in their browser. An "Already watched it?" link unlocks it
-   by hand for returning learners.
+2. **Writeup.** The same ideas in Markdown, always visible under the lecture.
 3. **Challenges.** Links to OverTheWire levels. There is no checker: when a learner presses
    **I finished it**, we take their word for it and award the points. They can undo it too.
 
@@ -126,9 +124,8 @@ chapter raises the bar.
 
 ## Adding a chapter
 
-Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video and a short "how this works"
-writeup, no challenges. A chapter with `video_id=""` shows "lecture coming soon" and opens its writeup and
-challenges straight away; its **Stuck?** button points to Chapter 0's video until it gets its own. Chapter 1's
+Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no writeup and no
+challenges. A chapter with `video_id=""` shows "lecture coming soon" above its writeup and challenges; its **Stuck?** button points to Chapter 0's video until it gets its own. Chapter 1's
 lecture isn't out yet: paste its video ID into `curriculum/ch01_first_contact.py` when it is.
 
 Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to `CHAPTERS` in
@@ -139,7 +136,7 @@ from .model import Chapter, Challenge
 
 CHAPTER = Chapter(
     "chapter-id", "Chapter Title", "One-line summary.",
-    writeup=r"""Markdown shown after the lecture ends.""",
+    writeup=r"""Markdown shown under the lecture.""",
     video_id="YOUTUBE_VIDEO_ID",   # the part after youtu.be/ or watch?v=
     challenges=[
         Challenge("bandit-4", "Bandit Level 3 → 4",
