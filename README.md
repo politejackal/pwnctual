@@ -62,6 +62,27 @@ site is switched off. Outbound requests only reach allowlisted sites (pythonanyw
 sign-in works, so check that Google's OAuth hosts are on that list before enabling Google sign-in.
 Back up `pwnctual.db` now and then from the Files tab.
 
+### Your own domain on PythonAnywhere
+
+Custom domains need a paid PythonAnywhere plan. The site goes on `www.` (DNS can't point a bare domain like
+`pwnctual.com` at PythonAnywhere), and the bare domain forwards to it. Using `www.pwnctual.com` as the example:
+
+1. **Upgrade** your PythonAnywhere account (Account page). If your plan allows only one web app, delete the
+   old `YOURNAME.pythonanywhere.com` one on the Web tab first. Your code, `.env` and database stay.
+2. In a Bash console run
+   `PWNCTUAL_DOMAIN=www.pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh`. It creates the web app for
+   the domain, sets `PWNCTUAL_PUBLIC_URL=https://www.pwnctual.com` in `.env`, and prints the CNAME target
+   (`webapp-….pythonanywhere.com`, also shown on the Web tab).
+3. **At your registrar** (e.g. Spaceship → Domain → Advanced DNS): add a `CNAME` record, host `www`, value
+   the CNAME target. Then add a URL redirect for the bare domain (`@`) to `https://www.pwnctual.com`.
+4. Once DNS is live (minutes to a few hours), on the Web tab create a Let's Encrypt certificate under
+   *HTTPS*, switch on *Force HTTPS* and press *Reload*.
+5. **Sign-in:** change the GitHub OAuth app's callback to `https://www.pwnctual.com/auth/callback` and add
+   `https://www.pwnctual.com/auth/google/callback` to the Google client's redirect URIs.
+
+The app sends visitors on any other address (such as the old `*.pythonanywhere.com` one) to
+`PWNCTUAL_PUBLIC_URL`, because sign-in only works there.
+
 ### Render (paid, always on)
 
 `render.yaml` is a Render Blueprint for the full site. In the Render dashboard choose *New → Blueprint*,

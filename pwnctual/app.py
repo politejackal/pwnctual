@@ -78,6 +78,21 @@ CLASS_MEET_URL = os.environ.get("PWNCTUAL_CLASS_MEET_URL", "")
 ADMINS = {x.strip().lower() for x in os.environ.get("PWNCTUAL_ADMINS", "").split(",") if x.strip()}
 
 app.teardown_appcontext(dbm.close_db)
+
+PUBLIC_HOST = urllib.parse.urlsplit(PUBLIC_URL).netloc.lower()
+
+
+@app.before_request
+def canonical_host():
+    """Send visitors on any other address (like the old *.pythonanywhere.com one) to the public URL.
+
+    Sign-in only works on the public URL, because that's where the providers send people back to.
+    """
+    host = request.host.lower()
+    if not PUBLIC_HOST or host == PUBLIC_HOST or host.split(":")[0] in ("localhost", "127.0.0.1"):
+        return None
+    return redirect(PUBLIC_URL + request.full_path.rstrip("?"), 308 if request.method != "GET" else 301)
+
 dbm.init_db()
 
 HERO = {

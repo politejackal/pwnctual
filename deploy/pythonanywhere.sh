@@ -4,6 +4,10 @@
 #   git clone https://github.com/politejackal/pwnctual.git ~/pwnctual   # first time only
 #   bash ~/pwnctual/deploy/pythonanywhere.sh
 #
+# On your own domain (needs a paid PythonAnywhere plan), say which one:
+#
+#   PWNCTUAL_DOMAIN=www.pwnctual.com bash ~/pwnctual/deploy/pythonanywhere.sh
+#
 # With an API token (Account page -> API token -> Create, then open a new console)
 # it also creates and configures the web app, so there is nothing to click on the
 # Web tab. Safe to re-run: it pulls the latest code, updates packages, keeps your
@@ -38,6 +42,10 @@ if [ ! -f .env ]; then
     -e "s|^PWNCTUAL_SECRET=.*|PWNCTUAL_SECRET=$secret|" \
     .env
   echo "Created $APP_DIR/.env: add your GitHub/Google sign-in keys there."
+elif [ -n "${PWNCTUAL_DOMAIN:-}" ]; then
+  # moving to a new domain: sign-in callbacks and links must use it
+  sed -i "s|^PWNCTUAL_PUBLIC_URL=.*|PWNCTUAL_PUBLIC_URL=https://$DOMAIN|" .env
+  echo "Set PWNCTUAL_PUBLIC_URL=https://$DOMAIN in $APP_DIR/.env"
 fi
 
 if [ -n "${API_TOKEN:-}" ]; then
