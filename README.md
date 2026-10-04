@@ -1,7 +1,7 @@
 # 💀 pwnctual
 
 Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, notes,
-and real hands-on challenges on practice servers such as [OverTheWire](https://overthewire.org).
+and a real hands-on challenge on a practice server such as [OverTheWire](https://overthewire.org).
 Styled with Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
 
 ```
@@ -94,7 +94,7 @@ Each chapter page has three parts:
 1. **Lecture.** The YouTube video, embedded with the official player so every watch counts as a view on the
    channel. A "Watch on YouTube" link sits under it.
 2. **Notes.** The same ideas in Markdown, always visible under the lecture.
-3. **Challenges.** Links to OverTheWire levels. There is no checker: when a learner presses
+3. **Challenge.** Usually one per chapter, linking to a level on a practice site such as OverTheWire. There is no checker: when a learner presses
    **I finished it**, we take their word for it and it counts toward their rank. They can undo it too.
 
 **Stuck?** buttons open a dialog that sends learners to the lecture's YouTube comments with a ready-made
@@ -125,7 +125,7 @@ chapter raises the bar.
 ## Adding a chapter
 
 Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no notes and no
-challenges. A chapter with `video_id=""` shows "lecture coming soon" above its notes and challenges; its **Stuck?** button points to Chapter 0's video until it gets its own.
+challenges. A chapter with `video_id=""` shows "lecture coming soon" above its notes and challenge; its **Stuck?** button points to Chapter 0's video until it gets its own.
 
 Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to `CHAPTERS` in
 `curriculum/__init__.py`:

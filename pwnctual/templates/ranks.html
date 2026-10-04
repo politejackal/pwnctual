@@ -22,7 +22,7 @@
             {% if here %}<span class="chip good"><span class="material-symbols-rounded">my_location</span>You are here</span>{% endif %}</div>
           <div class="{{ '' if here else 'muted' }}">{{ t.motto }}</div>
           <div class="ladder-divs">
-            <span class="div-pill {{ 'here' if here else ('reached' if t.index < cur) }}">{{ t.min }} {{ "challenge" if t.min == 1 else "challenges" }}</span>
+            <span class="div-pill {{ 'here' if here else ('reached' if t.index < cur) }}">{{ t.min }} {{ t.min|plural('challenge') }}</span>
           </div>
         </div>
       </div>

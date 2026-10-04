@@ -110,6 +110,12 @@ def now():
     return time.time()
 
 
+@app.template_filter("plural")
+def plural(n, word, many=None):
+    """{{ n|plural('challenge') }} -> 'challenge' when n is 1, else 'challenges'."""
+    return word if n == 1 else (many or word + "s")
+
+
 def base_url():
     return PUBLIC_URL or request.url_root.rstrip("/")
 
