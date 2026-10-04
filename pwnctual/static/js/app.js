@@ -88,7 +88,7 @@
       <div class="label">Rank up</div>
       <img class="emblem" src="/emblem/${index}.svg" alt="">
       <div class="display-s ${key === "ghost" ? "ghost-name" : ""}">${label}</div>
-      <p class="muted">${key === "ghost" ? "You cleared everything. You are a Ghost." : "Keep climbing."}</p>
+      <p class="muted">${key === "ghost" ? "10,000 challenges. You are a Ghost." : "Keep climbing."}</p>
       <button class="btn lg" style="width:100%">Let's go</button></div>`;
     document.body.append(dlg);
     requestAnimationFrame(() => dlg.classList.add("show"));
