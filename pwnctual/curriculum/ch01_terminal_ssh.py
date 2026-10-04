@@ -60,7 +60,7 @@ CHAPTER = Chapter(
     "the-terminal-and-ssh", "The Terminal & SSH",
     "Why the terminal is where hacking happens, the grammar of a command, and logging in to a real server with SSH.",
     notes=NOTES,
-    video_id="",  # lecture coming soon: paste its YouTube video ID here
+    video_id="2jJcWlYePv0",
     challenges=[
         Challenge("bandit-0", "Mission 0: Bandit Level 0", f"{BANDIT}/bandit0.html",
                   "Build the right ssh command and log in to the Bandit server."),
