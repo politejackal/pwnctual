@@ -46,6 +46,7 @@ CHAPTER = Chapter(
     "flags-and-paths", "Flags & Paths",
     "How the shell and the program split up your line, how paths work, and the keys that end or stop a program.",
     notes=NOTES,
+    video_id="-_LtIy-JOH4",
     challenges=[
         Challenge("bandit-2", "Mission 2: Bandit Level 1 → 2", f"{BANDIT}/bandit2.html",
                   "Read a file whose name the program mistakes for something else, then log in as bandit2."),
