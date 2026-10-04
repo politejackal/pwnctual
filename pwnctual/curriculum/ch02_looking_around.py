@@ -27,6 +27,7 @@ CHAPTER = Chapter(
     "looking-around", "Looking Around",
     "Find where you are, list what's there, move between directories, read files, and log out cleanly.",
     notes=NOTES,
+    video_id="XvSwE3jIzTQ",
     challenges=[
         Challenge("bandit-1", "Mission 1: Bandit Level 0 → 1", f"{BANDIT}/bandit1.html",
                   "Look around the server, read the file holding the next password, then log in as bandit1."),
