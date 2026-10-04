@@ -118,9 +118,8 @@ list your login in `PWNCTUAL_ADMINS` to see every booking at `/classes/admin`.
 | Reaper | emerald crest, crossed scythes, wings |
 | **Ghost** | prismatic crest, crown, spectral wings, rotating halo |
 
-Thresholds scale with the total number of challenges in the curriculum (`ranks.thresholds`), on a curve that
-makes early ranks quick and later ones hard. **Ghost requires clearing every challenge**, so each new
-chapter raises the bar.
+Ranks are earned by challenges completed: **Shadow** at 100, **Demon** at 500, **Reaper** at 2,500 and
+**Ghost** at 10,000 (`ranks.THRESHOLDS`).
 
 ## Adding a chapter
 
