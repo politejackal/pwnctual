@@ -52,7 +52,7 @@
     <div class="card step"><div class="title-l">Read the notes</div>
       <p class="muted">The same ideas, written down under the video so you can look things up while you play.</p></div>
     <div class="card step"><div class="title-l">Play real challenges</div>
-      <p class="muted">Each chapter links to real hacking challenges on live practice servers. You break in from your own terminal.</p></div>
+      <p class="muted">Each chapter ends with a real hacking challenge on a live practice server. You break in from your own terminal.</p></div>
     <div class="card step"><div class="title-l">Say when you're done</div>
       <p class="muted">Finished a challenge? Mark it done. There's no checker: we take your word for it. Cheating would only cheat you.</p></div>
   </div>
@@ -72,7 +72,7 @@
       <a class="rank-step {{ 'apex' if t.key == 'ghost' }}" href="/ranks">
         {{ emblem(t, 120) }}
         <span class="title-m {{ 'ghost-name' if t.key == 'ghost' }}">{{ t.name }}</span>
-        <span class="muted" style="font-size:13px">{{ t.min }} {{ "challenge" if t.min == 1 else "challenges" }}</span>
+        <span class="muted" style="font-size:13px">{{ t.min }} {{ t.min|plural('challenge') }}</span>
       </a>
     {% endfor %}
   </div>
