@@ -14,7 +14,8 @@ NOTES = r"""
   with `/` and works from anywhere. A relative path starts from where you are.
 - **Dot and dot dot:** `.` means this folder. `..` means the folder above.
 - **Standard input:** What a program reads when you give it nothing else. By
-  default, that's your keyboard.
+  default, that's your keyboard. Many programs also read it when you hand them
+  a lone `-` as a name.
 - **Argument injection:** When text someone else controls reaches a command
   and gets read as a flag instead of a name.
 
@@ -23,7 +24,9 @@ NOTES = r"""
 - `man` - Read a command's manual. Arrow keys scroll, `/` searches, `q` quits.
 - `cd ..` / `cd ~` - Go up one folder / go home.
 - `./name` - "The file called name, in this folder."
-- `--` - Tells most programs "no more flags after this."
+- `--` - Tells most programs "no more flags after this." Unreliable for a file
+  named `-`: a lone `-` isn't a flag, so `--` doesn't change what it means.
+  `cat -- -` still reads your keyboard. A path to the file always works.
 - `Ctrl+D` - "I'm done typing." Ends standard input.
 - `Ctrl+C` - "Stop, right now." Kills the running program.
 
