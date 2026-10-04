@@ -3,6 +3,18 @@ from .model import Chapter, Challenge
 BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
+*I forgot to mention this in the video.*
+
+Here's the first thing which I personally feel nobody tells you: the shell
+lies to the command. Like the SHELL, kind of lies to you. When you type a line
+and hit Enter, the command you called never sees what you typed. The shell
+grabs your line first, chops it into pieces, does its own edits, and only then
+hands the leftovers to the program. Almost every "weird" thing or error you're
+about to hit is really the shell doing something to your text before the
+command ever wakes up.
+
+Hold that thought. First, let's learn to walk.
+
 ### Core Commands to Research
 
 - `pwd` - Where am I?
