@@ -10,15 +10,10 @@
     <a href="/learn">Chapters</a><span class="material-symbols-rounded">chevron_right</span>
     <span>Chapter {{ chapter.number }}</span>
   </div>
-  <div class="label">Chapter {{ chapter.number }}{% if chapter.challenges %} · {{ chapter.challenges|length }} {{ chapter.challenges|length|plural('challenge') }}{% endif %}</div>
+  <div class="label">Chapter {{ chapter.number }}</div>
   <h1 class="display-s" style="margin:8px 0 4px">{{ chapter.title }}</h1>
   <div class="muted" style="font-size:18px">{{ chapter.summary }}</div>
 
-  <ol class="chapter-steps" aria-label="Chapter steps">
-    <li><span class="material-symbols-rounded">smart_display</span>Watch the lecture</li>
-    {% if chapter.notes %}<li><span class="material-symbols-rounded">menu_book</span>Read the core concepts</li>{% endif %}
-    {% if chapter.challenges %}<li><span class="material-symbols-rounded">flag</span>Clear the {{ chapter.challenges|length|plural('challenge') }}</li>{% endif %}
-  </ol>
 
   <section class="lecture" aria-labelledby="lecture-title">
     <h2 class="headline" id="lecture-title">Lecture</h2>
@@ -55,9 +50,7 @@
 
     {% if chapter.challenges %}
     <section id="challenges" aria-labelledby="challenges-title">
-      <h2 class="headline" id="challenges-title" style="margin:48px 0 8px">{{ chapter.challenges|length|plural('Challenge') }}</h2>
-      <p class="muted" style="margin:0 0 20px">{{ 'It opens' if chapter.challenges|length == 1 else 'Each one opens' }} on the site that hosts it.
-        There's no checker here: when you finish, press <b>I finished it</b> and we take your word for it.</p>
+      <h2 class="headline" id="challenges-title" style="margin:48px 0 20px">{{ chapter.challenges|length|plural('Challenge') }}</h2>
       {% for c in chapter.challenges %}
         {% set solved = c.slug in my_solved %}
         <details class="chal {{ 'solved' if solved }}" id="{{ c.slug }}" data-slug="{{ c.slug }}">

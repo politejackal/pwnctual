@@ -8,10 +8,10 @@
       <div style="opacity:.8">{{ ch.summary }}</div>
       <div class="meta">
         {% if ch.challenges %}
-        <div class="row" style="font-size:14px;font-weight:650"><span>{{ 'Lecture · ' if ch.video_id else 'Lecture soon · ' }}core concepts · {{ ch.challenges|length }} {{ ch.challenges|length|plural('challenge') }}</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
+        <div class="row" style="font-size:14px;font-weight:650"><span>{{ '' if ch.video_id else 'Lecture coming soon' }}</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
         <div class="progress-line"><i style="width:{{ (100 * done / ch.challenges|length)|round }}%"></i></div>
         {% else %}
-        <div class="row" style="font-size:14px;font-weight:650"><span>Video · start here</span></div>
+        <div class="row" style="font-size:14px;font-weight:650"><span>Start here</span></div>
         {% endif %}
       </div>
       <div class="num">{{ '%02d'|format(ch.number) }}</div>
@@ -20,6 +20,6 @@
   <div class="card outlined path-card">
     <span class="material-symbols-rounded" style="font-size:40px;color:var(--on-surface-variant)">hourglass_top</span>
     <div class="headline" style="margin-top:16px">Next chapter</div>
-    <div class="muted">New chapters are on the way, free like the rest. Every new challenge raises the bar for Ghost.</div>
+    <div class="muted">New chapters are on the way. Every new challenge raises the bar for Ghost.</div>
   </div>
 </div>

@@ -527,11 +527,6 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
 .learn-head h1 { margin: 8px 0 12px; }
 .learn-head .lede { font-size: 18px; max-width: 680px; margin: 0 0 20px; }
 
-.chapter-steps { list-style: none; counter-reset: cs; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 24px 0 0; }
-.chapter-steps li { counter-increment: cs; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 10px;
-  border-radius: var(--shape-full); background: var(--surface-container); font-size: 14px; font-weight: 650; }
-.chapter-steps .material-symbols-rounded { font-size: 20px; color: var(--primary); }
-
 .lecture { margin-top: 32px; }
 .lecture .headline { margin-bottom: 16px; }
 .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--shape-xl); overflow: hidden; background: #000; }
@@ -580,8 +575,6 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
 .prose td code { white-space: nowrap; }
 .stuck-video img.failed { visibility: hidden; }
 @media (max-width: 640px) {
-  .chapter-steps li { height: 32px; padding: 0 12px 0 8px; font-size: 13px; gap: 6px; }
-  .chapter-steps .material-symbols-rounded { font-size: 18px; }
   .stuck-dialog { padding: 24px 20px; }
   .stuck-actions { flex-direction: column; align-items: stretch; }
   .stuck-actions .spacer { display: none; }
