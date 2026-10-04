@@ -3,6 +3,14 @@ from .model import Chapter, Challenge
 BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
+*I forgot to mention this in the video.*
+
+`--` is unreliable for a file named `-`. A lone `-` isn't a flag: to `cat`,
+`grep` and plenty of other programs it means "read standard input", and `--`
+doesn't change that. So `cat -- -` just sits there reading your keyboard
+(`Ctrl+C` gets you out). Some programs, like `rm` and `ls`, do take `-` as a
+name, but you can't count on it. A path to the file always works.
+
 ### Core Concepts
 
 - **Two translators:** The shell cuts your line into pieces at the spaces.
