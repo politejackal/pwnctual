@@ -7,7 +7,7 @@ NOTES = r"""
 
 - `pwd` - Where am I?
 - `ls` - What is in this directory?
-- `cd` - Move to a new directory. (`cd ..` moves you up one level.)
+- `cd` - Move to a new directory.
 - `cat` - Read a file.
 - `exit` - Close the current shell and disconnect.
 
