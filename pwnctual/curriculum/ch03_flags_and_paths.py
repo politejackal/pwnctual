@@ -3,51 +3,40 @@ from .model import Chapter, Challenge
 BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
-*I forgot to mention this in the video.*
+*I forgot to mention something in the video again 😭*
 
-`--` is unreliable for a file named `-`. A lone `-` isn't a flag: to `cat`,
-`grep` and plenty of other programs it means "read standard input", and `--`
-doesn't change that. So `cat -- -` just sits there reading your keyboard
-(`Ctrl+C` gets you out). Some programs, like `rm` and `ls`, do take `-` as a
-name, but you can't count on it. A path to the file always works.
+The `-` is explicitly used to read standard input in many programs, so using
+`--` is not reliable for this. That's because `--` says "whatever comes after
+this is not a flag," but `-` is not being treated as a flag. It's being treated
+as something that says to wait for input.
 
 ### Core Concepts
 
-- **Two translators:** The shell cuts your line into pieces at the spaces.
-  Then the program decides what each piece means. A piece that starts with `-`
-  is treated as a flag. Nobody enforces that rule; each program just assumes it.
-- **Home directory:** The one folder that belongs to you. You land there when
-  you log in. `~` is shorthand for it.
-- **Paths:** A file's address. `/` separates folders. An absolute path starts
-  with `/` and works from anywhere. A relative path starts from where you are.
-- **Dot and dot dot:** `.` means this folder. `..` means the folder above.
-- **Standard input:** What a program reads when you give it nothing else. By
-  default, that's your keyboard. Many programs also read it when you hand them
-  a lone `-` as a name.
-- **Argument injection:** When text someone else controls reaches a command
-  and gets read as a flag instead of a name.
+- **Splitting:** The shell cuts your input into pieces. How does it know where
+  to cut? Well, wherever there are spaces, by default.
+- **Home directory:** Every user on the device has one. It's their default
+  folder, which contains all their stuff. `~` is the shorthand for it.
+- **Paths:** A path is like a file's address, separated by `/`. A path starting
+  with a slash is an absolute path, and a path not starting with a `/` is a
+  relative path.
+- **`.` and `..`:** Special names for your current folder and the folder in
+  which your current folder is located, respectively.
+- **Standard input:** When a program is waiting for some input, it is waiting
+  for standard input from somewhere. By default, this is your keyboard.
+- **Argument injection:** When somebody's input, which was intended to be used
+  as something else (like a file name), ends up being treated as an argument of
+  a program (like a flag).
 
-### Core Commands to Research
+### Core Commands
 
-- `man` - Read a command's manual. Arrow keys scroll, `/` searches, `q` quits.
-- `cd ..` / `cd ~` - Go up one folder / go home.
-- `./name` - "The file called name, in this folder."
-- `--` - Tells most programs "no more flags after this." Unreliable for a file
-  named `-`: a lone `-` isn't a flag, so `--` doesn't change what it means.
-  `cat -- -` still reads your keyboard. A path to the file always works.
-- `Ctrl+D` - "I'm done typing." Ends standard input.
-- `Ctrl+C` - "Stop, right now." Kills the running program.
-
-### Mission 2
-
-- **Target:** [OverTheWire (Bandit Level 1 → Level 2)](https://overthewire.org/wargames/bandit/bandit2.html)
-- **Objective:** Log in as `bandit1` with the password you found in Mission 1.
-  The next password is in a file with an awkward name. Read it.
-- **If it freezes:** If the terminal sits there doing nothing, the program
-  is waiting on standard input. Press `Ctrl+C` and think about what the
-  program saw.
-- **Crucial Step:** Once you have the password, `exit` and log back in as
-  `bandit2` with it.
+| Command | What it does |
+| --- | --- |
+| `man` | Reads the manual of any command (that has one, but don't worry, most do!). Try `man man`. |
+| `cd ..` / `cd ~` | Go one folder up / go to your home folder, respectively. Just using `cd` takes you to your home directory by default. |
+| `./name` | "This file called name, right here in this folder." |
+| `--` | I mentioned it above :) |
+| `Ctrl + D` | "I'm done typing." Ends standard input here. |
+| `Ctrl + C` | "Just stfu and stop immediately." Kills the running program :) |
 """
 
 CHAPTER = Chapter(
