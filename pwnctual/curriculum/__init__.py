@@ -1,10 +1,28 @@
-"""Course registry. To add a chapter, create a module exporting CHAPTER and list it here."""
+"""Course registry. To add a chapter, create a file exporting CHAPTER and list it in a module here."""
+from .model import Module
 from . import (ch00_roadmap, ch01_terminal_ssh, ch02_looking_around, ch03_flags_and_paths,
                ch04_spaces)
 
-# Numbered from 0: Chapter 0 is the course roadmap video.
-CHAPTERS = [ch00_roadmap.CHAPTER, ch01_terminal_ssh.CHAPTER, ch02_looking_around.CHAPTER,
-            ch03_flags_and_paths.CHAPTER, ch04_spaces.CHAPTER]
+# Chapter 0, the course roadmap video, comes before every module.
+INTRO = ch00_roadmap.CHAPTER
+
+MODULES = [
+    Module("linux-the-very-basics", "Linux: The Very Basics",
+           "The terminal, SSH, and finding your way around a Linux box.",
+           [ch01_terminal_ssh.CHAPTER, ch02_looking_around.CHAPTER,
+            ch03_flags_and_paths.CHAPTER, ch04_spaces.CHAPTER]),
+]
+
+# Numbered from 0 straight through the modules, so chapter and challenge numbers never reset.
+CHAPTERS = [INTRO] + [ch for m in MODULES for ch in m.chapters]
+MODULE_BY_ID = {}
+
+for m in MODULES:
+    if m.id in MODULE_BY_ID:
+        raise ValueError(f"duplicate module id: {m.id}")
+    MODULE_BY_ID[m.id] = m
+    for ch in m.chapters:
+        ch.module = m
 
 CHALLENGES = {}
 CHAPTER_BY_ID = {}
