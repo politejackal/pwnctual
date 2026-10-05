@@ -5,8 +5,7 @@
   <a class="card path-card tone-{{ tone }}" href="/learn/{{ ch.id }}">
     <div class="top">
       <span class="material-symbols-rounded" style="font-size:40px">{{ 'flag' if ch.challenges else 'map' }}</span>
-      {# Chapter 0 stands before every module, so it is shown as module 0 #}
-      <span class="num" aria-hidden="true">{{ 'M0' if ch.number == 0 else '%02d'|format(ch.number) }}</span>
+      <span class="num" aria-hidden="true">{{ '%02d'|format(ch.number) }}</span>
     </div>
     <div class="label" style="color:inherit;opacity:.8;margin-top:16px">Chapter {{ ch.number }}</div>
     <div class="headline">{{ ch.title }}</div>
