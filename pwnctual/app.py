@@ -331,7 +331,7 @@ def learn():
 
 
 # Chapters that changed their URL: old id -> new id.
-RENAMED_CHAPTERS = {"first-contact": "the-terminal-and-ssh"}
+RENAMED_CHAPTERS = {"first-contact": "the-terminal-and-ssh", "finding-needles": "flags-and-paths"}
 
 
 @app.get("/learn/<chapter_id>")
