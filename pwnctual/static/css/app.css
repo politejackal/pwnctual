@@ -319,7 +319,9 @@ a.chip:active::after { opacity: .14; }
 
 /* ---------------------------------------------------------------- paths & modules */
 .path-card { position: relative; overflow: hidden; min-height: 220px; display: flex; flex-direction: column; }
-.path-card .num { font-size: 96px; font-weight: 900; line-height: .8; position: absolute; right: 20px; bottom: 8px; opacity: .14; letter-spacing: -.05em; }
+/* the big number sits beside the icon, in the flow, so it never covers the card's text */
+.path-card .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.path-card .num { font-size: 72px; font-weight: 900; line-height: .8; opacity: .14; letter-spacing: -.05em; white-space: nowrap; }
 .path-card .meta { margin-top: auto; padding-top: 24px; }
 .progress-line { height: 8px; border-radius: 8px; background: color-mix(in srgb, currentColor 16%, transparent); overflow: hidden; margin-top: 12px; }
 .progress-line > i { display: block; height: 100%; border-radius: 8px; background: currentColor; transition: width 1s var(--spring); }
