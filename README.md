@@ -127,7 +127,9 @@ Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no 
 challenges. A chapter with `video_id=""` shows "lecture coming soon" above its notes and challenge; its **Stuck?** button points to Chapter 0's video until it gets its own.
 
 Every other chapter belongs to a module, a group of chapters on one topic (Chapters 1–4 make up
-**Linux: The Very Basics**). Numbering runs straight through the modules and never resets.
+**Linux: The Very Basics**). The Learn and Home pages show Chapter 0 and one card per module; a
+module's chapters are listed on its own page at `/learn/<module-id>`. Module and chapter ids share
+that URL space, so they must not overlap. Numbering runs straight through the modules and never resets.
 
 Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to a module's chapter
 list in `MODULES` in `curriculum/__init__.py` (or add a new `Module(id, title, summary, [chapters])`):

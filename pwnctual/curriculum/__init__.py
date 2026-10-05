@@ -17,7 +17,8 @@ MODULES = [
 CHAPTERS = [INTRO] + [ch for m in MODULES for ch in m.chapters]
 MODULE_BY_ID = {}
 
-for m in MODULES:
+for mi, m in enumerate(MODULES, start=1):
+    m.number = mi
     if m.id in MODULE_BY_ID:
         raise ValueError(f"duplicate module id: {m.id}")
     MODULE_BY_ID[m.id] = m
@@ -42,5 +43,9 @@ for ci, chapter in enumerate(CHAPTERS):
 
 if not CHAPTERS[0].video_id:
     raise ValueError("Chapter 0 needs a video: it's where Stuck? sends people for chapters without one")
+
+# Modules and chapters share /learn/<id>, so their ids can't overlap.
+for clash in MODULE_BY_ID.keys() & CHAPTER_BY_ID.keys():
+    raise ValueError(f"module and chapter share an id: {clash}")
 
 TOTAL_CHALLENGES = len(CHALLENGES)

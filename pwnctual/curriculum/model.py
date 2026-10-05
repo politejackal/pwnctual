@@ -53,3 +53,9 @@ class Module:
     title: str
     summary: str
     chapters: list = field(default_factory=list)
+    # filled in by the registry
+    number: int = 0
+
+    @property
+    def challenges(self):
+        return [c for ch in self.chapters for c in ch.challenges]
