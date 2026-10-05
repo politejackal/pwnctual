@@ -4,7 +4,7 @@ Hierarchy:  Module  ->  Chapter  ->  Challenge
 
 A module groups chapters on one topic. Chapter 0, the roadmap, sits on its own before them.
 
-Every chapter is a YouTube lecture, notes, and (usually) one challenge
+Every chapter is a YouTube lecture, a writeup, and (usually) one challenge
 hosted on outside practice sites (OverTheWire for now). A chapter can be just a video (Chapter 0, the roadmap) or have no
 video yet. Nothing is auto-checked:
 when a learner says they finished a challenge, we take their word for it.

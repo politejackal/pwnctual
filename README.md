@@ -1,6 +1,6 @@
 # 💀 pwnctual
 
-Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, notes,
+Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, a writeup,
 and a real hands-on challenge on a practice server such as [OverTheWire](https://overthewire.org).
 Styled with Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
 
@@ -93,7 +93,7 @@ Each chapter page has three parts:
 
 1. **Lecture.** The YouTube video, embedded with the official player so every watch counts as a view on the
    channel. A "Watch on YouTube" link sits under it.
-2. **Notes.** The same ideas in Markdown, always visible under the lecture.
+2. **Writeup.** The same ideas in Markdown, always visible under the lecture.
 3. **Challenge.** Usually one per chapter, linking to a level on a practice site such as OverTheWire. There is no checker: when a learner presses
    **I finished it**, we take their word for it and it counts toward their rank. They can undo it too.
 
@@ -123,8 +123,8 @@ Ranks are earned by challenges completed: **Shadow** at 100, **Demon** at 500, *
 
 ## Adding a chapter
 
-Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no notes and no
-challenges. A chapter with `video_id=""` shows "lecture coming soon" above its notes and challenge; its **Stuck?** button points to Chapter 0's video until it gets its own.
+Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no writeup and no
+challenges. A chapter with `video_id=""` shows "lecture coming soon" above its writeup and challenge; its **Stuck?** button points to Chapter 0's video until it gets its own.
 
 Every other chapter belongs to a module, a group of chapters on one topic (Chapters 1–4 make up
 **Linux: The Very Basics**). The Learn and Home pages show Chapter 0 and one card per module; a

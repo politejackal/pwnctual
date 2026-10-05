@@ -3,57 +3,76 @@ from .model import Chapter, Challenge
 BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
-- **The GUI Illusion:** Graphical User Interfaces (GUIs) are just a translation
-  layer. Every click triggers a hidden command.
-- **Vulnerability Location:** Bugs and vulnerabilities don't live in the GUI;
-  they live at the low level where system actions break down or
-  miscommunicate.
-- **The Terminal:** A direct text interface to the computer's core. No mouse,
-  pure text control.
+### Core Concepts
+
+- **Graphical User Interface (GUI):** The GUI is just a layer of translation.
+  Whenever you click something, that click gets translated into a command.
+- **Where vulnerabilities live:** Vulnerabilities don't live inside nicely
+  crafted GUIs. They live at the core level, where these translations
+  miscommunicate. They live in the slight mistakes. They live in the smallest
+  details.
+- **Terminal:** The terminal is a direct, text-based command center for all
+  the commands. No mouse, just the keyboard ;)
 
 ### The Hacker's Grammar
 
-To talk to the terminal, you structure text using specific components:
+When you want to talk to the terminal, you use a specific syntax. Here we'll
+compare it to normal English syntax:
 
-- **Command (The Verb):** The action you want to take (e.g., `paint`).
-- **Argument (The Noun):** The target of your action (e.g., `car`).
-- **Flag (The Category):** Preceded by a dash (`-`), this tells the machine
-  what feature you want to modify (e.g., `-color`).
-- **Value (The Adjective):** The exact specification for that flag (e.g.,
-  `red` or `blue`).
+1. **Command (the verb):** The action you want to take. For example, `paint`.
+    Here, obviously, `paint` is the command. Typing it on its own simply runs
+    the command.
+2. **Argument (the noun):** The target of your command, meaning where or what
+    the command should work on. For example, `car`, so we get `paint car`.
+    Depending on the command, this is often optional.
+3. **Flag (the specification):** `paint car` is fine, but sometimes you want to
+    add an extra specification. Flags are optional and only used when you want
+    to specify something. They're usually preceded by a dash (`-`), or sometimes
+    two (`--`). For example, `-color`, so our line becomes `paint car -color`.
 
-```bash
-Command -Flag Value Argument
-paint -color red car
-```
+    Something looks missing here, right? But it isn't necessarily missing,
+    because it's up to the developer to decide how the program treats each
+    flag. A developer could just as well create a flag like `-nicely`, and
+    `paint car -nicely` is a completely sensible command on its own.
+4. **Value (the adjective):** Some flags expect a value right after them. The
+    value is just a word or number that follows the flag, with no dash in front
+    of it. For example, `red`, so the command becomes `paint car -color red`.
+    Now that looks like a cool command.
 
 ### SSH (Secure Shell)
 
-**Purpose:** Your "grappling hook." It creates a secure, encrypted tunnel to
-execute commands on a remote computer over the internet.
+**Purpose in life:** SSH creates a secure connection to another machine/server
+so you can remotely perform whatever actions you want on it, over a network
+(such as the internet).
+
+**How to use SSH:**
 
 ```bash
-ssh -p port_number username@hostname
+ssh -p portnumber username@hostname
 ```
 
-- `ssh`: The command (Verb).
-- `-p`: The flag indicating we are modifying the port (Category).
-- `port_number`: The exact digital door we are using (Adjective).
-- `username@hostname`: The account and web address of the target machine
-  (Noun/Target).
+Here:
+
+1. `ssh` is the command. Typing this word invokes the SSH program.
+2. `-p` is the flag, indicating that we want to modify the command. Here, `p`
+    stands for port, telling the SSH program that we want to specify the port.
+    How do I know this, and how does SSH know this? Well, I read the manual. The
+    developers built the program so that when it sees `-p`, it expects the next
+    value to be the port number.
+3. `portnumber` is the value. You don't need to know what this means for now,
+    but it's a number :)
+4. `username@hostname` is the important part. The first part is your username
+    on the target machine. The `@` is just a separator between the username and
+    the hostname (you can read it as "username at hostname"). As for the
+    hostname, you don't need to fully understand it at this level; just
+    remember it's usually a domain name (like `targetmachine.com`) or an IP
+    address (like `123.12.12.1`).
 
 Example:
 
 ```bash
-ssh -p 2220 john@targetmachine.com
+ssh -p 1234 diddy@targetmachine.com
 ```
-
-### Mission 0
-
-- **Target:** [OverTheWire (Bandit Level 0)](https://overthewire.org/wargames/bandit/bandit0.html)
-- **Objective:** Gather the hostname, port, username, and password from the
-  Bandit website and construct the correct `ssh` command to successfully log
-  into the server.
 """
 
 CHAPTER = Chapter(
