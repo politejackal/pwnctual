@@ -253,7 +253,7 @@ a.chip:active::after { opacity: .14; }
 
 /* ---------------------------------------------------------------- hero */
 .hero { position: relative; padding: 72px 0 40px; isolation: isolate; }
-.hero h1 em { font-style: normal; color: var(--tertiary); }
+.hero h1 em, .learn-head h1 em { font-style: normal; color: var(--tertiary); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 /* rotating headline word: the line resizes smoothly to fit each word */
 .rotator { display: inline-block; position: relative; white-space: nowrap; vertical-align: bottom;
