@@ -77,7 +77,7 @@ ssh -p 1234 diddy@targetmachine.com
 
 CHAPTER = Chapter(
     "the-terminal-and-ssh", "The Terminal & SSH",
-    "Why the terminal is where hacking happens, the grammar of a command, and logging in to a real server with SSH.",
+    "What the terminal and SSH are: the very fundamentals, perhaps the oxygen of every hacker.",
     notes=NOTES,
     video_id="2jJcWlYePv0",
     challenges=[
