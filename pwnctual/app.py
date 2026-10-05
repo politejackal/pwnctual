@@ -14,7 +14,7 @@ from flask import (Flask, abort, g, jsonify, redirect, render_template, request,
 from markupsafe import Markup
 
 from . import db as dbm
-from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTERS, TOTAL_CHALLENGES
+from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTERS, INTRO, MODULES, TOTAL_CHALLENGES
 from .emblems import emblem
 from . import classes as cls
 from . import shapes
@@ -212,7 +212,7 @@ def inject():
     user = current_user()
     ctx = {
         "me": user, "csrf_token": csrf_token, "asset": asset, "md": md, "emblem": lambda t, size=96: Markup(emblem(t, size)),
-        "CHAPTERS": CHAPTERS, "TOTAL_CHALLENGES": TOTAL_CHALLENGES, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
+        "CHAPTERS": CHAPTERS, "INTRO": INTRO, "MODULES": MODULES, "TOTAL_CHALLENGES": TOTAL_CHALLENGES, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
         "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID),
         "my_rank": None, "my_solved": {}, "IS_ADMIN": is_admin(user),
     }

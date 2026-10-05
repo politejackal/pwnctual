@@ -6,7 +6,7 @@ Styled with Google's Material 3 Expressive, and ranked like a competitive game: 
 
 ```
 pwnctual/            Flask site (pages, auth, progress API, live classes)
-  curriculum/        Chapters → Challenges (pure Python)
+  curriculum/        Modules → Chapters → Challenges (pure Python)
   ranks.py           Ranked ladder + thresholds
   emblems.py         SVG skull emblems for every rank
 ```
@@ -126,8 +126,11 @@ Ranks are earned by challenges completed: **Shadow** at 100, **Demon** at 500, *
 Chapters are numbered from 0. Chapter 0 is the course roadmap: just a video, no notes and no
 challenges. A chapter with `video_id=""` shows "lecture coming soon" above its notes and challenge; its **Stuck?** button points to Chapter 0's video until it gets its own.
 
-Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to `CHAPTERS` in
-`curriculum/__init__.py`:
+Every other chapter belongs to a module, a group of chapters on one topic (Chapters 1–4 make up
+**Linux: The Very Basics**). Numbering runs straight through the modules and never resets.
+
+Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to a module's chapter
+list in `MODULES` in `curriculum/__init__.py` (or add a new `Module(id, title, summary, [chapters])`):
 
 ```python
 from .model import Chapter, Challenge

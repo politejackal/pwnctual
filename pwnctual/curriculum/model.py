@@ -1,6 +1,8 @@
 """Data model for the pwnctual course.
 
-Hierarchy:  Chapter  ->  Challenge
+Hierarchy:  Module  ->  Chapter  ->  Challenge
+
+A module groups chapters on one topic. Chapter 0, the roadmap, sits on its own before them.
 
 Every chapter is a YouTube lecture, notes, and (usually) one challenge
 hosted on outside practice sites (OverTheWire for now). A chapter can be just a video (Chapter 0, the roadmap) or have no
@@ -33,6 +35,7 @@ class Chapter:
     challenges: list = field(default_factory=list)
     # filled in by the registry
     number: int = 0
+    module: Optional["Module"] = None
     help_video_id: str = ""  # where "Stuck?" sends people: this lecture, or Chapter 0's until it has one
 
     @property
@@ -42,3 +45,11 @@ class Chapter:
     @property
     def help_video_url(self):
         return f"https://www.youtube.com/watch?v={self.help_video_id}"
+
+
+@dataclass
+class Module:
+    id: str
+    title: str
+    summary: str
+    chapters: list = field(default_factory=list)

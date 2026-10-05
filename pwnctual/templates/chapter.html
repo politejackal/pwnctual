@@ -8,9 +8,10 @@
   <div class="crumbs">
     <a href="/">Home</a><span class="material-symbols-rounded">chevron_right</span>
     <a href="/learn">Chapters</a><span class="material-symbols-rounded">chevron_right</span>
+    {% if chapter.module %}<a href="/learn#{{ chapter.module.id }}">{{ chapter.module.title }}</a><span class="material-symbols-rounded">chevron_right</span>{% endif %}
     <span>Chapter {{ chapter.number }}</span>
   </div>
-  <div class="label">Chapter {{ chapter.number }}</div>
+  <div class="label">{% if chapter.module %}{{ chapter.module.title }} · {% endif %}Chapter {{ chapter.number }}</div>
   <h1 class="display-s" style="margin:8px 0 4px">{{ chapter.title }}</h1>
   <div class="muted" style="font-size:18px">{{ chapter.summary }}</div>
 
