@@ -111,11 +111,10 @@
 
   {% if chapter.challenges %}<section style="margin-top:48px">{{ stuck_card(chapter) }}</section>{% endif %}
 
-  <div class="row" style="margin-top:40px">
+  <div class="row chapter-nav">
     {% if prev is not none %}<a class="btn outlined" href="/learn/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% endif %}
-    <span class="spacer"></span>
     {# a new module's card already leads on, so no second Next button #}
-    {% if nxt is not none and not new_module %}<a class="btn" href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
+    {% if nxt is not none and not new_module %}<a class="btn next" href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
   </div>
 </div>
 {% endblock %}

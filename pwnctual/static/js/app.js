@@ -21,15 +21,15 @@
     const next = root.dataset.theme === "light" ? "dark" : "light";
     const apply = () => { root.dataset.theme = next; store.set("theme", next); syncIcon(); };
     if (!canTransition()) return apply();
+    // The reveal is plain CSS (.theme-anim in app.css) that reads these, so it runs the same in every
+    // browser with view transitions; nothing else animates, so nothing on the page moves.
     const r = btn.getBoundingClientRect();
     const x = r.left + r.width / 2, y = r.top + r.height / 2;
-    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    root.style.setProperty("--reveal-x", `${x}px`);
+    root.style.setProperty("--reveal-y", `${y}px`);
+    root.style.setProperty("--reveal-r", `${Math.ceil(Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)))}px`);
     root.classList.add("theme-anim");
     const t = document.startViewTransition(apply);
-    t.ready.then(() => root.animate(
-      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-      { duration: 550, easing: "cubic-bezier(.2, 0, 0, 1)", pseudoElement: "::view-transition-new(root)" },
-    )).catch(() => {});
     t.finished.finally(() => root.classList.remove("theme-anim"));
   });
 
