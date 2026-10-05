@@ -1,4 +1,6 @@
-from .model import Chapter
+from .model import Chapter, Challenge
+
+BANDIT = "https://overthewire.org/wargames/bandit"
 
 NOTES = r"""
 ### Core Concepts
@@ -28,6 +30,17 @@ NOTES = r"""
 - `"..."` and `'...'` - Keep spaces inside one piece.
 - `\` - Protect the next character.
 - `Tab` - Finish a filename for you. Press it twice to see every match.
+
+### Mission 3
+
+- **Target:** [OverTheWire (Bandit Level 2 → Level 3)](https://overthewire.org/wargames/bandit/bandit3.html)
+- **Objective:** Log in as `bandit2` with the password you found in Mission 2.
+  The next password is in a file with spaces in its name. Read it.
+- **If it fails:** Read the error word by word. It tells you which pieces the
+  shell cut your line into, and what the program thought each one was.
+  Chapter 3 still applies.
+- **Crucial Step:** Once you have the password, `exit` and log back in as
+  `bandit3` with it.
 """
 
 CHAPTER = Chapter(
@@ -35,4 +48,8 @@ CHAPTER = Chapter(
     "Where the shell cuts your line, how to read the errors it leaves behind, and how quotes and backslashes keep a name in one piece.",
     notes=NOTES,
     video_id="vC7sSi8wxoQ",
+    challenges=[
+        Challenge("bandit-3", "Mission 3: Bandit Level 2 → 3", f"{BANDIT}/bandit3.html",
+                  "Read a file whose name the shell cuts into pieces, then log in as bandit3."),
+    ],
 )
