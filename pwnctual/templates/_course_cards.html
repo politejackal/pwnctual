@@ -1,6 +1,6 @@
 {% from "_cards.html" import TONES, chapter_card, module_card, coming_soon with context %}
 <div class="grid grid-2">
   {{ chapter_card(INTRO, TONES[0]) }}
-  {% for m in MODULES %}{{ module_card(m, TONES[loop.index % 3]) }}{% endfor %}
+  {% for m in MODULES %}{{ module_card(m, m.tone) }}{% endfor %}
   {{ coming_soon('module') }}
 </div>
