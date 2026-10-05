@@ -57,5 +57,10 @@ class Module:
     number: int = 0
 
     @property
+    def tone(self):
+        """The module's colour, used by every card that stands for it."""
+        return ("primary", "tertiary", "secondary")[self.number % 3]
+
+    @property
     def challenges(self):
         return [c for ch in self.chapters for c in ch.challenges]

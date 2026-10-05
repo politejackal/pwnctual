@@ -7,7 +7,7 @@
 {# The next chapter opens a different module: say so, so nobody crosses over without noticing. #}
 {% set new_module = nxt.module if nxt and nxt.module and nxt.module is not sameas chapter.module else none %}
 {% macro next_module_card(m) %}
-  <section class="card tone-tertiary next-module" aria-labelledby="next-module-title">
+  <section class="card tone-{{ m.tone }} next-module" aria-labelledby="next-module-title">
     <div class="top">
       <div>
         <div class="label">Up next · New module</div>
