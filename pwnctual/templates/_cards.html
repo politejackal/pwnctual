@@ -3,7 +3,11 @@
 {% macro chapter_card(ch, tone) %}
   {% set done = ch.challenges|selectattr('slug', 'in', my_solved)|list|length %}
   <a class="card path-card tone-{{ tone }}" href="/learn/{{ ch.id }}">
-    <span class="material-symbols-rounded" style="font-size:40px">{{ 'flag' if ch.challenges else 'map' }}</span>
+    <div class="top">
+      <span class="material-symbols-rounded" style="font-size:40px">{{ 'flag' if ch.challenges else 'map' }}</span>
+      {# Chapter 0 stands before every module, so it is shown as module 0 #}
+      <span class="num" aria-hidden="true">{{ 'M0' if ch.number == 0 else '%02d'|format(ch.number) }}</span>
+    </div>
     <div class="label" style="color:inherit;opacity:.8;margin-top:16px">Chapter {{ ch.number }}</div>
     <div class="headline">{{ ch.title }}</div>
     <div style="opacity:.8">{{ ch.summary }}</div>
@@ -15,7 +19,6 @@
       <div class="row" style="font-size:14px;font-weight:650"><span>Start here</span></div>
       {% endif %}
     </div>
-    <div class="num">{{ '%02d'|format(ch.number) }}</div>
   </a>
 {% endmacro %}
 
@@ -23,7 +26,10 @@
   {% set total = m.challenges|length %}
   {% set done = m.challenges|selectattr('slug', 'in', my_solved)|list|length %}
   <a class="card path-card tone-{{ tone }}" href="/learn/{{ m.id }}">
-    <span class="material-symbols-rounded" style="font-size:40px">{{ 'check_circle' if total and done == total else 'terminal' }}</span>
+    <div class="top">
+      <span class="material-symbols-rounded" style="font-size:40px">{{ 'check_circle' if total and done == total else 'terminal' }}</span>
+      <span class="num" aria-hidden="true">M{{ m.number }}</span>
+    </div>
     <div class="label" style="color:inherit;opacity:.8;margin-top:16px">Module {{ m.number }}</div>
     <div class="headline">{{ m.title }}</div>
     <div style="opacity:.8">{{ m.summary }}</div>
@@ -31,7 +37,6 @@
       <div class="row" style="font-size:14px;font-weight:650"><span>{{ m.chapters|length }} chapter{{ '' if m.chapters|length == 1 else 's' }} · Chapters {{ m.chapters[0].number }}–{{ m.chapters[-1].number }}</span><span class="spacer"></span><span>{{ done }}/{{ total }}</span></div>
       <div class="progress-line"><i style="width:{{ (100 * done / total)|round if total else 0 }}%"></i></div>
     </div>
-    <div class="num">M{{ m.number }}</div>
   </a>
 {% endmacro %}
 
