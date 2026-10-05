@@ -321,7 +321,7 @@ a.chip:active::after { opacity: .14; }
 .path-card { position: relative; overflow: hidden; min-height: 220px; display: flex; flex-direction: column; }
 /* the big number sits beside the icon, in the flow, so it never covers the card's text */
 .path-card .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.path-card .num { font-size: 72px; font-weight: 900; line-height: .8; opacity: .14; letter-spacing: -.05em; white-space: nowrap; }
+.path-card .num { flex: none; font-size: 72px; font-weight: 900; line-height: .8; opacity: .14; letter-spacing: -.05em; white-space: nowrap; }
 .path-card .meta { margin-top: auto; padding-top: 24px; }
 .progress-line { height: 8px; border-radius: 8px; background: color-mix(in srgb, currentColor 16%, transparent); overflow: hidden; margin-top: 12px; }
 .progress-line > i { display: block; height: 100%; border-radius: 8px; background: currentColor; transition: width 1s var(--spring); }
@@ -537,6 +537,21 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
 .lecture-note { font-size: 13px; max-width: 360px; }
 @media (max-width: 640px) { .lecture-note { max-width: none; } }
 
+/* end of a chapter whose next chapter opens a new module */
+.next-module { margin-top: 40px; padding: 28px; display: grid; gap: 20px; }
+.next-module .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.next-module .label { color: inherit; opacity: .8; }
+.next-module .headline { margin: 6px 0 4px; }
+.next-module .summary { opacity: .8; }
+.next-module .top > div { min-width: 0; }
+.next-module .num { flex: none; font-size: 72px; font-weight: 900; line-height: .8; opacity: .18; letter-spacing: -.05em; white-space: nowrap; }
+.next-module-chapters { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.next-module-chapters a { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 14px; color: inherit; font-weight: 600; }
+.next-module-chapters a:hover { background: color-mix(in srgb, currentColor 8%, transparent); text-decoration: none; }
+.next-module-chapters .mono { opacity: .6; }
+.next-module-chapters .material-symbols-rounded { margin-left: auto; font-size: 20px; }
+.next-module .btn.outlined { --fg: currentColor; }
+@media (max-width: 640px) { .next-module { padding: 24px 20px; } .next-module .num { font-size: 44px; } }
 .lock-card { display: flex; gap: 16px; align-items: flex-start; margin-top: 32px; padding: 20px 24px; border-radius: var(--shape-xl);
   border: 1px dashed var(--outline-variant); }
 .lock-card > .material-symbols-rounded { width: 48px; height: 48px; flex: none; border-radius: 16px; display: grid; place-items: center;

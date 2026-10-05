@@ -4,6 +4,29 @@
 {% block title %}Chapter {{ chapter.number }}: {{ chapter.title }} · pwnctual{% endblock %}
 {% block main %}
 {% set all_done = chapter.challenges|rejectattr('slug', 'in', my_solved)|list|length == 0 %}
+{# The next chapter opens a different module: say so, so nobody crosses over without noticing. #}
+{% set new_module = nxt.module if nxt and nxt.module and nxt.module is not sameas chapter.module else none %}
+{% macro next_module_card(m) %}
+  <section class="card tone-tertiary next-module" aria-labelledby="next-module-title">
+    <div class="top">
+      <div>
+        <div class="label">Up next · New module</div>
+        <h2 class="headline" id="next-module-title">Module {{ m.number }}: {{ m.title }}</h2>
+        <div class="summary">{{ m.summary }}</div>
+      </div>
+      <span class="num" aria-hidden="true">M{{ m.number }}</span>
+    </div>
+    <ol class="next-module-chapters">
+      {% for ch in m.chapters %}
+      <li><a href="/learn/{{ ch.id }}"><span class="mono">{{ '%02d'|format(ch.number) }}</span><span>{{ ch.title }}</span>{% if ch.challenges and ch.challenges|rejectattr('slug', 'in', my_solved)|list|length == 0 %}<span class="material-symbols-rounded" aria-label="done">check_circle</span>{% endif %}</a></li>
+      {% endfor %}
+    </ol>
+    <div class="row" style="gap:12px">
+      <a class="btn lg" href="/learn/{{ m.chapters[0].id }}"><span class="material-symbols-rounded">arrow_forward</span>Start Chapter {{ m.chapters[0].number }}</a>
+      <a class="btn outlined" href="/learn/{{ m.id }}">See the module</a>
+    </div>
+  </section>
+{% endmacro %}
 <div class="narrow chapter" id="chapter" data-chapter="{{ chapter.id }}" data-csrf="{{ csrf_token() }}">
   <div class="crumbs">
     <a href="/">Home</a><span class="material-symbols-rounded">chevron_right</span>
@@ -79,21 +102,24 @@
       <div class="banner ok chapter-done" id="chapter-done"{% if not (me and all_done) %} hidden{% endif %} style="margin-top:20px">
         <span class="material-symbols-rounded">celebration</span>
         <span><b>Chapter {{ chapter.number }} complete.</b>
-          {% if nxt %}On to <a href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}: {{ nxt.title }}</a>.
+          {% if new_module %}{% if chapter.module %}That's the end of {{ chapter.module.title }}. {% endif %}Next up is a new module: <a href="/learn/{{ new_module.id }}">Module {{ new_module.number }}: {{ new_module.title }}</a>.
+          {% elif nxt %}On to <a href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}: {{ nxt.title }}</a>.
           {% else %}The next chapter is on its way. Keep your notes handy: it picks up where this one ends.{% endif %}</span>
       </div>
     </section>
-    {% elif nxt %}
+    {% elif nxt and not new_module %}
     <div class="row" style="margin-top:32px"><a class="btn lg" href="/learn/{{ nxt.id }}"><span class="material-symbols-rounded">arrow_forward</span>On to Chapter {{ nxt.number }}: {{ nxt.title }}</a></div>
     {% endif %}
   </div>
+
+  {% if new_module %}{{ next_module_card(new_module) }}{% endif %}
 
   {% if chapter.challenges %}<section style="margin-top:48px">{{ stuck_card(chapter) }}</section>{% endif %}
 
   <div class="row" style="margin-top:40px">
     {% if prev is not none %}<a class="btn outlined" href="/learn/{{ prev.id }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% endif %}
     <span class="spacer"></span>
-    {% if nxt is not none %}<a class="btn" href="/learn/{{ nxt.id }}">Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
+    {% if nxt is not none %}<a class="btn" href="/learn/{{ nxt.id }}">{% if new_module %}Module {{ new_module.number }} · {% endif %}Chapter {{ nxt.number }}<span class="material-symbols-rounded">arrow_forward</span></a>{% endif %}
   </div>
 </div>
 {% endblock %}

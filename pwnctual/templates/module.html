@@ -17,7 +17,7 @@
     <p class="lede muted">{{ module.summary }}</p>
     <div class="row" style="gap:8px">
       <span class="chip">{{ module.chapters|length }} chapter{{ '' if module.chapters|length == 1 else 's' }}</span>
-      <span class="chip {{ 'good' if total and done == total }}">{{ done }}/{{ total }} challenges</span>
+      <span class="chip {{ 'good' if total and done == total }}">{{ done }}/{{ total }} challenges completed</span>
     </div>
   </header>
   <div class="grid grid-2">
