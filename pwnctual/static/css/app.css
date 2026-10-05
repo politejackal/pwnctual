@@ -545,12 +545,14 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
 .next-module .summary { opacity: .8; }
 .next-module .top > div { min-width: 0; }
 .next-module .num { flex: none; font-size: 72px; font-weight: 900; line-height: .8; opacity: .18; letter-spacing: -.05em; white-space: nowrap; }
-.next-module-chapters { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.next-module-chapters a { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 14px; color: inherit; font-weight: 600; }
-.next-module-chapters a:hover { background: color-mix(in srgb, currentColor 8%, transparent); text-decoration: none; }
-.next-module-chapters .mono { opacity: .6; }
-.next-module-chapters .material-symbols-rounded { margin-left: auto; font-size: 20px; }
 .next-module .btn.outlined { --fg: currentColor; }
+/* the whole card opens the module and reacts like the module cards; its buttons sit above that link */
+.next-module { position: relative; }
+.next-module .stretch { color: inherit; }
+.next-module .stretch::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.next-module .stretch:hover { text-decoration: none; }
+.next-module .btn { z-index: 1; }
+.card.next-module:hover { background: var(--surface-container); border-radius: 40px; }
 @media (max-width: 640px) { .next-module { padding: 24px 20px; } .next-module .num { font-size: 44px; } }
 .lock-card { display: flex; gap: 16px; align-items: flex-start; margin-top: 32px; padding: 20px 24px; border-radius: var(--shape-xl);
   border: 1px dashed var(--outline-variant); }

@@ -11,16 +11,11 @@
     <div class="top">
       <div>
         <div class="label">Up next · New module</div>
-        <h2 class="headline" id="next-module-title">Module {{ m.number }}: {{ m.title }}</h2>
+        <h2 class="headline" id="next-module-title"><a class="stretch" href="/learn/{{ m.id }}">Module {{ m.number }}: {{ m.title }}</a></h2>
         <div class="summary">{{ m.summary }}</div>
       </div>
       <span class="num" aria-hidden="true">M{{ m.number }}</span>
     </div>
-    <ol class="next-module-chapters">
-      {% for ch in m.chapters %}
-      <li><a href="/learn/{{ ch.id }}"><span class="mono">{{ '%02d'|format(ch.number) }}</span><span>{{ ch.title }}</span>{% if ch.challenges and ch.challenges|rejectattr('slug', 'in', my_solved)|list|length == 0 %}<span class="material-symbols-rounded" aria-label="done">check_circle</span>{% endif %}</a></li>
-      {% endfor %}
-    </ol>
     <div class="row" style="gap:12px">
       <a class="btn lg" href="/learn/{{ m.chapters[0].id }}"><span class="material-symbols-rounded">arrow_forward</span>Start Chapter {{ m.chapters[0].number }}</a>
       <a class="btn outlined" href="/learn/{{ m.id }}">See the module</a>
