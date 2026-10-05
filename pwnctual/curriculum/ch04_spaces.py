@@ -34,4 +34,5 @@ CHAPTER = Chapter(
     "spaces", "Spaces, the Shell's Knife",
     "Where the shell cuts your line, how to read the errors it leaves behind, and how quotes and backslashes keep a name in one piece.",
     notes=NOTES,
+    video_id="vC7sSi8wxoQ",
 )
