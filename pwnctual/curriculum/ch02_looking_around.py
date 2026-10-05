@@ -5,34 +5,22 @@ BANDIT = "https://overthewire.org/wargames/bandit"
 NOTES = r"""
 *I forgot to mention this in the video.*
 
-Here's the first thing which I personally feel nobody tells you: the shell
-lies to the command. Like the SHELL, kind of lies to you. When you type a line
-and hit Enter, the command you called never sees what you typed. The shell
-grabs your line first, chops it into pieces, does its own edits, and only then
-hands the leftovers to the program. Almost every "weird" thing or error you're
-about to hit is really the shell doing something to your text before the
-command ever wakes up.
+The shell actually manipulates the data you give it and then hands it over to
+the command. For example, if you type `my notes.txt` in the shell, it takes it
+and chops it wherever it finds spaces. This changes your input of
+`my notes.txt` into `my` and `notes.txt`. Well, we'll come back to this in a
+while, so for now you should just know that the shell manipulates the given
+data.
 
-Hold that thought. First, let's learn to walk.
+### Basic Commands
 
-### Core Commands to Research
-
-- `pwd` - Where am I?
-- `ls` - What is in this directory?
-- `cd` - Move to a directory.
-- `cat` - Read a file.
-- `exit` - Close the current shell and disconnect.
-
-### Mission 1
-
-- **Target:** [OverTheWire (Bandit Level 0 → Level 1)](https://overthewire.org/wargames/bandit/bandit1.html)
-- **Objective:** You know how to SSH. Now prove you can look around and read
-  files on a target system. Go to
-  [overthewire.org/wargames/bandit](https://overthewire.org/wargames/bandit)
-  and follow the instructions there for Level 0 → Level 1.
-- **Crucial Step:** Once you find the password for the next level, use the
-  `exit` command to disconnect from your current SSH session. Then use SSH to
-  log back in as the next user with the new password you just found.
+| Command | Short for | What it does |
+| --- | --- | --- |
+| `pwd` | print working directory | Prints what it says ;) |
+| `ls` | list | Lists the files/<wbr>directories. |
+| `cd` | change directory | Does what it says :) |
+| `cat` | concatenate | Reads a file. |
+| `exit` | — | Exits the current shell connection, or in other words, disconnects you from the current connection. |
 """
 
 CHAPTER = Chapter(
