@@ -56,6 +56,7 @@ CHAPTER = Chapter(
     "setting-up-for-c", "Setting Up for C",
     "Install gcc and make in your terminal, and meet your first library.",
     notes=NOTES,
+    video_id="MVwIK4CMNDI",
     challenges=[
         Challenge("exercism-c-hello-world", "Mission 4: Hello, World! in C",
                   "https://exercism.org/tracks/c/exercises/hello-world",
