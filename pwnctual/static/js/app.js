@@ -10,29 +10,6 @@
   const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   const canTransition = () => !!document.startViewTransition && !reducedMotion();
 
-  // ------------------------------------------------------------------ theme
-  const syncIcon = () => {
-    const icon = $("#theme-icon");
-    if (icon) icon.textContent = root.dataset.theme === "light" ? "dark_mode" : "light_mode";
-  };
-  syncIcon();
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest("#theme-toggle"); if (!btn) return;
-    const next = root.dataset.theme === "light" ? "dark" : "light";
-    const apply = () => { root.dataset.theme = next; store.set("theme", next); syncIcon(); };
-    if (!canTransition()) return apply();
-    // The reveal is plain CSS (.theme-anim in app.css) that reads these, so it runs the same in every
-    // browser with view transitions; nothing else animates, so nothing on the page moves.
-    const r = btn.getBoundingClientRect();
-    const x = r.left + r.width / 2, y = r.top + r.height / 2;
-    root.style.setProperty("--reveal-x", `${x}px`);
-    root.style.setProperty("--reveal-y", `${y}px`);
-    root.style.setProperty("--reveal-r", `${Math.ceil(Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)))}px`);
-    root.classList.add("theme-anim");
-    const t = document.startViewTransition(apply);
-    t.finished.finally(() => root.classList.remove("theme-anim"));
-  });
-
   // ------------------------------------------------------------------ top bar elevation
   const bar = $(".topbar");
   const onScroll = () => bar?.classList.toggle("scrolled", scrollY > 8);
