@@ -17,7 +17,7 @@
       <span class="num" aria-hidden="true">M{{ m.number }}</span>
     </div>
     <div class="next-module-nav">
-      {% if prev is not none %}<a class="btn outlined prev" href="{{ prev.url }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% else %}<span class="prev"></span>{% endif %}
+      {% if prev is not none %}<a class="btn outlined prev" href="{{ prev.url }}"><span class="material-symbols-rounded">arrow_back</span>Chapter {{ prev.number }}</a>{% else %}{# nothing comes before Chapter 0, but it's fun to try #}<span class="prev sleepy" tabindex="0" data-tip="Are you sleepy?"><span class="btn outlined" aria-disabled="true"><span class="material-symbols-rounded">arrow_back</span>Chapter -1</span></span>{% endif %}
       <a class="btn outlined see" href="/learn/{{ m.id }}">See the module</a>
       <a class="btn next" href="{{ m.chapters[0].url }}">Chapter {{ m.chapters[0].number }}<span class="material-symbols-rounded">arrow_forward</span></a>
     </div>
