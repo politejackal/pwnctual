@@ -13,7 +13,7 @@ MODULES = [
             ch03_flags_and_paths.CHAPTER, ch04_spaces.CHAPTER]),
 ]
 
-# Numbered from 0 straight through the modules, so chapter and challenge numbers never reset.
+# Numbered from 0 straight through the modules, so chapter numbers never reset.
 CHAPTERS = [INTRO] + [ch for m in MODULES for ch in m.chapters]
 MODULE_BY_ID = {}
 
@@ -36,9 +36,8 @@ for ci, chapter in enumerate(CHAPTERS):
     CHAPTER_BY_ID[chapter.id] = chapter
     CHAPTER_BY_SLUG[chapter.slug] = chapter
     chapter.help_video_id = chapter.video_id or CHAPTERS[0].video_id
-    for i, chal in enumerate(chapter.challenges, start=1):
+    for chal in chapter.challenges:
         chal.chapter = chapter
-        chal.number = f"{ci}.{i}"
         if chal.slug in CHALLENGES:
             raise ValueError(f"duplicate challenge slug: {chal.slug}")
         CHALLENGES[chal.slug] = chal

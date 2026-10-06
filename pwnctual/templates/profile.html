@@ -46,7 +46,7 @@
     {% for c, t in recent %}
       <a class="lb-row" style="grid-template-columns:48px 1fr auto" href="{{ c.chapter.url }}#{{ c.slug }}">
         <span class="avatar" style="background:var(--tertiary);color:var(--on-tertiary)"><span class="material-symbols-rounded">flag</span></span>
-        <span><b>{{ c.title }}</b><br><span class="muted mono" style="font-size:13px">{{ c.number }} · <span class="ago" data-t="{{ t }}"></span></span></span>
+        <span><b>{{ c.title }}</b><br><span class="muted mono" style="font-size:13px"><span class="ago" data-t="{{ t }}"></span></span></span>
         <span class="material-symbols-rounded" style="color:var(--tertiary)">check</span>
       </a>
     {% endfor %}
