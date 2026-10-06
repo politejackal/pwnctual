@@ -41,5 +41,9 @@ CHAPTER = Chapter(
     challenges=[
         Challenge("bandit-3", "Mission 3: Bandit Level 2 → 3", f"{BANDIT}/bandit3.html",
                   "Read a file whose name the shell cuts into pieces, then log in as bandit3."),
+        Challenge("bandit-4", "Extra: Bandit Level 3 → 4", f"{BANDIT}/bandit4.html",
+                  "Try solving this challenge on your own. If you get stuck, use the manual, and when "
+                  "you're absolutely stuck, Google it! If that still doesn't solve the problem, please "
+                  "post your problem in the comments of the previous video."),
     ],
 )
