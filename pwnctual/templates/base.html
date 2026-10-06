@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}pwnctual{% endblock %}</title>
 <meta name="description" content="pwnctual: learn to hack from absolute zero. Free forever.">
-<script>
-  try { var t = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-        document.documentElement.dataset.theme = t; } catch (e) {}
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,ROND@6..144,1..1000,0..100&display=swap">
@@ -34,7 +30,6 @@
       {% endfor %}
     </nav>
     <div class="topbar-end">
-    <button class="btn text icon-btn" id="theme-toggle" aria-label="Toggle theme"><span class="material-symbols-rounded" id="theme-icon">dark_mode</span></button>
     <div class="actions">
     {% if me %}
       <a class="mini-rank" href="/u/{{ me.login }}" title="{{ my_rank.tier.label }}">{{ emblem(my_rank.tier, 40) }}<span class="nl">{{ my_rank.tier.label }}</span></a>
