@@ -22,7 +22,6 @@ class Challenge:
     platform: str = "OverTheWire"  # the site that hosts it, shown on its card
     # filled in by the registry
     chapter: Optional["Chapter"] = None
-    number: str = ""
 
 
 @dataclass
