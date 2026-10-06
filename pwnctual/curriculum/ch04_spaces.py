@@ -5,42 +5,32 @@ BANDIT = "https://overthewire.org/wargames/bandit"
 NOTES = r"""
 ### Core Concepts
 
-- **The Knife:** The shell cuts your line into pieces at every space. A
-  filename with a space in it gets cut into two pieces, and the program goes
-  looking for two files that don't exist.
-- **Reading Errors:** Most Linux errors have the same shape: who is
-  complaining: what it was working on: what went wrong. For example,
-  `cat: my: No such file or directory`. The error shows you exactly how the
-  shell cut your line. Read every word.
-- **Quotes:** Text inside quotes stays one piece, spaces and all.
-  `"my notes.txt"` and `'my notes.txt'` both work. The quotes are for the
-  shell, which removes them, so the program never sees them.
-- **The Backslash:** `\` protects only the next character. `my\ notes.txt`
-  means "this space is part of the name, don't cut here."
-- **What ls Shows You:** `ls` may show `'my notes.txt'` with quotes around
-  it. Those quotes aren't part of the name. They just show where the name
-  starts and ends.
-- **Why It Matters:** When a program glues a user's text into a command
-  without quotes, a space splits it into extra pieces. If one of those pieces
-  starts with a dash, it becomes a flag. That's argument injection again.
-  Watch for unquoted user text whenever you read code.
+- **Splitting:** The shell cuts your line into pieces. Generally, it cuts
+  whenever it sees a space.
+- **Reading errors:** Most Linux errors have the same structure:
+
+        command name: what it was working on: the error it found
+
+    Example:
+
+        cat: my: No such file or directory
+
+- **Quotes:** If there are single or double quotes around something, the shell
+  ignores any spaces inside it. This is for the shell, not the program. Recall
+  that the program never actually sees exactly what you typed.
+- **Backslash:** A backslash protects only one character, the one right after
+  it.
+- **What `ls` shows you:** It may show quotes around a file name. Those quotes
+  are not part of the file's name; they're just there to show you that
+  whatever is inside them is one word.
 
 ### Core Commands to Research
 
-- `"..."` and `'...'` - Keep spaces inside one piece.
-- `\` - Protect the next character.
-- `Tab` - Finish a filename for you. Press it twice to see every match.
-
-### Mission 3
-
-- **Target:** [OverTheWire (Bandit Level 2 → Level 3)](https://overthewire.org/wargames/bandit/bandit3.html)
-- **Objective:** Log in as `bandit2` with the password you found in Mission 2.
-  The next password is in a file with spaces in its name. Read it.
-- **If it fails:** Read the error word by word. It tells you which pieces the
-  shell cut your line into, and what the program thought each one was.
-  Chapter 3 still applies.
-- **Crucial Step:** Once you have the password, `exit` and log back in as
-  `bandit3` with it.
+| Command | What it does |
+| --- | --- |
+| `"..."` & `'...'` | Keep words with spaces together as one word. |
+| `\` | Protects the next character. |
+| `Tab` | Finishes what you were about to type if it finds a match. Press it twice if there is more than one file with the same starting letters, and it will show you all of them. |
 """
 
 CHAPTER = Chapter(

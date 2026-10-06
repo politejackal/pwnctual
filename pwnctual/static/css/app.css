@@ -380,6 +380,8 @@ a.card:hover .badge { border-radius: 50%; }
 @media (max-width: 480px) {
   .prose table { display: block; overflow-x: auto; font-size: 14px; }
   .prose th, .prose td { padding: 8px 10px; hyphens: auto; }
+  /* long commands wrap instead of hiding their end behind a sideways scroll */
+  .prose pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; }
 }
 .prose th { background: var(--surface-container); font-weight: 700; }
 .prose a { text-decoration: underline; text-underline-offset: 3px; }
