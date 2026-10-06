@@ -25,7 +25,6 @@
 <div class="narrow chapter" id="chapter" data-chapter="{{ chapter.id }}" data-csrf="{{ csrf_token() }}">
   <div class="crumbs">
     <a href="/">Home</a><span class="material-symbols-rounded">chevron_right</span>
-    <a href="/learn">Chapters</a><span class="material-symbols-rounded">chevron_right</span>
     {% if chapter.module %}<a href="/learn/{{ chapter.module.id }}">{{ chapter.module.title }}</a><span class="material-symbols-rounded">chevron_right</span>{% endif %}
     <span>Chapter {{ chapter.number }}</span>
   </div>
