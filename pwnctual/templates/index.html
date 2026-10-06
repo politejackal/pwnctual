@@ -27,7 +27,7 @@
     <div class="card filled" style="margin-top:32px;max-width:720px">{{ rank_card(my_rank) }}</div>
     <div class="row" style="margin-top:24px">
       {% if next_c.ch %}
-        <a class="btn lg" href="/learn/{{ next_c.ch.id }}"><span class="material-symbols-rounded">play_arrow</span>Continue: Chapter {{ next_c.ch.number }}</a>
+        <a class="btn lg" href="{{ next_c.ch.url }}"><span class="material-symbols-rounded">play_arrow</span>Continue: Chapter {{ next_c.ch.number }}</a>
       {% endif %}
       <a class="btn lg tonal" href="/learn"><span class="material-symbols-rounded">school</span>All chapters</a>
     </div>
@@ -37,7 +37,7 @@
     <p class="lede">Watch a lecture, read the writeup, then break into real servers with
       hands-on challenges. Climb from <b>Noob</b> to <b class="ghost-name">Ghost</b> as you go.</p>
     <div class="row">
-      <a class="btn lg" href="/learn/{{ first.id }}"><span class="material-symbols-rounded">play_arrow</span>Start with chapter 0</a>
+      <a class="btn lg" href="{{ first.url }}"><span class="material-symbols-rounded">play_arrow</span>Start with chapter 0</a>
       <a class="btn lg outlined" href="/learn">Browse chapters</a>
     </div>
   {% endif %}

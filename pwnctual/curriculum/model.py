@@ -39,6 +39,15 @@ class Chapter:
     help_video_id: str = ""  # where "Stuck?" sends people: this lecture, or Chapter 0's until it has one
 
     @property
+    def slug(self):
+        """The chapter's URL path segment: chapter-0, chapter-1, ..."""
+        return f"chapter-{self.number}"
+
+    @property
+    def url(self):
+        return f"/learn/{self.slug}"
+
+    @property
     def video_url(self):
         return f"https://www.youtube.com/watch?v={self.video_id}" if self.video_id else ""
 

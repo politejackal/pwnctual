@@ -14,7 +14,7 @@ from flask import (Flask, abort, g, jsonify, redirect, render_template, request,
 from markupsafe import Markup
 
 from . import db as dbm
-from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTERS, INTRO, MODULE_BY_ID, MODULES, TOTAL_CHALLENGES
+from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTER_BY_SLUG, CHAPTERS, INTRO, MODULE_BY_ID, MODULES, TOTAL_CHALLENGES
 from .emblems import emblem
 from . import classes as cls
 from . import shapes
@@ -330,18 +330,19 @@ def learn():
     return render_template("learn.html")
 
 
-# Chapters that changed their URL: old id -> new id.
+# Chapters used to live at /learn/<name>; those links now redirect to /learn/chapter-<number>.
 RENAMED_CHAPTERS = {"first-contact": "the-terminal-and-ssh"}
 
 
 @app.get("/learn/<chapter_id>")
 def chapter_page(chapter_id):
-    """A chapter, or a module's list of chapters: they share this URL space."""
+    """A chapter (/learn/chapter-N), or a module's list of chapters: they share this URL space."""
     if chapter_id in MODULE_BY_ID:
         return render_template("module.html", module=MODULE_BY_ID[chapter_id])
-    if chapter_id in RENAMED_CHAPTERS:
-        return redirect(url_for("chapter_page", chapter_id=RENAMED_CHAPTERS[chapter_id]), 301)
-    chapter = CHAPTER_BY_ID.get(chapter_id) or abort(404)
+    old = CHAPTER_BY_ID.get(RENAMED_CHAPTERS.get(chapter_id, chapter_id))
+    if old:
+        return redirect(old.url, 301)
+    chapter = CHAPTER_BY_SLUG.get(chapter_id) or abort(404)
     i = CHAPTERS.index(chapter)
     return render_template("chapter.html", chapter=chapter,
                            prev=CHAPTERS[i - 1] if i > 0 else None,

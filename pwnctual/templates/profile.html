@@ -25,7 +25,7 @@
     {% for ch in m.chapters if ch.challenges %}
       {% set d = ch.challenges|selectattr('slug', 'in', solved)|list|length %}
       {% set full = d == ch.challenges|length %}
-      <a class="card module-row {{ 'done' if full }}" href="/learn/{{ ch.id }}">
+      <a class="card module-row {{ 'done' if full }}" href="{{ ch.url }}">
         <span class="badge">{% if full %}<span class="material-symbols-rounded">check</span>{% else %}{{ ch.number }}{% endif %}</span>
         <div class="info">
           <div class="title-m">Chapter {{ ch.number }}: {{ ch.title }}</div>
@@ -44,7 +44,7 @@
   <h2 class="headline" style="margin:40px 0 16px">Recently finished</h2>
   <div class="lb">
     {% for c, t in recent %}
-      <a class="lb-row" style="grid-template-columns:48px 1fr auto" href="/learn/{{ c.chapter.id }}#{{ c.slug }}">
+      <a class="lb-row" style="grid-template-columns:48px 1fr auto" href="{{ c.chapter.url }}#{{ c.slug }}">
         <span class="avatar" style="background:var(--tertiary);color:var(--on-tertiary)"><span class="material-symbols-rounded">flag</span></span>
         <span><b>{{ c.title }}</b><br><span class="muted mono" style="font-size:13px">{{ c.number }} · <span class="ago" data-t="{{ t }}"></span></span></span>
         <span class="material-symbols-rounded" style="color:var(--tertiary)">check</span>

@@ -2,7 +2,7 @@
 
 {% macro chapter_card(ch, tone) %}
   {% set done = ch.challenges|selectattr('slug', 'in', my_solved)|list|length %}
-  <a class="card path-card tone-{{ tone }}" href="/learn/{{ ch.id }}">
+  <a class="card path-card tone-{{ tone }}" href="{{ ch.url }}">
     <div class="top">
       <span class="material-symbols-rounded" style="font-size:40px">{{ 'flag' if ch.challenges else 'map' }}</span>
       <span class="num" aria-hidden="true">{{ '%02d'|format(ch.number) }}</span>
