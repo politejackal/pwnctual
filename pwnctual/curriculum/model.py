@@ -4,9 +4,9 @@ Hierarchy:  Module  ->  Chapter  ->  Challenge
 
 A module groups chapters on one topic. Chapter 0, the roadmap, sits on its own before them.
 
-Every chapter is a YouTube lecture, a writeup, and (usually) one challenge
-hosted on outside practice sites (OverTheWire for now). A chapter can be just a video (Chapter 0, the roadmap) or have no
-video yet. Nothing is auto-checked:
+A chapter can have a YouTube lecture, a writeup, and challenges hosted on outside
+practice sites (OverTheWire, Exercism). Any of these can be missing: Chapter 0 is just a
+video, and some chapters are just a writeup. Nothing is auto-checked:
 when a learner says they finished a challenge, we take their word for it.
 """
 from dataclasses import dataclass, field
