@@ -1,8 +1,6 @@
 # 💀 pwnctual
 
-Learn to hack from absolute zero. **Free forever.** Every chapter is a YouTube lecture, a writeup,
-and a real hands-on challenge on a practice server such as [OverTheWire](https://overthewire.org).
-Styled with Google's Material 3 Expressive, and ranked like a competitive game: climb from **Noob** to **Ghost**.
+An open-source place to learn hacking from zero, for free.
 
 ```
 pwnctual/            Flask site (pages, auth, progress API, live classes)
