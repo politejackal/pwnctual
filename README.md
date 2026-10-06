@@ -128,8 +128,9 @@ challenges. A chapter with `video_id=""` shows "lecture coming soon" above its w
 
 Every other chapter belongs to a module, a group of chapters on one topic (Chapters 1–4 make up
 **Linux: The Very Basics**). The Learn and Home pages show Chapter 0 and one card per module; a
-module's chapters are listed on its own page at `/learn/<module-id>`. Module and chapter ids share
-that URL space, so they must not overlap. Numbering runs straight through the modules and never resets.
+module's chapters are listed on its own page at `/learn/<module-id>`, and each chapter lives at
+`/learn/chapter-<number>` (old `/learn/<chapter-id>` links redirect there). Module ids share that URL
+space, so they must not match a chapter id or `chapter-<number>`. Numbering runs straight through the modules and never resets.
 
 Create `pwnctual/curriculum/chNN_<name>.py` exporting `CHAPTER`, then add it to a module's chapter
 list in `MODULES` in `curriculum/__init__.py` (or add a new `Module(id, title, summary, [chapters])`):

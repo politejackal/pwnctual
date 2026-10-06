@@ -27,12 +27,14 @@ for mi, m in enumerate(MODULES, start=1):
 
 CHALLENGES = {}
 CHAPTER_BY_ID = {}
+CHAPTER_BY_SLUG = {}
 
 for ci, chapter in enumerate(CHAPTERS):
     chapter.number = ci
     if chapter.id in CHAPTER_BY_ID:
         raise ValueError(f"duplicate chapter id: {chapter.id}")
     CHAPTER_BY_ID[chapter.id] = chapter
+    CHAPTER_BY_SLUG[chapter.slug] = chapter
     chapter.help_video_id = chapter.video_id or CHAPTERS[0].video_id
     for i, chal in enumerate(chapter.challenges, start=1):
         chal.chapter = chapter
@@ -44,8 +46,8 @@ for ci, chapter in enumerate(CHAPTERS):
 if not CHAPTERS[0].video_id:
     raise ValueError("Chapter 0 needs a video: it's where Stuck? sends people for chapters without one")
 
-# Modules and chapters share /learn/<id>, so their ids can't overlap.
-for clash in MODULE_BY_ID.keys() & CHAPTER_BY_ID.keys():
+# Modules and chapters share /learn/<id>, so module ids can't overlap chapter ids or slugs.
+for clash in MODULE_BY_ID.keys() & (CHAPTER_BY_ID.keys() | CHAPTER_BY_SLUG.keys()):
     raise ValueError(f"module and chapter share an id: {clash}")
 
 TOTAL_CHALLENGES = len(CHALLENGES)
