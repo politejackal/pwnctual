@@ -102,8 +102,6 @@
           {% else %}The next chapter is on its way. Keep your notes handy: it picks up where this one ends.{% endif %}</span>
       </div>
     </section>
-    {% elif nxt and not new_module %}
-    <div class="row" style="margin-top:32px"><a class="btn lg" href="{{ nxt.url }}"><span class="material-symbols-rounded">arrow_forward</span>On to Chapter {{ nxt.number }}: {{ nxt.title }}</a></div>
     {% endif %}
   </div>
 
