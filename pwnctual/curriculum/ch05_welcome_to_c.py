@@ -30,7 +30,7 @@ So, let's dive in!!
 
 CHAPTER = Chapter(
     "welcome-to-c", "Welcome to C",
-    "Why a hacker learns C instead of Python, and how we'll learn it without spending months on it.",
+    "Why a hacker learns C instead of Python, and how we'll learn it.",
     notes=NOTES,
     video_id="au8j4nlHgsI",
 )
