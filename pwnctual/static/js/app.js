@@ -29,6 +29,12 @@
     catch { snack("Copy failed. Select the text manually."); }
   });
 
+  // Chapter 0's Chapter -1 button: there's nothing before Chapter 0, so a click only changes its tooltip
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest(".sleepy"); if (!b) return;
+    b.dataset.tip = "Looks like you really want it...";
+  });
+
   // ------------------------------------------------------------------ M3 Expressive wavy progress
   function drawWavy(host) {
     const p = Math.max(0, Math.min(1, parseFloat(host.dataset.p) || 0));
