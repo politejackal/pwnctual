@@ -8,6 +8,7 @@
   --secondary-container: #4A4458; --on-secondary-container: #E8DEF8;
   --tertiary: #B6F36A;           --on-tertiary: #1F3700;
   --tertiary-container: #2F5200; --on-tertiary-container: #D2FF9E;
+  --green-card: #16613D;         --on-green-card: #FFFFFF;  /* tone-tertiary cards */
   --error: #FFB4AB;              --on-error: #690005;
   --error-container: #93000A;    --on-error-container: #FFDAD6;
   --surface: #141218;            --on-surface: #E6E0E9;
@@ -40,6 +41,7 @@
   --secondary-container: #E8DEF8; --on-secondary-container: #4A4458;
   --tertiary: #3F6A00;           --on-tertiary: #FFFFFF;
   --tertiary-container: #C2F28A; --on-tertiary-container: #2F5000;
+  --green-card: #1F7A4D;         --on-green-card: #FFFFFF;
   --error: #BA1A1A;              --on-error: #FFFFFF;
   --error-container: #FFDAD6;    --on-error-container: #93000A;
   --surface: #FEF7FF;            --on-surface: #1D1B20;
@@ -238,7 +240,7 @@ main { padding-bottom: 96px; min-height: calc(100vh - 160px); }
 a.card { color: inherit; }
 a.card:hover { text-decoration: none; background: var(--surface-container); border-radius: 40px; }
 .card.tone-primary { background: var(--primary-container); color: var(--on-primary-container); }
-.card.tone-tertiary { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.card.tone-tertiary { background: var(--green-card); color: var(--on-green-card); }
 .card.tone-secondary { background: var(--secondary-container); color: var(--on-secondary-container); }
 
 .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: var(--shape-s);
