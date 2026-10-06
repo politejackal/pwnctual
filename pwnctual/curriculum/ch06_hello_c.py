@@ -1,13 +1,6 @@
 from .model import Chapter, Challenge
 
 NOTES = r"""
-### Why C?
-
-Most of the programs you've been poking at on Linux, including the shell
-itself, are written in C. C hands you the machine's memory directly and trusts
-you not to make mistakes. When you do make one, someone else can often use it
-to break in. You have to read C before you can find those mistakes.
-
 ### Your First Program
 
 ```c
@@ -35,7 +28,7 @@ int main(void) {
 
 CHAPTER = Chapter(
     "hello-c", "Hello, C",
-    "Write, compile and run your first C program, and see why hackers read C.",
+    "Write, compile and run your first C program.",
     notes=NOTES,
     challenges=[
         Challenge("exercism-c-hello-world", "Mission 4: Hello, World! in C",
