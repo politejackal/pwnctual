@@ -72,8 +72,6 @@ will tell you what to check for:
 - `gcc` compiles your file without printing any errors.
 - When you run your program, your text shows up in the terminal.
 - The next prompt starts on a new line, not glued to the end of your text.
-
-Once all three are true, press **I finished it**.
 """
 
 CHAPTER = Chapter(
@@ -85,9 +83,5 @@ CHAPTER = Chapter(
         Challenge("print-something", "Mission 4: Print Something", "",
                   "Write a C program whose whole target in life is to print something. Anything.",
                   platform="Your terminal", details=PRINT_SOMETHING),
-        Challenge("exercism-c-hello-world", "Extra: Hello, World! in C",
-                  "https://exercism.org/tracks/c/exercises/hello-world",
-                  "Make a C function hand back the classic greeting and pass the tests.",
-                  platform="Exercism"),
     ],
 )
