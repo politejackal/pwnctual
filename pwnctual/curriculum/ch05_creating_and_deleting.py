@@ -7,8 +7,8 @@ This is your side quest for today, good luck!
 """
 
 CHAPTER = Chapter(
-    "man-and-nano", "Reading the Manual",
-    "Use man to look up what a command does, then go find out what nano is.",
+    "creating-and-deleting", "Creating and Deleting Stuff",
+    "The very basics of creating and deleting files and directories.",
     notes=NOTES,
     video_id="u3ex-lR63SI",
 )
