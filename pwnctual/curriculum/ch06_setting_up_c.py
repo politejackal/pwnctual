@@ -52,13 +52,40 @@ From the next chapter onwards, we will have videos, because I feel that's better
 too.
 """
 
+PRINT_SOMETHING = r"""
+You can refer to the code from the video. It just prints `hello`:
+
+```c
+#include <stdio.h>
+
+int main(void) {
+    printf("hello\n");
+    return 0;
+}
+```
+
+Unlike other cool platforms, we will not be having a checker to check your
+code. In vulnerability research, there is nobody there to check the scripts you
+wrote. You must find out yourself whether your script is working or not. But we
+will tell you what to check for:
+
+- `gcc` compiles your file without printing any errors.
+- When you run your program, your text shows up in the terminal.
+- The next prompt starts on a new line, not glued to the end of your text.
+
+Once all three are true, press **I finished it**.
+"""
+
 CHAPTER = Chapter(
     "setting-up-for-c", "Setting Up for C",
     "Install gcc and make in your terminal, and meet your first library.",
     notes=NOTES,
     video_id="MVwIK4CMNDI",
     challenges=[
-        Challenge("exercism-c-hello-world", "Mission 4: Hello, World! in C",
+        Challenge("print-something", "Mission 4: Print Something", "",
+                  "Write a C program whose whole target in life is to print something. Anything.",
+                  platform="Your terminal", details=PRINT_SOMETHING),
+        Challenge("exercism-c-hello-world", "Extra: Hello, World! in C",
                   "https://exercism.org/tracks/c/exercises/hello-world",
                   "Make a C function hand back the classic greeting and pass the tests.",
                   platform="Exercism"),
