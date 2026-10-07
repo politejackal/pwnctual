@@ -1,7 +1,8 @@
 """Course registry. To add a chapter, create a file exporting CHAPTER and list it in a module here."""
 from .model import Module
 from . import (ch00_roadmap, ch01_terminal_ssh, ch02_looking_around, ch03_flags_and_paths,
-               ch04_spaces, ch05_welcome_to_c, ch06_setting_up_c, ch07_data_types)
+               ch04_spaces, ch05_creating_and_deleting, ch06_welcome_to_c, ch07_setting_up_c,
+               ch08_data_types)
 
 # Chapter 0, the course roadmap video, comes before every module.
 INTRO = ch00_roadmap.CHAPTER
@@ -10,10 +11,10 @@ MODULES = [
     Module("linux-the-very-basics", "Linux: The Very Basics",
            "The terminal, SSH, and finding your way around a Linux box.",
            [ch01_terminal_ssh.CHAPTER, ch02_looking_around.CHAPTER,
-            ch03_flags_and_paths.CHAPTER, ch04_spaces.CHAPTER]),
+            ch03_flags_and_paths.CHAPTER, ch04_spaces.CHAPTER, ch05_creating_and_deleting.CHAPTER]),
     Module("the-c-language", "The C Language",
            "The language Linux is written in. Learn to read and write it, so you can see where it breaks.",
-           [ch05_welcome_to_c.CHAPTER, ch06_setting_up_c.CHAPTER, ch07_data_types.CHAPTER]),
+           [ch06_welcome_to_c.CHAPTER, ch07_setting_up_c.CHAPTER, ch08_data_types.CHAPTER]),
 ]
 
 # Numbered from 0 straight through the modules, so chapter numbers never reset.
