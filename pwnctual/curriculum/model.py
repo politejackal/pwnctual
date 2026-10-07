@@ -17,9 +17,10 @@ from typing import Optional
 class Challenge:
     slug: str
     title: str
-    url: str       # the challenge page on OverTheWire
+    url: str       # the challenge page on the site that hosts it; empty for one done on your own machine
     brief: str     # one line on what the level is about, never the answer
     platform: str = "OverTheWire"  # the site that hosts it, shown on its card
+    details: str = ""  # markdown shown under the brief, for a challenge with no site to explain it
     # filled in by the registry
     chapter: Optional["Chapter"] = None
 
