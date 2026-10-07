@@ -7,8 +7,8 @@ This is your side quest for today, good luck!
 """
 
 CHAPTER = Chapter(
-    "welcome-to-c", "Welcome to C",
-    "Why a hacker learns C instead of Python, and how we'll learn it.",
+    "man-and-nano", "Reading the Manual",
+    "Use man to look up what a command does, then go find out what nano is.",
     notes=NOTES,
     video_id="u3ex-lR63SI",
 )
