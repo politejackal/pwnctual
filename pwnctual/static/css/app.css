@@ -519,6 +519,7 @@ footer .foot-links { display: flex; flex-direction: column; gap: 10px; font-weig
 @keyframes unlock { from { opacity: 0; transform: translateY(24px); } }
 .notes { margin-top: 48px; }
 .notes .prose > :first-child { margin-top: 8px; }
+.notes-optional { margin: 4px 0 0; font-style: italic; }
 .chapter-done[hidden] { display: none; }
 .stuck-card { margin-top: 8px; }
 

@@ -63,6 +63,7 @@
     {% if chapter.notes %}
     <section class="notes" id="notes" aria-labelledby="notes-title">
       <h2 class="headline" id="notes-title">Writeup</h2>
+      {% if chapter.notes_optional %}<p class="muted notes-optional">(Reading the writeup is optional for this chapter; you can go to the next chapter.)</p>{% endif %}
       <div class="prose">{{ md(chapter.notes) }}</div>
     </section>
     {% endif %}
