@@ -576,6 +576,87 @@ function loginPage(next) {
   };
 }
 
+const UPDATED = "October 8, 2026";
+const ISSUES = "https://github.com/politejackal/pwnctual/issues";
+
+function legal(title, body) {
+  return {
+    nav: "",
+    title,
+    html: `<div class="narrow">
+  <h1 class="display-s" style="margin:40px 0 8px">${title}</h1>
+  <p class="muted" style="margin:0 0 24px">Last updated ${UPDATED}</p>
+  <div class="prose">${body}</div>
+</div>`,
+  };
+}
+
+function privacy() {
+  return legal("Privacy policy", `
+<p>pwnctual is a free, open-source course. This page says what it stores about you and why. The short version:
+we keep as little as we can, we never sell it, and there are no ads or trackers.</p>
+
+<h3>Without an account</h3>
+<p>The challenges you mark as finished are saved in your own browser (local storage). They never leave your
+device, and clearing your browser data deletes them.</p>
+
+<h3>With an account (Sign in with Google)</h3>
+<p>When you sign in with Google, we receive your Google account ID, email address and name from Google.
+We use them only to sign you in. We store:</p>
+<ul>
+<li>your sign-in details (Google account ID and email), which are never shown on the site;</li>
+<li>your username, which starts out random (like <code>hacker-1a2b3c</code>) and which you can change;</li>
+<li>which challenges you marked as finished, and when.</li>
+</ul>
+<p>Your username and finished challenges are <b>public</b>: they appear on the leaderboard and your profile page.
+Your Google name, email and photo are never shown.</p>
+<p>This data is stored with <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase</a>,
+our database provider. Your browser keeps a sign-in session in local storage so you stay signed in.</p>
+
+<h3>Other services the site uses</h3>
+<ul>
+<li><b>YouTube</b>: lecture videos are embedded from YouTube, which may set its own cookies when you play one
+(<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>).</li>
+<li><b>Google Fonts</b>: fonts and icons load from Google's servers.</li>
+<li><b>Cloudflare</b>: hosts the site and, like any web host, handles the requests your browser makes.</li>
+</ul>
+
+<h3>Deleting your data</h3>
+<p>"Start over" on your profile deletes your finished challenges. To delete your whole account, ask through
+<a href="${ISSUES}" target="_blank" rel="noopener">pwnctual's GitHub issues</a> and we'll remove it.</p>
+
+<h3>Changes</h3>
+<p>If this policy changes, the new version will be posted here with a new date.</p>`);
+}
+
+function terms() {
+  return legal("Terms of service", `
+<p>pwnctual is free to use. By using it, you agree to these terms.</p>
+
+<h3>Hack responsibly</h3>
+<p>pwnctual teaches hacking so you can practise it legally. Only attack systems you own or have explicit
+permission to test, like the practice challenges the course links to. Using what you learn here against anyone
+else's systems without permission is illegal in most places, and you are responsible for what you do.</p>
+
+<h3>Your account</h3>
+<ul>
+<li>Progress works on the honor system: please only mark challenges you actually finished.</li>
+<li>Pick a username that isn't offensive and doesn't pretend to be someone else.</li>
+<li>Don't try to break, overload or abuse the site or its database. This site isn't one of the challenges.</li>
+</ul>
+<p>We may rename or remove accounts that break these rules.</p>
+
+<h3>No guarantees</h3>
+<p>pwnctual is provided as it is, for free, without any warranty. The course and the site may change, and
+features may come and go. We aren't liable for any damage from using it.</p>
+
+<h3>Outside sites</h3>
+<p>Challenges are hosted on other sites (such as OverTheWire) with their own rules, which you also need to follow.</p>
+
+<h3>Contact</h3>
+<p>Questions? Ask through <a href="${ISSUES}" target="_blank" rel="noopener">pwnctual's GitHub issues</a>.</p>`);
+}
+
 function offline() {
   return {
     nav: "",
@@ -602,4 +683,4 @@ function notFound() {
   };
 }
 
-export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, profilePage, leaderboard, loginPage, offline, notFound };
+export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, profilePage, leaderboard, loginPage, privacy, terms, offline, notFound };
