@@ -1,11 +1,15 @@
 """Course registry. To add a chapter, create a file exporting CHAPTER and list it in a module here."""
-from .model import Module  # noqa: F401  (used when modules are added back)
-from . import ch00_welcome
+from .model import Module
+from . import ch00_welcome, ch01_welcome_to_the_terminal
 
 # Chapter 0, the welcome video, comes before every module.
 INTRO = ch00_welcome.CHAPTER
 
-MODULES = []
+MODULES = [
+    Module("linux-the-very-basics", "Linux: The Very Basics",
+           "The terminal, SSH, and finding your way around a Linux box.",
+           [ch01_welcome_to_the_terminal.CHAPTER]),
+]
 
 # Numbered from 0 straight through the modules, so chapter numbers never reset.
 CHAPTERS = ([INTRO] if INTRO else []) + [ch for m in MODULES for ch in m.chapters]

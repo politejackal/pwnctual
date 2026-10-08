@@ -4,7 +4,7 @@
   {% set done = ch.challenges|selectattr('slug', 'in', my_solved)|list|length %}
   <a class="card path-card tone-{{ tone }}" href="{{ ch.url }}">
     <div class="top">
-      <span class="material-symbols-rounded" style="font-size:40px">{{ 'flag' if ch.challenges else 'map' }}</span>
+      <span class="material-symbols-rounded" style="font-size:40px">{{ 'flag' if ch.challenges else ('map' if ch.number == 0 else 'menu_book') }}</span>
       <span class="num" aria-hidden="true">{{ '%02d'|format(ch.number) }}</span>
     </div>
     <div class="label" style="color:inherit;opacity:.8;margin-top:16px">Chapter {{ ch.number }}</div>
@@ -14,8 +14,10 @@
       {% if ch.challenges %}
       <div class="row" style="font-size:14px;font-weight:650"><span>{{ '' if ch.video_id else 'Lecture coming soon' }}</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
       <div class="progress-line"><i style="width:{{ (100 * done / ch.challenges|length)|round }}%"></i></div>
-      {% else %}
+      {% elif ch.number == 0 %}
       <div class="row" style="font-size:14px;font-weight:650"><span>Start here</span></div>
+      {% elif not ch.video_id %}
+      <div class="row" style="font-size:14px;font-weight:650"><span>Lecture coming soon</span></div>
       {% endif %}
     </div>
   </a>
@@ -33,7 +35,7 @@
     <div class="headline">{{ m.title }}</div>
     <div style="opacity:.8">{{ m.summary }}</div>
     <div class="meta">
-      <div class="row" style="font-size:14px;font-weight:650"><span>{{ m.chapters|length }} chapter{{ '' if m.chapters|length == 1 else 's' }} · Chapters {{ m.chapters[0].number }}–{{ m.chapters[-1].number }}</span><span class="spacer"></span><span>{{ done }}/{{ total }}</span></div>
+      <div class="row" style="font-size:14px;font-weight:650"><span>{{ m.chapters|length }} chapter{{ '' if m.chapters|length == 1 else 's' }} · {% if m.chapters|length == 1 %}Chapter {{ m.chapters[0].number }}{% else %}Chapters {{ m.chapters[0].number }}–{{ m.chapters[-1].number }}{% endif %}</span><span class="spacer"></span><span>{{ done }}/{{ total }}</span></div>
       <div class="progress-line"><i style="width:{{ (100 * done / total)|round if total else 0 }}%"></i></div>
     </div>
   </a>
