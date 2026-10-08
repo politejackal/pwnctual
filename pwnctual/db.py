@@ -21,16 +21,6 @@ CREATE TABLE IF NOT EXISTS solves (
     solved_at REAL NOT NULL,
     PRIMARY KEY (user_id, slug)
 );
-CREATE TABLE IF NOT EXISTS class_bookings (
-    id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    start_ts INTEGER NOT NULL,
-    note TEXT,
-    created_at REAL NOT NULL,
-    cancelled_at REAL
-);
--- one live booking per slot, enforced by the database itself
-CREATE UNIQUE INDEX IF NOT EXISTS class_slot_taken ON class_bookings(start_ts) WHERE cancelled_at IS NULL;
 """
 
 
@@ -58,6 +48,7 @@ MIGRATIONS = [
 def init_db():
     con = sqlite3.connect(DB_PATH)
     con.executescript(SCHEMA)
+    con.execute("DROP TABLE IF EXISTS class_bookings")  # live classes were removed
     cols = {r[1] for r in con.execute("PRAGMA table_info(users)")}
     for col, ddl in MIGRATIONS:
         if col not in cols:
