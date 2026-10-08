@@ -9,7 +9,7 @@
     </div>
     <div class="label" style="color:inherit;opacity:.8;margin-top:16px">Chapter {{ ch.number }}</div>
     <div class="headline">{{ ch.title }}</div>
-    <div style="opacity:.8">{{ ch.summary }}</div>
+    {% if ch.summary %}<div style="opacity:.8">{{ ch.summary }}</div>{% endif %}
     <div class="meta">
       {% if ch.challenges %}
       <div class="row" style="font-size:14px;font-weight:650"><span>{{ '' if ch.video_id else 'Lecture coming soon' }}</span><span class="spacer"></span><span>{{ done }}/{{ ch.challenges|length }}</span></div>
