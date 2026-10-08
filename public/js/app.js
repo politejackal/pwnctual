@@ -27,8 +27,6 @@ function resolve(url) {
   if (path === "/") return pages.home();
   if (path === "/learn") return pages.learn();
   if (path === "/ranks") return pages.ranks();
-  if (path === "/privacy") return pages.privacy();
-  if (path === "/terms") return pages.terms();
   if (path === "/progress") return pages.progressPage();
   if (path === "/leaderboard") return pages.leaderboard();
   if (path === "/login") return pages.loginPage(safeNext(url.searchParams.get("next")));
@@ -195,9 +193,9 @@ async function authChanged() {
 }
 
 document.addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-google]"); if (!b) return;
+  const b = e.target.closest("[data-github]"); if (!b) return;
   b.disabled = true;
-  const { error } = await account.signIn(b.dataset.next || "/");  // on success the browser heads to Google
+  const { error } = await account.signIn(b.dataset.next || "/");  // on success the browser heads to GitHub
   if (error) { b.disabled = false; snack("Couldn't start sign-in. Please try again."); }
 });
 
@@ -206,17 +204,6 @@ document.addEventListener("click", async (e) => {
   await account.signOut().catch(() => {});
   await progress.sync();
   navigate("/");
-});
-
-document.addEventListener("submit", async (e) => {
-  const form = e.target.closest("[data-rename]"); if (!form) return;
-  e.preventDefault();
-  const login = form.elements.login.value.trim();
-  if (login === account.user.login) return;
-  const problem = await account.rename(login);
-  if (problem) { snack(problem); return; }
-  snack(`${icon("check")}You're ${login} now`);
-  navigate(`/u/${encodeURIComponent(login)}`, { push: false, scroll: scrollY });
 });
 
 
@@ -383,7 +370,7 @@ document.addEventListener("click", (e) => {
 
 // ------------------------------------------------------------------ start
 
-// Coming back from Google with an error (e.g. the person cancelled): say so, and tidy the address bar.
+// Coming back from GitHub with an error (e.g. the person cancelled): say so, and tidy the address bar.
 function signInError() {
   const params = new URLSearchParams(location.search);
   if (!params.has("error")) return;

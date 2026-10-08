@@ -1,7 +1,7 @@
 # pwnctual
 
 A static site: everything is in `public/` (HTML, CSS, ES modules). No server, no build step, no Python.
-See README.md for how it's laid out and how accounts (Supabase + Google) are set up.
+See README.md for how it's laid out and how accounts (optional GitHub sign-in on Supabase) are set up.
 
 - Course content: `public/js/course.js`. Pages: `public/js/pages.js`. Router and behaviour: `public/js/app.js`.
 - Check changes in a browser before shipping: serve `public/` with a single-page-app fallback

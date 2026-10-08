@@ -6,13 +6,14 @@
 
 -- ------------------------------------------------------------------ tables
 
--- One per account. Logins start out random (hacker-1a2b3c) so nobody's name or email
--- ends up on the leaderboard; people pick their own on their profile page.
+-- One per account. The login is your GitHub username (with -2, -3... added if it's taken).
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
-  login text not null unique check (login ~ '^[A-Za-z0-9_-]{2,32}$'),
+  login text not null unique,
   created_at timestamptz not null default now()
 );
+alter table public.profiles drop constraint if exists profiles_login_check;
+alter table public.profiles add constraint profiles_login_check check (login ~ '^[A-Za-z0-9_-]{1,39}$');
 
 -- Challenges people say they finished (honor system, nothing is checked).
 create table if not exists public.solves (
@@ -33,13 +34,9 @@ create policy "profiles are public" on public.profiles for select using (true);
 drop policy if exists "solves are public" on public.solves;
 create policy "solves are public" on public.solves for select using (true);
 
--- You can change your own login, and nothing else about your profile.
--- (Profiles are created by the trigger below, never by the browser.)
+-- Profiles are created by the trigger below, never by the browser, and can't be edited from it.
 drop policy if exists "rename yourself" on public.profiles;
-create policy "rename yourself" on public.profiles for update to authenticated
-  using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 revoke insert, update, delete on public.profiles from anon, authenticated;
-grant update (login) on public.profiles to authenticated;
 
 -- You can mark and unmark your own challenges.
 drop policy if exists "mark your own" on public.solves;
@@ -54,13 +51,21 @@ revoke update on public.solves from anon, authenticated;
 
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = '' as $$
+declare
+  base text := left(regexp_replace(coalesce(new.raw_user_meta_data ->> 'user_name', ''), '[^A-Za-z0-9_-]', '', 'g'), 32);
+  candidate text;
+  n int := 1;
 begin
+  if base = '' then base := 'hacker'; end if;
+  candidate := base;
   loop
     begin
-      insert into public.profiles (id, login) values (new.id, 'hacker-' || substr(md5(random()::text), 1, 6));
+      insert into public.profiles (id, login) values (new.id, candidate);
       exit;
     exception when unique_violation then
-      -- that login is taken: roll again
+      -- someone already has that login (e.g. a GitHub user who renamed): add a number
+      n := n + 1;
+      candidate := base || '-' || n;
     end;
   end loop;
   return new;
