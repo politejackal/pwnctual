@@ -124,7 +124,7 @@ main.centered { display: flex; flex-direction: column; justify-content: center; 
 .nav-c[data-k="index"] { view-transition-name: nav-index; } .bnav-c[data-k="index"] { view-transition-name: bnav-index; }
 .nav-c[data-k="learn"] { view-transition-name: nav-learn; } .bnav-c[data-k="learn"] { view-transition-name: bnav-learn; }
 .nav-c[data-k="ranks"] { view-transition-name: nav-ranks; } .bnav-c[data-k="ranks"] { view-transition-name: bnav-ranks; }
-.nav-c[data-k="leaderboard"] { view-transition-name: nav-leaderboard; } .bnav-c[data-k="leaderboard"] { view-transition-name: bnav-leaderboard; }
+.nav-c[data-k="progress"] { view-transition-name: nav-progress; } .bnav-c[data-k="progress"] { view-transition-name: bnav-progress; }
 .navgroup .material-symbols-rounded { font-size: 20px; }
 
 .mini-rank { display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-radius: var(--shape-full);
@@ -375,23 +375,11 @@ a.card:hover .badge { border-radius: 50%; }
 .cmd code::before { content: "$ "; color: var(--tertiary); }
 .cmd .btn { height: 36px; width: 36px; padding: 0; flex: none; }
 
-/* ---------------------------------------------------------------- leaderboard */
+/* ---------------------------------------------------------------- recently finished */
 .lb { display: grid; gap: 8px; }
-.lb-row { display: grid; grid-template-columns: 56px 48px 1fr auto auto; gap: 16px; align-items: center; padding: 10px 20px 10px 12px;
+.lb-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 16px; align-items: center; padding: 10px 20px 10px 12px;
   border-radius: 24px; background: var(--surface-container-low); color: inherit; }
 .lb-row:hover { text-decoration: none; background: var(--surface-container); }
-.lb-row .pos { font-weight: 800; font-size: 20px; text-align: center; color: var(--on-surface-variant); }
-.lb-row.top1 { background: var(--primary-container); color: var(--on-primary-container); }
-.lb-row.top1 .pos, .lb-row.top2 .pos, .lb-row.top3 .pos { color: inherit; }
-.lb-row .score { font-weight: 800; font-variant-numeric: tabular-nums; }
-.lb-row .who { flex-wrap: nowrap; min-width: 0; }
-.lb-row .who > span:last-child { min-width: 0; }
-.lb-row .who b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-@media (max-width: 640px) {
-  .lb-row { grid-template-columns: 28px 40px minmax(0, 1fr) auto; gap: 10px; padding: 10px 16px 10px 10px; }
-  .lb-row .rk { display: none; }
-  .lb-row .who .avatar { display: none; }
-}
 
 /* ---------------------------------------------------------------- forms */
 .field { display: flex; flex-direction: column; gap: 6px; }

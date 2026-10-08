@@ -1,7 +1,6 @@
-# Cloudflare Worker that serves pwnctual.com from PythonAnywhere (see cloudflare/worker.js).
-# Deployed by .github/workflows/cloudflare.yml on every push to main that changes it.
+# pwnctual.com is a static site: Cloudflare serves the files in public/ as they are.
+# Deployed by .github/workflows/cloudflare.yml on every push to main.
 name = "pwnctual"
-main = "cloudflare/worker.js"
 compatibility_date = "2025-09-01"
 workers_dev = false
 routes = [
@@ -9,6 +8,7 @@ routes = [
   { pattern = "www.pwnctual.com", custom_domain = true },
 ]
 
-[vars]
-ORIGIN = "https://politejackal.pythonanywhere.com"
-CANONICAL_HOST = "pwnctual.com"
+[assets]
+directory = "./public"
+# Every page is drawn in the browser by public/js/app.js, so any path that isn't a file gets index.html.
+not_found_handling = "single-page-application"

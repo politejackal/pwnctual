@@ -1,6 +1,0 @@
-{% from "_cards.html" import TONES, chapter_card, module_card, coming_soon with context %}
-<div class="grid grid-2">
-  {% if INTRO %}{{ chapter_card(INTRO, TONES[0]) }}{% endif %}
-  {% for m in MODULES %}{{ module_card(m, m.tone) }}{% endfor %}
-  {{ coming_soon('module') }}
-</div>

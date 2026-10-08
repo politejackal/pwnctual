@@ -1,5 +1,2 @@
-__pycache__/
-*.db
-*.db-*
-.secret
-.env
+.wrangler/
+node_modules/
