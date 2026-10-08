@@ -1,6 +1,6 @@
 """Course registry. To add a chapter, create a file exporting CHAPTER and list it in a module here."""
 from .model import Module
-from . import ch00_welcome, ch01_welcome_to_the_terminal
+from . import ch00_welcome, ch01_getting_linux, ch02_welcome_to_the_terminal
 
 # Chapter 0, the welcome video, comes before every module.
 INTRO = ch00_welcome.CHAPTER
@@ -8,7 +8,7 @@ INTRO = ch00_welcome.CHAPTER
 MODULES = [
     Module("linux-basics", "Linux Basics",
            "The terminal, SSH, and finding your way around a Linux box.",
-           [ch01_welcome_to_the_terminal.CHAPTER]),
+           [ch01_getting_linux.CHAPTER, ch02_welcome_to_the_terminal.CHAPTER]),
 ]
 
 # Numbered from 0 straight through the modules, so chapter numbers never reset.

@@ -34,6 +34,7 @@
   {% if chapter.summary %}<div class="muted" style="font-size:18px">{{ chapter.summary }}</div>{% endif %}
 
 
+  {% if chapter.has_lecture %}
   <section class="lecture" aria-labelledby="lecture-title">
     <h2 class="headline" id="lecture-title">Lecture</h2>
     {% if chapter.video_id %}
@@ -58,6 +59,7 @@
     </div>
     {% endif %}
   </section>
+  {% endif %}
 
   <div class="after-lecture" id="after-lecture">
     {% if chapter.notes %}
