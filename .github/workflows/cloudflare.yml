@@ -1,10 +1,10 @@
-# Deploys the Cloudflare Worker that puts the site on pwnctual.com.
+# Deploys the site (public/) to pwnctual.com on Cloudflare.
 # Needs repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
-name: Cloudflare Worker
+name: Deploy
 on:
   push:
     branches: [main]
-    paths: [cloudflare/**, wrangler.toml, .github/workflows/cloudflare.yml]
+    paths: [public/**, wrangler.toml, .github/workflows/cloudflare.yml]
   workflow_dispatch:
 jobs:
   deploy:

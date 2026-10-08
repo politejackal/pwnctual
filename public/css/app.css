@@ -392,6 +392,8 @@ a.card:hover .badge { border-radius: 50%; }
   .lb-row .rk { display: none; }
   .lb-row .who .avatar { display: none; }
 }
+.lb-row.recent { grid-template-columns: 48px 1fr auto; }  /* "Recently finished": no position or emblem column */
+
 
 /* ---------------------------------------------------------------- forms */
 .field { display: flex; flex-direction: column; gap: 6px; }
