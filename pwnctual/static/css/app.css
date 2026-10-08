@@ -73,6 +73,8 @@ img { max-width: 100%; }
 .wrap { width: min(1200px, 100% - 32px); margin-inline: auto; }
 .narrow { width: min(860px, 100% - 32px); margin-inline: auto; }
 main { padding-bottom: 64px; flex: 1 0 auto; }
+/* a single card, centred in the room between the header and the footer */
+main.centered { display: flex; flex-direction: column; justify-content: center; padding-block: 64px; }
 .stack > * + * { margin-top: 16px; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .grid { display: grid; gap: 16px; }
