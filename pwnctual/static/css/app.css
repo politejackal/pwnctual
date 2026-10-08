@@ -41,6 +41,8 @@ body {
   font-family: var(--font); font-size: 16px; line-height: 1.55;
   font-variation-settings: "ROND" 100;
   -webkit-font-smoothing: antialiased;
+  /* footer sits at the bottom of the window on short pages, right after the content on long ones */
+  min-height: 100dvh; display: flex; flex-direction: column;
 }
 a { color: var(--primary); text-decoration: none; }
 /* only plain text links get an underline; chips, buttons and cards use their own hover states */
@@ -70,7 +72,7 @@ img { max-width: 100%; }
 /* ---------------------------------------------------------------- layout */
 .wrap { width: min(1200px, 100% - 32px); margin-inline: auto; }
 .narrow { width: min(860px, 100% - 32px); margin-inline: auto; }
-main { padding-bottom: 96px; min-height: calc(100vh - 160px); }
+main { padding-bottom: 64px; flex: 1 0 auto; }
 .stack > * + * { margin-top: 16px; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .grid { display: grid; gap: 16px; }
