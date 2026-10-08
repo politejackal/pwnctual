@@ -419,6 +419,18 @@ a.card:hover .badge { border-radius: 50%; }
 /* ---------------------------------------------------------------- footer */
 footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; color: var(--on-surface-variant); font-size: 14px; }
 @media (max-width: 860px) { footer { padding-bottom: 120px; } }
+footer .foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px 64px; align-items: start; }
+footer .foot-about { max-width: 640px; }
+footer .foot-brand { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 12px; }
+footer .foot-brand .brand { font-size: 20px; }
+footer .foot-tag { font-weight: 650; color: var(--on-surface); }
+footer .foot-about p { margin: 0; line-height: 1.6; }
+footer .foot-about .foot-aside { margin-top: 8px; font-style: italic; }
+footer .foot-links { display: flex; flex-direction: column; gap: 10px; font-weight: 600; }
+@media (max-width: 640px) {
+  footer .foot { grid-template-columns: 1fr; gap: 24px; }
+  footer .foot-links { flex-direction: row; flex-wrap: wrap; gap: 8px 16px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -612,6 +624,4 @@ footer { border-top: 1px solid var(--outline-variant); padding: 32px 0 40px; col
   .stuck-actions { flex-direction: column; align-items: stretch; }
   .stuck-actions .spacer { display: none; }
   .lecture-foot .spacer { display: none; }
-  footer .wrap { gap: 8px 16px; }
-  footer .spacer { flex-basis: 100%; height: 0; }
 }
