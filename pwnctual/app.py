@@ -2,7 +2,6 @@ import hmac
 import json
 import os
 import secrets
-import sqlite3
 import time
 import urllib.error
 import urllib.parse
@@ -16,7 +15,6 @@ from markupsafe import Markup
 from . import db as dbm
 from .curriculum import CHALLENGES, CHAPTER_BY_ID, CHAPTER_BY_SLUG, CHAPTERS, INTRO, MODULE_BY_ID, MODULES, TOTAL_CHALLENGES
 from .emblems import emblem
-from . import classes as cls
 from . import shapes
 from .ranks import TIERS, ladder, rank_for
 
@@ -65,10 +63,6 @@ GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", "")
 DEV_LOGIN = os.environ.get("PWNCTUAL_DEV") == "1"
 # Render sets RENDER_EXTERNAL_URL to the service's https://….onrender.com address.
 PUBLIC_URL = (os.environ.get("PWNCTUAL_PUBLIC_URL") or os.environ.get("RENDER_EXTERNAL_URL", "")).rstrip("/")
-# Live classes: video link shown to people who booked (e.g. a Google Meet room),
-# and the logins allowed to see every booking at /classes/admin.
-CLASS_MEET_URL = os.environ.get("PWNCTUAL_CLASS_MEET_URL", "")
-ADMINS = {x.strip().lower() for x in os.environ.get("PWNCTUAL_ADMINS", "").split(",") if x.strip()}
 
 app.teardown_appcontext(dbm.close_db)
 
@@ -197,10 +191,6 @@ def user_from_dev(login):
     return row["id"] if row else _create_user(login, login, None)
 
 
-def is_admin(user):
-    return bool(user) and user["login"].lower() in ADMINS
-
-
 def asset(name):
     full = os.path.join(app.static_folder, name)
     v = int(os.path.getmtime(full)) if os.path.exists(full) else 0
@@ -214,7 +204,7 @@ def inject():
         "me": user, "csrf_token": csrf_token, "asset": asset, "md": md, "emblem": lambda t, size=96: Markup(emblem(t, size)),
         "CHAPTERS": CHAPTERS, "INTRO": INTRO, "MODULES": MODULES, "TOTAL_CHALLENGES": TOTAL_CHALLENGES, "RANK_COUNT": len(TIERS), "DEV_LOGIN": DEV_LOGIN,
         "GITHUB_ENABLED": bool(GITHUB_CLIENT_ID),
-        "my_rank": None, "my_solved": {}, "IS_ADMIN": is_admin(user),
+        "my_rank": None, "my_solved": {},
     }
     if user:
         ctx["my_solved"] = solved_slugs(user["id"])
@@ -236,93 +226,6 @@ def emblem_svg(index):
     resp = app.response_class(emblem(TIERS[index], 180), mimetype="image/svg+xml")
     resp.headers["Cache-Control"] = "public, max-age=86400"
     return resp
-
-
-# ------------------------------------------------------------------ live classes
-
-@app.get("/classes")
-def classes_page():
-    return render_template("classes.html", mentor_tz=cls.MENTOR_TZ_NAME, slot_minutes=cls.SLOT_MINUTES,
-                           open_hour=cls.OPEN_HOUR, close_hour=cls.CLOSE_HOUR)
-
-
-def _my_bookings(uid, upcoming_only=True):
-    q = "SELECT id, start_ts, note FROM class_bookings WHERE user_id=? AND cancelled_at IS NULL"
-    if upcoming_only:
-        q += f" AND start_ts + {cls.SLOT_MINUTES * 60} > ?"
-        rows = dbm.get_db().execute(q + " ORDER BY start_ts", (uid, int(now()))).fetchall()
-    else:
-        rows = dbm.get_db().execute(q + " ORDER BY start_ts", (uid,)).fetchall()
-    return [{"id": r["id"], "t": r["start_ts"], "note": r["note"] or "", "meet_url": CLASS_MEET_URL} for r in rows]
-
-
-@app.get("/api/classes/slots")
-def api_class_slots():
-    ts_now = int(now())
-    starts = cls.slot_starts(ts_now)
-    taken = {r["start_ts"] for r in dbm.get_db().execute(
-        "SELECT start_ts FROM class_bookings WHERE cancelled_at IS NULL AND start_ts >= ?", (starts[0] if starts else ts_now,))}
-    user = current_user()
-    return jsonify(
-        mentor_tz=cls.MENTOR_TZ_NAME, slot_minutes=cls.SLOT_MINUTES, max_upcoming=cls.MAX_UPCOMING,
-        slots=[{"t": t, "taken": t in taken} for t in starts],
-        signed_in=bool(user), mine=_my_bookings(user["id"]) if user else [],
-    )
-
-
-@app.post("/api/classes/book")
-def api_class_book():
-    user = current_user()
-    if not user:
-        return jsonify(error="Sign in to book a live class."), 401
-    check_csrf()
-    body = request.get_json(silent=True) or {}
-    ts, note = body.get("t"), str(body.get("note") or "").strip()[:500]
-    if not cls.is_valid_slot(ts, int(now())):
-        return jsonify(error="That time isn't available. Please pick another slot."), 400
-    db = dbm.get_db()
-    # Check "one call at a time" and insert inside one write-locked transaction,
-    # so two simultaneous requests from the same person can't both get through.
-    db.commit()
-    db.execute("BEGIN IMMEDIATE")
-    try:
-        if len(_my_bookings(user["id"])) >= cls.MAX_UPCOMING:
-            db.rollback()
-            return jsonify(error="You can only have one call booked at a time. Cancel your current call to pick a new time."), 409
-        db.execute("INSERT INTO class_bookings (user_id, start_ts, note, created_at) VALUES (?,?,?,?)",
-                   (user["id"], ts, note, now()))
-        db.commit()
-    except sqlite3.IntegrityError:
-        db.rollback()
-        return jsonify(error="Someone just booked that slot. Please pick another one."), 409
-    return jsonify(ok=True, mine=_my_bookings(user["id"]))
-
-
-@app.post("/api/classes/<int:booking_id>/cancel")
-def api_class_cancel(booking_id):
-    user = current_user()
-    if not user:
-        return jsonify(error="Sign in first."), 401
-    check_csrf()
-    db = dbm.get_db()
-    row = db.execute("SELECT user_id FROM class_bookings WHERE id=? AND cancelled_at IS NULL", (booking_id,)).fetchone()
-    if not row or (row["user_id"] != user["id"] and not is_admin(user)):
-        return jsonify(error="Booking not found."), 404
-    db.execute("UPDATE class_bookings SET cancelled_at=? WHERE id=?", (now(), booking_id))
-    db.commit()
-    return jsonify(ok=True, mine=_my_bookings(user["id"]))
-
-
-@app.get("/classes/admin")
-def classes_admin():
-    if not is_admin(current_user()):
-        abort(404)
-    rows = dbm.get_db().execute(
-        "SELECT b.id, b.start_ts, b.note, u.login, u.email FROM class_bookings b JOIN users u ON u.id = b.user_id "
-        "WHERE b.cancelled_at IS NULL AND b.start_ts + ? > ? ORDER BY b.start_ts",
-        (cls.SLOT_MINUTES * 60, int(now()))).fetchall()
-    bookings = [dict(r, mentor_time=cls.mentor_label(r["start_ts"])) for r in rows]
-    return render_template("classes_admin.html", bookings=bookings, mentor_tz=cls.MENTOR_TZ_NAME)
 
 
 @app.get("/learn")
