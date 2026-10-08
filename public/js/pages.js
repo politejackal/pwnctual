@@ -1,7 +1,6 @@
-// Every page of the site, rendered from the course data, your progress and (signed in) your account.
-import { CHALLENGES, CHAPTERS, INTRO, MODULES, TOTAL_CHALLENGES } from "./course.js";
-import { LADDER, emblem, rankFor, shapeAnimation } from "./art.js";
-import { account } from "./account.js";
+// Every page of the site, rendered from the course data and the progress saved in this browser.
+import { CHAPTERS, INTRO, MODULES } from "./course.js";
+import { shapeAnimation } from "./shapes.js";
 import { progress } from "./progress.js";
 
 const TONES = ["primary", "tertiary", "secondary"];
@@ -12,30 +11,7 @@ const pad2 = (n) => String(n).padStart(2, "0");
 const pct = (done, total) => (total ? Math.round((100 * done) / total) : 0);
 const countDone = (challenges, solved) => challenges.filter((c) => c.slug in solved).length;
 
-export const myRank = () => rankFor(progress.score());
-
 // ------------------------------------------------------------------ pieces
-
-const wavy = (p) => `<div class="wavy-host" data-p="${p.toFixed(4)}"></div>`;
-
-function rankCard(rank, big = true) {
-  const t = rank.tier;
-  return `<div class="rank-card">
-  ${emblem(t, big ? 140 : 96)}
-  <div class="stack" style="min-width:0">
-    <div class="label">Current rank</div>
-    <div class="display-s ${t.key === "ghost" ? "ghost-name" : ""}">${t.label}</div>
-    <div class="muted">${t.motto}</div>
-    ${wavy(rank.progress)}
-    <div class="row muted" style="font-size:14px">
-      <span><b style="color:var(--on-surface)">${rank.score}</b> ${plural(rank.score, "challenge")} completed</span>
-      <span class="spacer"></span>
-      ${rank.next ? `<span>${rank.toNext} to <b style="color:var(--on-surface)">${rank.next.label}</b></span>`
-        : "<span>Apex reached. Nothing left to haunt.</span>"}
-    </div>
-  </div>
-</div>`;
-}
 
 // "Stuck?" button: opens the help dialog for this chapter's video (and challenge, if given).
 function stuckButton(ch, challenge = null, cls = "btn tonal") {
@@ -145,25 +121,18 @@ function heroArt() {
 
 function home() {
   const solved = progress.solved();
-  const rank = myRank();
   const first = CHAPTERS[0];
   const next = CHAPTERS.find((ch) => ch.challenges.some((c) => !(c.slug in solved)));
-  const intro = account.user || rank.score
-    ? `<div class="label">Welcome back${account.user ? `, ${esc(account.user.login)}` : ""}</div>
-    <h1 class="display-l" style="margin-top:12px">${rotatorHeadline}</h1>
-    <div class="card filled" style="margin-top:32px;max-width:720px">${rankCard(rank)}</div>
-    <div class="row" style="margin-top:24px">
-      ${next ? `<a class="btn lg" href="${next.url}">${icon("play_arrow")}Continue: Chapter ${next.number}</a>` : ""}
-      <a class="btn lg tonal" href="/learn">${icon("school")}All chapters</a>
-    </div>`
-    : `<a class="free-badge" href="/learn">${icon("redeem")}Free forever</a>
+  const started = Object.keys(solved).length > 0;
+  const intro = `<a class="free-badge" href="/learn">${icon("redeem")}Free forever</a>
     <h1 class="display-l">${rotatorHeadline}</h1>
     <p class="lede">Watch a lecture, read the writeup (either one of these may or may not be there, depending on the
       difficulty of the topics!), then go and do the challenges yourself. If you don't do it yourself at the end of each
       chapter, you didn't learn anything. Feel free to ask me any questions, even if it is stupid; that's called learning.
       You can ask in the video comments or on Discord.</p>
     <div class="row">
-      ${first ? `<a class="btn lg" href="${first.url}">${icon("play_arrow")}Start with chapter 0</a>` : ""}
+      ${started && next ? `<a class="btn lg" href="${next.url}">${icon("play_arrow")}Continue: Chapter ${next.number}</a>`
+        : first ? `<a class="btn lg" href="${first.url}">${icon("play_arrow")}Start with chapter 0</a>` : ""}
       <a class="btn lg outlined" href="/learn">Browse chapters</a>
     </div>`;
   return {
@@ -187,20 +156,6 @@ function home() {
 
 ${first ? `<section class="wrap section">${stuckCard(first)}</section>` : ""}
 
-<section class="section">
-  <div class="wrap row" style="margin-bottom:16px">
-    <h2 class="headline">The ladder</h2><span class="spacer"></span>
-    <a class="btn text" href="/ranks">All ranks${icon("arrow_forward")}</a>
-  </div>
-  <div class="wrap rank-row">
-    ${LADDER.map((t) => `<a class="rank-step ${t.key === "ghost" ? "apex" : ""}" href="/ranks">
-        ${emblem(t, 120)}
-        <span class="title-m ${t.key === "ghost" ? "ghost-name" : ""}">${t.name}</span>
-        <span class="muted" style="font-size:13px">${t.min} ${plural(t.min, "challenge")}</span>
-      </a>`).join("")}
-  </div>
-</section>
-
 <section class="wrap section">
   <div class="row" style="margin-bottom:20px">
     <h2 class="headline">Modules</h2><span class="spacer"></span>
@@ -221,10 +176,8 @@ function learn() {
     <h1 class="display-s">Learn to hack.<br><em>Slow and steady wins the race.</em></h1>
     <p class="lede muted">The course is split into modules. Open one to see its chapters: each is a lecture
       on YouTube (generally), a writeup (generally too 🙂), and a real hands-on challenge. When you finish a challenge, mark it done and we'll take your word for it.</p>
-    ${account.user ? "" : `<div class="banner info" style="margin-top:24px">${icon("info")}
-      <span>No account needed: your progress is saved in this browser. ${account.enabled
-        ? `<a href="/login?next=/learn">Sign in with GitHub</a> to keep it on every device and climb the leaderboard.`
-        : `See it on <a href="/progress">your progress page</a>.`}</span></div>`}
+    <div class="banner info" style="margin-top:24px">${icon("info")}
+      <span>No account needed: what you mark as finished is saved in this browser.</span></div>
   </header>
   ${courseCards(progress.solved())}
 </div>`,
@@ -384,205 +337,6 @@ function chapterPage(ch) {
   };
 }
 
-function ranks() {
-  const rank = myRank();
-  const cur = rank.tier.index;
-  return {
-    nav: "ranks",
-    title: "Ranks",
-    html: `<div class="narrow">
-  <h1 class="display-s" style="margin:40px 0 8px">Ranked</h1>
-  <p class="muted" style="font-size:18px;max-width:640px">Every challenge you complete counts. Complete enough and you climb through five ranks:
-    Noob, Shadow, Demon, Reaper and, at the very top, Ghost. Shadow takes 100 challenges, Demon 500, Reaper 2,500, and
-    <b class="ghost-name">Ghost</b> 10,000.</p>
-
-  <div class="card filled" style="margin:32px 0">${rankCard(rank)}</div>
-
-  <div class="ladder" style="margin-top:32px">
-    ${[...LADDER].reverse().map((t) => {
-      const here = t.index === cur;
-      return `<div class="ladder-rank ${here ? "current" : ""} ${cur < t.index ? "locked" : ""} ${t.key === "ghost" ? "apex" : ""}">
-        <div style="display:grid;place-items:center">${emblem(t, 132)}</div>
-        <div class="stack">
-          <div class="row"><span class="headline ${t.key === "ghost" ? "ghost-name" : ""}">${t.name}</span>
-            ${here ? `<span class="chip good">${icon("my_location")}You are here</span>` : ""}</div>
-          <div class="${here ? "" : "muted"}">${t.motto}</div>
-          <div class="ladder-divs">
-            <span class="div-pill ${here ? "here" : t.index < cur ? "reached" : ""}">${t.min} ${plural(t.min, "challenge")}</span>
-          </div>
-        </div>
-      </div>`;
-    }).join("")}
-  </div>
-</div>`,
-  };
-}
-
-const avatar = (login, size = 40) =>
-  `<span class="avatar" style="width:${size}px;height:${size}px">${esc(login.slice(0, 1).toUpperCase())}</span>`;
-
-// Rank, stats, per-chapter progress and recent finishes: the body of a profile or the progress page.
-function progressSections(solved, mine) {
-  const rank = rankFor(Object.keys(solved).length);
-  const recent = Object.entries(solved).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  const modules = MODULES.map((m, mi) => {
-    const rows = m.chapters.filter((ch) => ch.challenges.length).map((ch) => {
-      const d = countDone(ch.challenges, solved), total = ch.challenges.length, full = d === total;
-      return `<a class="card module-row ${full ? "done" : ""}" href="${ch.url}">
-        <span class="badge">${full ? icon("check") : ch.number}</span>
-        <div class="info">
-          <div class="title-m">Chapter ${ch.number}: ${esc(ch.title)}</div>
-          <div class="progress-line"><i style="width:${pct(d, total)}%"></i></div>
-        </div>
-        <span class="end">
-          <span class="chip ${full ? "good" : ""}">${d}/${total}</span>
-          <span class="material-symbols-rounded go">arrow_forward</span>
-        </span>
-      </a>`;
-    }).join("");
-    return `<div class="label" style="margin:${mi ? "24px" : "0"} 0 12px">${esc(m.title)}</div>
-  <div class="module-list">${rows || `<p class="muted" style="margin:0">No challenges in this module yet.</p>`}</div>`;
-  }).join("");
-
-  return `<div class="card filled">${rankCard(rank)}</div>
-
-  <div class="grid grid-2" style="margin-top:16px">
-    <div class="card tone-primary"><div class="label" style="color:inherit;opacity:.8">Challenges completed</div><div class="display-s">${rank.score}<span style="font-size:22px;opacity:.7"> / ${TOTAL_CHALLENGES}</span></div></div>
-    <div class="card tone-secondary"><div class="label" style="color:inherit;opacity:.8">Ladder</div><div class="display-s">#${rank.tier.index + 1}<span style="font-size:22px;opacity:.7"> / ${LADDER.length}</span></div></div>
-  </div>
-
-  <h2 class="headline" style="margin:40px 0 16px">Progress</h2>
-  ${modules}
-
-  ${recent.length ? `<h2 class="headline" style="margin:40px 0 16px">Recently finished</h2>
-  <div class="lb">
-    ${recent.map(([slug, t]) => {
-      const c = CHALLENGES[slug];
-      return `<a class="lb-row recent" href="${c.chapter.url}#${esc(c.slug)}">
-        <span class="avatar" style="background:var(--tertiary);color:var(--on-tertiary)">${icon("flag")}</span>
-        <span><b>${esc(c.title)}</b><br><span class="muted mono" style="font-size:13px"><span class="ago" data-t="${t}"></span></span></span>
-        <span class="material-symbols-rounded" style="color:var(--tertiary)">check</span>
-      </a>`;
-    }).join("")}
-  </div>` : ""}
-
-  ${mine && rank.score ? `<div class="row" style="margin-top:40px"><button type="button" class="btn outlined sm" data-reset>${icon("restart_alt")}Start over</button></div>` : ""}`;
-}
-
-// Your progress while signed out (signed in, /progress goes to your profile).
-function progressPage() {
-  if (account.user) return { redirect: `/u/${encodeURIComponent(account.user.login)}` };
-  return {
-    nav: "",
-    title: "Your progress",
-    html: `<div class="narrow">
-  <h1 class="display-s" style="margin:40px 0 8px">Your progress</h1>
-  ${account.enabled
-    ? `<div class="banner info" style="margin:0 0 24px">${icon("info")}
-      <span>This is saved in this browser only. <a href="/login?next=/progress">Sign in with GitHub</a> to keep it on every device and get on the leaderboard: it comes along with you.</span></div>`
-    : `<p class="muted" style="margin:0 0 24px">Saved in this browser. Clearing your browser data clears it too.</p>`}
-  ${progressSections(progress.solved(), true)}
-</div>`,
-  };
-}
-
-async function profilePage(login) {
-  const mine = account.user?.login === login;
-  let solved;
-  if (mine) {
-    solved = progress.solved();
-  } else {
-    if (!account.client) return notFound();
-    const user = await account.profile(login);
-    if (!user) return notFound();
-    solved = Object.fromEntries(Object.entries(await account.solvesOf(user.id)).filter(([slug]) => slug in CHALLENGES));
-  }
-  return {
-    nav: "",
-    title: login,
-    html: `<div class="narrow">
-  <div class="row profile-head" style="margin:40px 0 24px;gap:16px">
-    ${avatar(login, 64)}
-    <div><h1 class="headline">${esc(login)}</h1>${mine ? '<span class="muted">That\'s you</span>' : ""}</div>
-    ${mine ? `<span class="spacer"></span>
-      <button type="button" class="btn outlined sm" data-signout>${icon("logout")}Sign out</button>` : ""}
-  </div>
-  ${progressSections(solved, mine)}
-</div>`,
-  };
-}
-
-async function leaderboard() {
-  let body;
-  if (!account.client) {
-    body = `<div class="card outlined" style="text-align:center;padding:48px">
-      ${icon("cloud_off", "font-size:48px;color:var(--on-surface-variant)")}
-      <div class="title-l" style="margin-top:12px">The leaderboard is offline</div>
-      <p class="muted">${account.enabled ? "Couldn't reach it right now. Please try again later." : "Accounts aren't set up on this site yet."}</p>
-    </div>`;
-  } else {
-    const rows = await account.leaderboard(Object.keys(CHALLENGES));
-    body = rows.length ? `<div class="lb">
-    ${rows.map((r, i) => {
-      const t = rankFor(r.score).tier;
-      return `<a class="lb-row ${i < 3 ? `top${i + 1}` : ""}" href="/u/${encodeURIComponent(r.login)}">
-        <span class="pos">${i + 1}</span>
-        ${emblem(t, 48)}
-        <span class="row who" style="gap:12px">${avatar(r.login, 36)}<span style="min-width:0"><b>${esc(r.login)}</b><br>
-          <span class="${t.key === "ghost" ? "ghost-name" : "muted"}" style="font-size:13px">${t.label}</span></span></span>
-        <span class="score">${r.score} <span class="muted" style="font-weight:400;font-size:13px">completed</span></span>
-      </a>`;
-    }).join("")}
-  </div>` : `<div class="card outlined" style="text-align:center;padding:48px">
-      ${icon("skull", "font-size:48px;color:var(--on-surface-variant)")}
-      <div class="title-l" style="margin-top:12px">Why does this look like a graveyard?</div>
-      <p class="muted">Be the first to finish a challenge.</p>
-    </div>`;
-  }
-  return {
-    nav: "leaderboard",
-    title: "Leaderboard",
-    html: `<div class="narrow">
-  <h1 class="display-s" style="margin:40px 0 32px">Leaderboard</h1>
-  ${body}
-</div>`,
-  };
-}
-
-function loginPage(next) {
-  if (account.user) return { redirect: next };
-  return {
-    nav: "",
-    title: "Sign in",
-    html: `<div class="narrow" style="max-width:480px;padding-top:48px">
-  <div class="card filled" style="padding:40px;text-align:center;border-radius:var(--shape-xxl)">
-    <span class="avatar" style="width:72px;height:72px;margin:0 auto;background:var(--primary);color:var(--on-primary);border-radius:24px">
-      ${icon("skull", "font-size:40px")}</span>
-    <h1 class="headline" style="margin:20px 0 8px">Sign in to pwnctual</h1>
-    <p class="muted">Keep your progress on every device and climb the leaderboard. What you've finished in this browser comes along.</p>
-    ${account.client ? `<button type="button" class="btn lg" style="width:100%;margin-top:20px" data-github data-next="${esc(next)}">
-      <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-      Continue with GitHub</button>`
-    : `<div class="banner info" style="margin-top:16px;text-align:left">${icon("info")}
-      <span>${account.enabled ? "Sign-in is unavailable right now. Please try again later." : "Sign-in isn't set up on this site yet. Your progress is still saved in this browser."}</span></div>`}
-  </div>
-</div>`,
-  };
-}
-
-function offline() {
-  return {
-    nav: "",
-    title: "Couldn't load",
-    html: `<div class="narrow" style="text-align:center;padding-top:96px">
-  ${icon("cloud_off", "font-size:96px;color:var(--primary)")}
-  <h1 class="display-s">Couldn't load this page</h1>
-  <p class="muted" style="font-size:18px">Check your connection and try again.</p>
-  <a class="btn" href="/">Back home</a>
-</div>`,
-  };
-}
-
 function notFound() {
   return {
     nav: "",
@@ -596,4 +350,4 @@ function notFound() {
   };
 }
 
-export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, profilePage, leaderboard, loginPage, offline, notFound };
+export const pages = { home, learn, modulePage, chapterPage, notFound };
