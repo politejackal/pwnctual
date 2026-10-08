@@ -1,4 +1,4 @@
-// Accounts: Google sign-in through Supabase, which also stores everyone's progress.
+// Accounts: GitHub sign-in through Supabase, which also stores everyone's progress.
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./config.js";
 
 const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
@@ -10,7 +10,7 @@ export const account = {
   client: null,
   user: null,  // your profile, { id, login }, while signed in
 
-  // Picks up the session (finishing a sign-in that just came back from Google).
+  // Picks up the session (finishing a sign-in that just came back from GitHub).
   // onChange runs when you sign in or out later, e.g. in another tab.
   async init(onChange) {
     if (!this.enabled) return;
@@ -42,21 +42,12 @@ export const account = {
   },
 
   signIn(next = "/") {
-    return this.client.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + next } });
+    return this.client.auth.signInWithOAuth({ provider: "github", options: { redirectTo: location.origin + next } });
   },
 
   async signOut() {
     this.user = null;
     await this.client.auth.signOut();
-  },
-
-  // -> "" when done, or what's wrong with the new login
-  async rename(login) {
-    if (!/^[A-Za-z0-9_-]{2,32}$/.test(login)) return "Use 2 to 32 letters, numbers, - or _.";
-    const { error } = await this.client.from("profiles").update({ login }).eq("id", this.user.id);
-    if (error) return error.code === "23505" ? "That name is taken." : "Couldn't change it. Please try again.";
-    this.user = { ...this.user, login };
-    return "";
   },
 
   async profile(login) {

@@ -223,7 +223,7 @@ function learn() {
       on YouTube (generally), a writeup (generally too 🙂), and a real hands-on challenge. When you finish a challenge, mark it done and we'll take your word for it.</p>
     ${account.user ? "" : `<div class="banner info" style="margin-top:24px">${icon("info")}
       <span>No account needed: your progress is saved in this browser. ${account.enabled
-        ? `<a href="/login?next=/learn">Sign in with Google</a> to keep it on every device and climb the leaderboard.`
+        ? `<a href="/login?next=/learn">Sign in with GitHub</a> to keep it on every device and climb the leaderboard.`
         : `See it on <a href="/progress">your progress page</a>.`}</span></div>`}
   </header>
   ${courseCards(progress.solved())}
@@ -479,7 +479,7 @@ function progressPage() {
   <h1 class="display-s" style="margin:40px 0 8px">Your progress</h1>
   ${account.enabled
     ? `<div class="banner info" style="margin:0 0 24px">${icon("info")}
-      <span>This is saved in this browser only. <a href="/login?next=/progress">Sign in with Google</a> to keep it on every device and get on the leaderboard: it comes along with you.</span></div>`
+      <span>This is saved in this browser only. <a href="/login?next=/progress">Sign in with GitHub</a> to keep it on every device and get on the leaderboard: it comes along with you.</span></div>`
     : `<p class="muted" style="margin:0 0 24px">Saved in this browser. Clearing your browser data clears it too.</p>`}
   ${progressSections(progress.solved(), true)}
 </div>`,
@@ -507,11 +507,6 @@ async function profilePage(login) {
     ${mine ? `<span class="spacer"></span>
       <button type="button" class="btn outlined sm" data-signout>${icon("logout")}Sign out</button>` : ""}
   </div>
-  ${mine ? `<form class="row" data-rename style="gap:8px;margin:0 0 24px;align-items:flex-end">
-    <div class="field" style="flex:1;min-width:200px"><label class="label" for="new-login">Your name on the leaderboard</label>
-      <input id="new-login" name="login" value="${esc(login)}" required minlength="2" maxlength="32" pattern="[A-Za-z0-9_\\-]+" autocomplete="off" spellcheck="false"></div>
-    <button class="btn tonal">Save</button>
-  </form>` : ""}
   ${progressSections(solved, mine)}
 </div>`,
   };
@@ -565,96 +560,14 @@ function loginPage(next) {
       ${icon("skull", "font-size:40px")}</span>
     <h1 class="headline" style="margin:20px 0 8px">Sign in to pwnctual</h1>
     <p class="muted">Keep your progress on every device and climb the leaderboard. What you've finished in this browser comes along.</p>
-    ${account.client ? `<button type="button" class="btn lg" style="width:100%;margin-top:20px" data-google data-next="${esc(next)}">
-      <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-      Continue with Google</button>
-    <p class="muted" style="font-size:13px;margin:16px 0 0">You'll get a random name like hacker-1a2b3c. Change it on your profile: it's what the leaderboard shows, never your Google name or email.</p>`
+    ${account.client ? `<button type="button" class="btn lg" style="width:100%;margin-top:20px" data-github data-next="${esc(next)}">
+      <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Continue with GitHub</button>`
     : `<div class="banner info" style="margin-top:16px;text-align:left">${icon("info")}
       <span>${account.enabled ? "Sign-in is unavailable right now. Please try again later." : "Sign-in isn't set up on this site yet. Your progress is still saved in this browser."}</span></div>`}
   </div>
 </div>`,
   };
-}
-
-const UPDATED = "October 8, 2026";
-const ISSUES = "https://github.com/politejackal/pwnctual/issues";
-
-function legal(title, body) {
-  return {
-    nav: "",
-    title,
-    html: `<div class="narrow">
-  <h1 class="display-s" style="margin:40px 0 8px">${title}</h1>
-  <p class="muted" style="margin:0 0 24px">Last updated ${UPDATED}</p>
-  <div class="prose">${body}</div>
-</div>`,
-  };
-}
-
-function privacy() {
-  return legal("Privacy policy", `
-<p>pwnctual is a free, open-source course. This page says what it stores about you and why. The short version:
-we keep as little as we can, we never sell it, and there are no ads or trackers.</p>
-
-<h3>Without an account</h3>
-<p>The challenges you mark as finished are saved in your own browser (local storage). They never leave your
-device, and clearing your browser data deletes them.</p>
-
-<h3>With an account (Sign in with Google)</h3>
-<p>When you sign in with Google, we receive your Google account ID, email address and name from Google.
-We use them only to sign you in. We store:</p>
-<ul>
-<li>your sign-in details (Google account ID and email), which are never shown on the site;</li>
-<li>your username, which starts out random (like <code>hacker-1a2b3c</code>) and which you can change;</li>
-<li>which challenges you marked as finished, and when.</li>
-</ul>
-<p>Your username and finished challenges are <b>public</b>: they appear on the leaderboard and your profile page.
-Your Google name, email and photo are never shown.</p>
-<p>This data is stored with <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase</a>,
-our database provider. Your browser keeps a sign-in session in local storage so you stay signed in.</p>
-
-<h3>Other services the site uses</h3>
-<ul>
-<li><b>YouTube</b>: lecture videos are embedded from YouTube, which may set its own cookies when you play one
-(<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's privacy policy</a>).</li>
-<li><b>Google Fonts</b>: fonts and icons load from Google's servers.</li>
-<li><b>Cloudflare</b>: hosts the site and, like any web host, handles the requests your browser makes.</li>
-</ul>
-
-<h3>Deleting your data</h3>
-<p>"Start over" on your profile deletes your finished challenges. To delete your whole account, ask through
-<a href="${ISSUES}" target="_blank" rel="noopener">pwnctual's GitHub issues</a> and we'll remove it.</p>
-
-<h3>Changes</h3>
-<p>If this policy changes, the new version will be posted here with a new date.</p>`);
-}
-
-function terms() {
-  return legal("Terms of service", `
-<p>pwnctual is free to use. By using it, you agree to these terms.</p>
-
-<h3>Hack responsibly</h3>
-<p>pwnctual teaches hacking so you can practise it legally. Only attack systems you own or have explicit
-permission to test, like the practice challenges the course links to. Using what you learn here against anyone
-else's systems without permission is illegal in most places, and you are responsible for what you do.</p>
-
-<h3>Your account</h3>
-<ul>
-<li>Progress works on the honor system: please only mark challenges you actually finished.</li>
-<li>Pick a username that isn't offensive and doesn't pretend to be someone else.</li>
-<li>Don't try to break, overload or abuse the site or its database. This site isn't one of the challenges.</li>
-</ul>
-<p>We may rename or remove accounts that break these rules.</p>
-
-<h3>No guarantees</h3>
-<p>pwnctual is provided as it is, for free, without any warranty. The course and the site may change, and
-features may come and go. We aren't liable for any damage from using it.</p>
-
-<h3>Outside sites</h3>
-<p>Challenges are hosted on other sites (such as OverTheWire) with their own rules, which you also need to follow.</p>
-
-<h3>Contact</h3>
-<p>Questions? Ask through <a href="${ISSUES}" target="_blank" rel="noopener">pwnctual's GitHub issues</a>.</p>`);
 }
 
 function offline() {
@@ -683,4 +596,4 @@ function notFound() {
   };
 }
 
-export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, profilePage, leaderboard, loginPage, privacy, terms, offline, notFound };
+export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, profilePage, leaderboard, loginPage, offline, notFound };
