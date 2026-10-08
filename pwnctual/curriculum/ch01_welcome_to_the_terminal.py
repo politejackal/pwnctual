@@ -46,4 +46,5 @@ CHAPTER = Chapter(
     "welcome-to-the-terminal", "Welcome to the Terminal",
     "",
     notes=NOTES,
+    notes_optional=True,
 )

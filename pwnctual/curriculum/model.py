@@ -31,6 +31,7 @@ class Chapter:
     title: str
     summary: str
     notes: str = ""     # markdown, shown under the lecture; empty for none
+    notes_optional: bool = False  # say under the Writeup heading that reading it can be skipped
     video_id: str = ""  # YouTube video ID of the lecture; empty while it's being made
     challenges: list = field(default_factory=list)
     # filled in by the registry
