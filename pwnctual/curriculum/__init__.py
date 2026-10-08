@@ -6,7 +6,7 @@ from . import ch00_welcome, ch01_welcome_to_the_terminal
 INTRO = ch00_welcome.CHAPTER
 
 MODULES = [
-    Module("linux-the-very-basics", "Linux: The Very Basics",
+    Module("linux-basics", "Linux Basics",
            "The terminal, SSH, and finding your way around a Linux box.",
            [ch01_welcome_to_the_terminal.CHAPTER]),
 ]
