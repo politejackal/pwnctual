@@ -331,7 +331,7 @@ def learn():
 
 
 # Chapters used to live at /learn/<name>; those links now redirect to /learn/chapter-<number>.
-RENAMED_CHAPTERS = {"first-contact": "the-terminal-and-ssh", "hello-c": "setting-up-for-c"}
+RENAMED_CHAPTERS = {}
 
 
 @app.get("/learn/<chapter_id>")

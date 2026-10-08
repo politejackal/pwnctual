@@ -18,7 +18,7 @@
     </svg>
   </div>
 
-  {% set first = CHAPTERS[0] %}
+  {% set first = CHAPTERS[0] if CHAPTERS else none %}
   {% set next_c = namespace(ch=None) %}
   {% for ch in CHAPTERS %}{% if not next_c.ch and ch.challenges|rejectattr('slug', 'in', my_solved)|list %}{% set next_c.ch = ch %}{% endif %}{% endfor %}
   {% if me %}
@@ -37,7 +37,7 @@
     <p class="lede">Watch a lecture, read the writeup, then break into real servers with
       hands-on challenges. Climb from <b>Noob</b> to <b class="ghost-name">Ghost</b> as you go.</p>
     <div class="row">
-      <a class="btn lg" href="{{ first.url }}"><span class="material-symbols-rounded">play_arrow</span>Start with chapter 0</a>
+      {% if first %}<a class="btn lg" href="{{ first.url }}"><span class="material-symbols-rounded">play_arrow</span>Start with chapter 0</a>{% endif %}
       <a class="btn lg outlined" href="/learn">Browse chapters</a>
     </div>
   {% endif %}
@@ -55,9 +55,11 @@
   </div>
 </section>
 
+{% if first %}
 <section class="wrap section">
   {{ stuck_card(first) }}
 </section>
+{% endif %}
 
 <section class="section">
   <div class="wrap row" style="margin-bottom:16px">
