@@ -235,6 +235,8 @@ def learn():
 
 # Chapters used to live at /learn/<name>; those links now redirect to /learn/chapter-<number>.
 RENAMED_CHAPTERS = {}
+# Old module URLs -> current module id.
+RENAMED_MODULES = {"linux-the-very-basics": "linux-basics"}
 
 
 @app.get("/learn/<chapter_id>")
@@ -242,6 +244,8 @@ def chapter_page(chapter_id):
     """A chapter (/learn/chapter-N), or a module's list of chapters: they share this URL space."""
     if chapter_id in MODULE_BY_ID:
         return render_template("module.html", module=MODULE_BY_ID[chapter_id])
+    if chapter_id in RENAMED_MODULES:
+        return redirect(f"/learn/{RENAMED_MODULES[chapter_id]}", 301)
     old = CHAPTER_BY_ID.get(RENAMED_CHAPTERS.get(chapter_id, chapter_id))
     if old:
         return redirect(old.url, 301)
