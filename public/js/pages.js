@@ -1,6 +1,7 @@
-// Every page of the site, rendered from the course data and the progress saved in this browser.
+// Every page of the site, rendered from the course data, your progress and (signed in) your account.
 import { CHALLENGES, CHAPTERS, INTRO, MODULES, TOTAL_CHALLENGES } from "./course.js";
 import { LADDER, emblem, rankFor, shapeAnimation } from "./art.js";
+import { account } from "./account.js";
 import { progress } from "./progress.js";
 
 const TONES = ["primary", "tertiary", "secondary"];
@@ -147,8 +148,8 @@ function home() {
   const rank = myRank();
   const first = CHAPTERS[0];
   const next = CHAPTERS.find((ch) => ch.challenges.some((c) => !(c.slug in solved)));
-  const intro = rank.score
-    ? `<div class="label">Welcome back</div>
+  const intro = account.user || rank.score
+    ? `<div class="label">Welcome back${account.user ? `, ${esc(account.user.login)}` : ""}</div>
     <h1 class="display-l" style="margin-top:12px">${rotatorHeadline}</h1>
     <div class="card filled" style="margin-top:32px;max-width:720px">${rankCard(rank)}</div>
     <div class="row" style="margin-top:24px">
@@ -220,8 +221,10 @@ function learn() {
     <h1 class="display-s">Learn to hack.<br><em>Slow and steady wins the race.</em></h1>
     <p class="lede muted">The course is split into modules. Open one to see its chapters: each is a lecture
       on YouTube (generally), a writeup (generally too 🙂), and a real hands-on challenge. When you finish a challenge, mark it done and we'll take your word for it.</p>
-    <div class="banner info" style="margin-top:24px">${icon("info")}
-      <span>No account needed: your progress is saved in this browser. See it on <a href="/progress">your progress page</a>.</span></div>
+    ${account.user ? "" : `<div class="banner info" style="margin-top:24px">${icon("info")}
+      <span>No account needed: your progress is saved in this browser. ${account.enabled
+        ? `<a href="/login?next=/learn">Sign in with Google</a> to keep it on every device and climb the leaderboard.`
+        : `See it on <a href="/progress">your progress page</a>.`}</span></div>`}
   </header>
   ${courseCards(progress.solved())}
 </div>`,
@@ -415,9 +418,12 @@ function ranks() {
   };
 }
 
-function progressPage() {
-  const solved = progress.solved();
-  const rank = myRank();
+const avatar = (login, size = 40) =>
+  `<span class="avatar" style="width:${size}px;height:${size}px">${esc(login.slice(0, 1).toUpperCase())}</span>`;
+
+// Rank, stats, per-chapter progress and recent finishes: the body of a profile or the progress page.
+function progressSections(solved, mine) {
+  const rank = rankFor(Object.keys(solved).length);
   const recent = Object.entries(solved).sort((a, b) => b[1] - a[1]).slice(0, 8);
   const modules = MODULES.map((m, mi) => {
     const rows = m.chapters.filter((ch) => ch.challenges.length).map((ch) => {
@@ -438,13 +444,7 @@ function progressPage() {
   <div class="module-list">${rows || `<p class="muted" style="margin:0">No challenges in this module yet.</p>`}</div>`;
   }).join("");
 
-  return {
-    nav: "progress",
-    title: "Your progress",
-    html: `<div class="narrow">
-  <h1 class="display-s" style="margin:40px 0 8px">Your progress</h1>
-  <p class="muted" style="margin:0 0 24px">Saved in this browser, so there's no account to make. Clearing your browser data clears it too.</p>
-  <div class="card filled">${rankCard(rank)}</div>
+  return `<div class="card filled">${rankCard(rank)}</div>
 
   <div class="grid grid-2" style="margin-top:16px">
     <div class="card tone-primary"><div class="label" style="color:inherit;opacity:.8">Challenges completed</div><div class="display-s">${rank.score}<span style="font-size:22px;opacity:.7"> / ${TOTAL_CHALLENGES}</span></div></div>
@@ -458,7 +458,7 @@ function progressPage() {
   <div class="lb">
     ${recent.map(([slug, t]) => {
       const c = CHALLENGES[slug];
-      return `<a class="lb-row" href="${c.chapter.url}#${esc(c.slug)}">
+      return `<a class="lb-row recent" href="${c.chapter.url}#${esc(c.slug)}">
         <span class="avatar" style="background:var(--tertiary);color:var(--on-tertiary)">${icon("flag")}</span>
         <span><b>${esc(c.title)}</b><br><span class="muted mono" style="font-size:13px"><span class="ago" data-t="${t}"></span></span></span>
         <span class="material-symbols-rounded" style="color:var(--tertiary)">check</span>
@@ -466,7 +466,125 @@ function progressPage() {
     }).join("")}
   </div>` : ""}
 
-  ${rank.score ? `<div class="row" style="margin-top:40px"><button type="button" class="btn outlined sm" data-reset>${icon("restart_alt")}Start over</button></div>` : ""}
+  ${mine && rank.score ? `<div class="row" style="margin-top:40px"><button type="button" class="btn outlined sm" data-reset>${icon("restart_alt")}Start over</button></div>` : ""}`;
+}
+
+// Your progress while signed out (signed in, /progress goes to your profile).
+function progressPage() {
+  if (account.user) return { redirect: `/u/${encodeURIComponent(account.user.login)}` };
+  return {
+    nav: "",
+    title: "Your progress",
+    html: `<div class="narrow">
+  <h1 class="display-s" style="margin:40px 0 8px">Your progress</h1>
+  ${account.enabled
+    ? `<div class="banner info" style="margin:0 0 24px">${icon("info")}
+      <span>This is saved in this browser only. <a href="/login?next=/progress">Sign in with Google</a> to keep it on every device and get on the leaderboard: it comes along with you.</span></div>`
+    : `<p class="muted" style="margin:0 0 24px">Saved in this browser. Clearing your browser data clears it too.</p>`}
+  ${progressSections(progress.solved(), true)}
+</div>`,
+  };
+}
+
+async function profilePage(login) {
+  const mine = account.user?.login === login;
+  let solved;
+  if (mine) {
+    solved = progress.solved();
+  } else {
+    if (!account.client) return notFound();
+    const user = await account.profile(login);
+    if (!user) return notFound();
+    solved = Object.fromEntries(Object.entries(await account.solvesOf(user.id)).filter(([slug]) => slug in CHALLENGES));
+  }
+  return {
+    nav: "",
+    title: login,
+    html: `<div class="narrow">
+  <div class="row profile-head" style="margin:40px 0 24px;gap:16px">
+    ${avatar(login, 64)}
+    <div><h1 class="headline">${esc(login)}</h1>${mine ? '<span class="muted">That\'s you</span>' : ""}</div>
+    ${mine ? `<span class="spacer"></span>
+      <button type="button" class="btn outlined sm" data-signout>${icon("logout")}Sign out</button>` : ""}
+  </div>
+  ${mine ? `<form class="row" data-rename style="gap:8px;margin:0 0 24px;align-items:flex-end">
+    <div class="field" style="flex:1;min-width:200px"><label class="label" for="new-login">Your name on the leaderboard</label>
+      <input id="new-login" name="login" value="${esc(login)}" required minlength="2" maxlength="32" pattern="[A-Za-z0-9_\\-]+" autocomplete="off" spellcheck="false"></div>
+    <button class="btn tonal">Save</button>
+  </form>` : ""}
+  ${progressSections(solved, mine)}
+</div>`,
+  };
+}
+
+async function leaderboard() {
+  let body;
+  if (!account.client) {
+    body = `<div class="card outlined" style="text-align:center;padding:48px">
+      ${icon("cloud_off", "font-size:48px;color:var(--on-surface-variant)")}
+      <div class="title-l" style="margin-top:12px">The leaderboard is offline</div>
+      <p class="muted">${account.enabled ? "Couldn't reach it right now. Please try again later." : "Accounts aren't set up on this site yet."}</p>
+    </div>`;
+  } else {
+    const rows = await account.leaderboard(Object.keys(CHALLENGES));
+    body = rows.length ? `<div class="lb">
+    ${rows.map((r, i) => {
+      const t = rankFor(r.score).tier;
+      return `<a class="lb-row ${i < 3 ? `top${i + 1}` : ""}" href="/u/${encodeURIComponent(r.login)}">
+        <span class="pos">${i + 1}</span>
+        ${emblem(t, 48)}
+        <span class="row who" style="gap:12px">${avatar(r.login, 36)}<span style="min-width:0"><b>${esc(r.login)}</b><br>
+          <span class="${t.key === "ghost" ? "ghost-name" : "muted"}" style="font-size:13px">${t.label}</span></span></span>
+        <span class="score">${r.score} <span class="muted" style="font-weight:400;font-size:13px">completed</span></span>
+      </a>`;
+    }).join("")}
+  </div>` : `<div class="card outlined" style="text-align:center;padding:48px">
+      ${icon("skull", "font-size:48px;color:var(--on-surface-variant)")}
+      <div class="title-l" style="margin-top:12px">Why does this look like a graveyard?</div>
+      <p class="muted">Be the first to finish a challenge.</p>
+    </div>`;
+  }
+  return {
+    nav: "leaderboard",
+    title: "Leaderboard",
+    html: `<div class="narrow">
+  <h1 class="display-s" style="margin:40px 0 32px">Leaderboard</h1>
+  ${body}
+</div>`,
+  };
+}
+
+function loginPage(next) {
+  if (account.user) return { redirect: next };
+  return {
+    nav: "",
+    title: "Sign in",
+    html: `<div class="narrow" style="max-width:480px;padding-top:48px">
+  <div class="card filled" style="padding:40px;text-align:center;border-radius:var(--shape-xxl)">
+    <span class="avatar" style="width:72px;height:72px;margin:0 auto;background:var(--primary);color:var(--on-primary);border-radius:24px">
+      ${icon("skull", "font-size:40px")}</span>
+    <h1 class="headline" style="margin:20px 0 8px">Sign in to pwnctual</h1>
+    <p class="muted">Keep your progress on every device and climb the leaderboard. What you've finished in this browser comes along.</p>
+    ${account.client ? `<button type="button" class="btn lg" style="width:100%;margin-top:20px" data-google data-next="${esc(next)}">
+      <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+      Continue with Google</button>
+    <p class="muted" style="font-size:13px;margin:16px 0 0">You'll get a random name like hacker-1a2b3c. Change it on your profile: it's what the leaderboard shows, never your Google name or email.</p>`
+    : `<div class="banner info" style="margin-top:16px;text-align:left">${icon("info")}
+      <span>${account.enabled ? "Sign-in is unavailable right now. Please try again later." : "Sign-in isn't set up on this site yet. Your progress is still saved in this browser."}</span></div>`}
+  </div>
+</div>`,
+  };
+}
+
+function offline() {
+  return {
+    nav: "",
+    title: "Couldn't load",
+    html: `<div class="narrow" style="text-align:center;padding-top:96px">
+  ${icon("cloud_off", "font-size:96px;color:var(--primary)")}
+  <h1 class="display-s">Couldn't load this page</h1>
+  <p class="muted" style="font-size:18px">Check your connection and try again.</p>
+  <a class="btn" href="/">Back home</a>
 </div>`,
   };
 }
@@ -484,4 +602,4 @@ function notFound() {
   };
 }
 
-export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, notFound };
+export const pages = { home, learn, modulePage, chapterPage, ranks, progressPage, profilePage, leaderboard, loginPage, offline, notFound };

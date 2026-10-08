@@ -1,5 +1,6 @@
 // The whole site runs in the browser: the router below picks a page from pages.js for
 // each URL and swaps it into <main>, with a view transition when the browser has them.
+import { account } from "./account.js";
 import { CHALLENGES, CHAPTER_BY_ID, CHAPTER_BY_SLUG, MODULE_BY_ID } from "./course.js";
 import { emblem } from "./art.js";
 import { myRank, pages } from "./pages.js";
@@ -9,6 +10,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const reducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 const canTransition = () => !!document.startViewTransition && !reducedMotion();
+const icon = (name) => `<span class="material-symbols-rounded">${name}</span>`;
 
 // ------------------------------------------------------------------ routes
 
@@ -16,19 +18,22 @@ const canTransition = () => !!document.startViewTransition && !reducedMotion();
 const RENAMED_MODULES = { "linux-the-very-basics": "linux-basics" };
 // The old 30-day course, paths, Pro plan and CLI setup are gone; send old links to the chapters.
 const OLD_LEARN = /^\/(course|pricing|setup|workspace|paths(\/.*)?)$/;
-// Accounts, the leaderboard and profiles went away with the server; progress now lives in the browser.
-const OLD_ACCOUNT = /^\/(leaderboard|login|u\/.*)$/;
 
-// -> { redirect } or a page { nav, title, html }
-function resolve(path) {
-  path = path.replace(/\/index\.html$/, "/").replace(/(.)\/+$/, "$1");
+const safeNext = (next) => (next && next.startsWith("/") && !next.startsWith("//") ? next : "/");
+
+// -> { redirect } or a page { nav, title, html } (or a promise of one)
+function resolve(url) {
+  const path = url.pathname.replace(/\/index\.html$/, "/").replace(/(.)\/+$/, "$1");
   if (path === "/") return pages.home();
   if (path === "/learn") return pages.learn();
   if (path === "/ranks") return pages.ranks();
   if (path === "/progress") return pages.progressPage();
+  if (path === "/leaderboard") return pages.leaderboard();
+  if (path === "/login") return pages.loginPage(safeNext(url.searchParams.get("next")));
   if (OLD_LEARN.test(path)) return { redirect: "/learn" };
-  if (OLD_ACCOUNT.test(path)) return { redirect: "/progress" };
-  const m = path.match(/^\/learn\/([^/]+)$/);
+  let m = path.match(/^\/u\/([^/]+)$/);
+  if (m) return pages.profilePage(decodeURIComponent(m[1]));
+  m = path.match(/^\/learn\/([^/]+)$/);
   if (m) {
     // modules and chapters share /learn/<id>
     const id = decodeURIComponent(m[1]);
@@ -40,14 +45,23 @@ function resolve(path) {
   return pages.notFound();
 }
 
-// Follows redirects (rewriting the address bar) and returns the page for the current URL.
-function currentPage() {
+// Follows redirects. -> { page, url } where url is where the page really lives.
+async function route(url) {
+  url = new URL(url, location.href);
   for (let i = 0; i < 5; i++) {
-    const page = resolve(location.pathname);
-    if (!page.redirect) return page;
-    history.replaceState(history.state, "", page.redirect + location.search + location.hash);
+    let page;
+    try {
+      page = await resolve(url);
+    } catch (e) {
+      console.error(e);
+      return { page: pages.offline(), url };
+    }
+    if (!page.redirect) return { page, url };
+    const next = new URL(page.redirect, location.origin);
+    if (!next.hash) next.hash = url.hash;
+    url = next;
   }
-  return pages.notFound();
+  return { page: pages.notFound(), url };
 }
 
 // ------------------------------------------------------------------ top bar elevation
@@ -103,12 +117,15 @@ const openHash = () => {
 };
 addEventListener("hashchange", openHash);
 
-// ------------------------------------------------------------------ your rank in the top bar
-function renderMiniRank() {
-  const el = $("#mini-rank"); if (!el) return;
+// ------------------------------------------------------------------ top bar: your rank, sign in / out
+function renderActions() {
+  const el = $(".topbar .actions"); if (!el) return;
   const t = myRank().tier;
-  el.title = t.label;
-  el.innerHTML = `${emblem(t, 40)}<span class="nl">${t.label}</span>`;
+  const me = account.user;
+  const here = location.pathname + location.search;
+  el.innerHTML = `<a class="mini-rank" href="${me ? `/u/${encodeURIComponent(me.login)}` : "/progress"}" title="${t.label}">${emblem(t, 40)}<span class="nl">${t.label}</span></a>` +
+    (me ? `<button type="button" class="btn text sm hide-m" data-signout title="Sign out">${icon("logout")}</button>`
+      : account.client ? `<a class="btn sm" href="/login?next=${encodeURIComponent(here.startsWith("/login") ? "/" : here)}">${icon("login")}Sign in</a>` : "");
 }
 
 // ------------------------------------------------------------------ rank-up celebration
@@ -129,12 +146,20 @@ function rankUp(tier) {
 
 // ------------------------------------------------------------------ chapters
 // honor system: "I finished it" is all it takes
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-done]"); if (!btn) return;
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-done]"); if (!btn || btn.disabled) return;
   const slug = btn.dataset.done, done = btn.getAttribute("aria-pressed") !== "true";
   const chal = CHALLENGES[slug]; if (!chal) return;
   const before = myRank().tier.index;
-  if (!progress.set(slug, done)) { snack("Couldn't save your progress: this browser is blocking storage."); return; }
+  btn.disabled = true;
+  try {
+    await progress.set(slug, done);
+  } catch (err) {
+    snack(err.message?.startsWith("Couldn't") ? err.message : "Couldn't save that. Please try again.");
+    return;
+  } finally {
+    btn.disabled = false;
+  }
   const d = btn.closest(".chal");
   d.classList.toggle("solved", done);
   d.classList.toggle("just-solved", done);
@@ -148,16 +173,50 @@ document.addEventListener("click", (e) => {
   if (chapterDone) chapterDone.hidden = !chal.chapter.challenges.every((c) => c.slug in solved);
   if (done) snack(`<span class="material-symbols-rounded">flag</span>Nice work: ${$(".title-m", d).textContent} done`);
   const after = myRank().tier;
-  renderMiniRank();
+  renderActions();
   if (after.index > before) rankUp(after);
 });
 
-document.addEventListener("click", (e) => {
+document.addEventListener("click", async (e) => {
   if (!e.target.closest("[data-reset]")) return;
-  if (!confirm("Start over? This clears every challenge you've marked as finished in this browser.")) return;
-  progress.reset();
-  navigate(location.href, { push: false, scroll: scrollY });
+  const where = account.user ? "on your account" : "in this browser";
+  if (!confirm(`Start over? This clears every challenge you've marked as finished ${where}.`)) return;
+  try { await progress.reset(); } catch { snack("Couldn't clear it. Please try again."); return; }
+  refresh();
 });
+
+// ------------------------------------------------------------------ accounts
+
+async function authChanged() {
+  try { await progress.sync(); } catch (e) { console.error(e); snack("Couldn't load your progress. Please reload."); }
+  refresh();
+}
+
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-google]"); if (!b) return;
+  b.disabled = true;
+  const { error } = await account.signIn(b.dataset.next || "/");  // on success the browser heads to Google
+  if (error) { b.disabled = false; snack("Couldn't start sign-in. Please try again."); }
+});
+
+document.addEventListener("click", async (e) => {
+  if (!e.target.closest("[data-signout]")) return;
+  await account.signOut().catch(() => {});
+  await progress.sync();
+  navigate("/");
+});
+
+document.addEventListener("submit", async (e) => {
+  const form = e.target.closest("[data-rename]"); if (!form) return;
+  e.preventDefault();
+  const login = form.elements.login.value.trim();
+  if (login === account.user.login) return;
+  const problem = await account.rename(login);
+  if (problem) { snack(problem); return; }
+  snack(`${icon("check")}You're ${login} now`);
+  navigate(`/u/${encodeURIComponent(login)}`, { push: false, scroll: scrollY });
+});
+
 
 // ------------------------------------------------------------------ "Stuck?" dialog
 document.addEventListener("click", (e) => {
@@ -249,7 +308,7 @@ function show(page) {
   setActiveNav(".navgroup", "nav-ind", page.nav);
   setActiveNav(".bottomnav", "bnav-ind", page.nav);
   $("main").innerHTML = page.html;
-  renderMiniRank();
+  renderActions();
   startRotator();
   $$(".wavy-host").forEach(drawWavy);
   const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
@@ -275,26 +334,33 @@ function eligible(a, e) {
   return true;
 }
 
-function navigate(url, { push = true, scroll = null } = {}) {
-  const target = new URL(url, location.href);
+let navToken = 0;
+// push: add a history entry (otherwise the current one is replaced)
+async function navigate(url, { push = true, scroll = null, animate = true } = {}) {
+  const token = ++navToken;
+  const { page, url: target } = await route(url);  // pages like the leaderboard load data first
+  if (token !== navToken) return;  // a newer click won
   const swap = () => {
     if (push) {
       history.replaceState({ ...(history.state || {}), scroll: scrollY }, "");
       history.pushState({ scroll: 0 }, "", target.href);
+    } else {
+      history.replaceState(history.state, "", target.href);
     }
-    show(currentPage());
+    show(page);
     shownPage = pageKey();
     if (!(location.hash && openHash())) scrollTo({ top: scroll ?? 0, behavior: "instant" });
   };
-  if (!canTransition()) { swap(); $$(".vt-plain").forEach((el) => el.classList.remove("vt-plain")); return; }
+  if (!animate || !canTransition()) { swap(); $$(".vt-plain").forEach((el) => el.classList.remove("vt-plain")); return; }
   // An indicator that is about to disappear (going to a page with no tab,
-  // like a 404) fades out with the header instead of lingering on its own layer.
-  const next = resolve(target.pathname);
-  if (!next.redirect && !next.nav) $$(".nav-ind, .bnav-ind").forEach((el) => el.classList.add("vt-plain"));
+  // like your profile) fades out with the header instead of lingering on its own layer.
+  if (!page.nav) $$(".nav-ind, .bnav-ind").forEach((el) => el.classList.add("vt-plain"));
   const t = document.startViewTransition(swap);
   t.ready.catch(() => {});
   t.finished.finally(() => $$(".vt-plain").forEach((el) => el.classList.remove("vt-plain")));
 }
+
+const refresh = () => navigate(location.href, { push: false, scroll: scrollY, animate: false });
 
 history.scrollRestoration = "manual";
 const pageKey = () => location.pathname + location.search;
@@ -313,7 +379,39 @@ document.addEventListener("click", (e) => {
   navigate(u.href);
 });
 
-show(currentPage());
-shownPage = pageKey();
-$$(".vt-plain").forEach((el) => el.classList.remove("vt-plain"));
-if (location.hash) requestAnimationFrame(openHash);
+// ------------------------------------------------------------------ start
+
+// Coming back from Google with an error (e.g. the person cancelled): say so, and tidy the address bar.
+function signInError() {
+  const params = new URLSearchParams(location.search);
+  if (!params.has("error")) return;
+  snack(params.get("error") === "access_denied" ? "Sign-in was cancelled." : "Sign-in failed. Please try again.");
+  for (const k of ["error", "error_code", "error_description"]) params.delete(k);
+  history.replaceState(history.state, "", location.pathname + (params.size ? `?${params}` : "") + location.hash);
+}
+
+// Someone who might be signed in (a saved session, or a sign-in just finishing), or a page
+// that needs accounts, waits for Supabase before the first page shows. Everyone else gets
+// the page straight away while it loads.
+function needsAccountFirst() {
+  if (/^\/(leaderboard|login|u\/)/.test(location.pathname)) return true;
+  if (new URLSearchParams(location.search).has("code")) return true;
+  try { return Object.keys(localStorage).some((k) => k.startsWith("sb-") && k.endsWith("-auth-token")); } catch { return false; }
+}
+
+(async () => {
+  signInError();
+  const first = { push: false, scroll: 0, animate: false };
+  if (account.enabled && needsAccountFirst()) {
+    await account.init(authChanged);
+    await progress.sync().catch((e) => { console.error(e); snack("Couldn't load your progress. Please reload."); });
+    await navigate(location.href, first);
+  } else {
+    await navigate(location.href, first);
+    if (account.enabled) {
+      await account.init(authChanged);
+      renderActions();  // the Sign in button appears once Supabase is loaded
+    }
+  }
+  if (location.hash) requestAnimationFrame(openHash);
+})();
