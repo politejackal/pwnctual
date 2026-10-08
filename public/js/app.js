@@ -27,6 +27,8 @@ function resolve(url) {
   if (path === "/") return pages.home();
   if (path === "/learn") return pages.learn();
   if (path === "/ranks") return pages.ranks();
+  if (path === "/privacy") return pages.privacy();
+  if (path === "/terms") return pages.terms();
   if (path === "/progress") return pages.progressPage();
   if (path === "/leaderboard") return pages.leaderboard();
   if (path === "/login") return pages.loginPage(safeNext(url.searchParams.get("next")));
