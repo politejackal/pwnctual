@@ -31,7 +31,7 @@ checkbox saved in your browser.
 ## Level format
 
 ```
-levels/c-01-greeting/
+levels/c-01-admin-pin/
   level.json        title, description, hints, language, category, difficulty, flagSha256
   files/            copied into the level's folder in pwnctual-levels
     vuln.c          the vulnerable program
@@ -51,7 +51,7 @@ printf '%s' 'pwnctual{...}' | sha256sum
 Before publishing a level, check that `check.sh` fails on the original code and passes on a fix:
 
 ```bash
-cd levels/c-01-greeting/files
+cd levels/c-01-admin-pin/files
 ./check.sh                       # must print FAIL
 cp ../solution.c vuln.c && ./check.sh && git checkout vuln.c   # must print PASS
 ```
