@@ -3,21 +3,13 @@
   "version": "1.0.0",
   "description": "Defensive security wargame: fix vulnerable C and Python programs on your own computer.",
   "scripts": {
-    "build:editor": "esbuild editor/editor.js --bundle --minify --format=esm --target=es2020 --outfile=web/vendor/editor.js",
-    "build:levels": "node scripts/build-levels.mjs",
-    "build": "npm run build:editor && npm run build:levels",
-    "dev": "npm run build:levels && wrangler pages dev web --port 8788",
-    "deploy": "npm run build && wrangler pages deploy web --project-name pwnctual --branch main"
+    "build": "node scripts/build-levels.mjs",
+    "dev": "npm run build && wrangler pages dev web --port 8788",
+    "deploy": "npm run build && wrangler pages deploy web --project-name pwnctual --branch main",
+    "build:levels-repo": "node scripts/build-levels-repo.mjs"
   },
   "type": "module",
   "devDependencies": {
-    "@codemirror/commands": "^6.11.1",
-    "@codemirror/lang-cpp": "^6.0.3",
-    "@codemirror/lang-python": "^6.2.1",
-    "@codemirror/language": "^6.13.1",
-    "@codemirror/state": "^6.7.6",
-    "@codemirror/view": "^6.43.15",
-    "@lezer/highlight": "^1.2.5",
     "wrangler": "^4.152.0"
   },
   "private": true

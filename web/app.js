@@ -1,7 +1,6 @@
 // pwnctual frontend: a small router and three pages. Everything is static:
 // level data comes from /levels/*.json (built by scripts/build-levels.mjs) and
 // progress is kept in this browser's localStorage.
-import { createCodeView } from "./vendor/editor.js";
 
 const PATHS = {
   c: { name: "C", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." },
@@ -71,7 +70,7 @@ async function homePage() {
   app.innerHTML = `
     <section class="hero">
       <h1>Find the bug.<br>Fix the code.</h1>
-      <p>Every level is a small program with a real security bug. Fix it in GitHub Codespaces or on your own computer, then run the included check to see if your fix holds up against attacks. Free and open source.</p>
+      <p>Every level is a small program with a real security bug. Fix it in GitHub Codespaces, then run the included check to see if your fix holds up against attacks. Free and open source.</p>
     </section>
     <section class="paths" aria-label="Paths">
       ${pathCard("c", "c-blue", "memory")}
@@ -84,8 +83,8 @@ async function homePage() {
     </section>
     <section class="how" aria-label="How it works">
       <div><span class="num">1</span><b>Read the code</b><p>Each level tells you what the program is meant to do. The bug is somewhere in there.</p></div>
-      <div><span class="num">2</span><b>Fix it</b><p>Open the level in GitHub Codespaces, with nothing to install, or download it and use your own editor.</p></div>
-      <div><span class="num">3</span><b>Run the check</b><p><code>./check.sh</code> runs normal input and then attacks. C is built with AddressSanitizer, so memory bugs fail even when they don't crash. Works on Linux, macOS and Windows with WSL.</p></div>
+      <div><span class="num">2</span><b>Fix it</b><p>Open it in GitHub Codespaces: VS Code in your browser, with the compiler and every level already set up.</p></div>
+      <div><span class="num">3</span><b>Run the check</b><p><code>./check.sh</code> runs normal input and then attacks. C is built with AddressSanitizer, so memory bugs fail even when they don't crash.</p></div>
     </section>`;
 }
 
@@ -115,8 +114,6 @@ async function pathPage(lang) {
   }
 }
 
-let codeView = null;
-
 async function levelPage(id) {
   setTitle("");
   app.innerHTML = `<div class="page-head"><div class="running"><span class="spinner"></span>Loading level</div></div>`;
@@ -131,82 +128,37 @@ async function levelPage(id) {
   setTitle(level.title);
   markNav(level.language);
   let hintsShown = 0;
-  const zip = `${level.id}.zip`;
 
   app.innerHTML = `
     <div class="crumbs"><a href="/${level.language}" data-link>← ${path.name}</a></div>
-    <div class="level">
-      <section class="brief">
-        <div class="chips"><span class="chip">${esc(level.difficulty)}</span></div>
-        <h1>${esc(level.title)}</h1>
-        ${level.description.map(p => `<p>${p}</p>`).join("")}
-        <div class="hints"></div>
-        <button class="btn btn-text show-hint" type="button"><span class="icon">lightbulb</span>Show a hint</button>
+    <article class="level">
+      <div class="chips"><span class="chip">${esc(level.difficulty)}</span></div>
+      <h1>${esc(level.title)}</h1>
+      ${level.description.map(p => `<p>${p}</p>`).join("")}
 
-        <div class="howto">
-          <h2>In your browser, with GitHub Codespaces</h2>
-          <ol>
-            <li>Click <b>Open in Codespaces</b> and sign in with GitHub. The first start takes a minute or two.</li>
-            <li>Open <code>${esc(level.id)}/${esc(level.sourceName)}</code> in the file list and fix it.</li>
-            <li>Open a terminal (<b>Terminal → New Terminal</b>) and run the check. It prints <b>PASS</b> or <b>FAIL</b>.</li>
-          </ol>
-          <pre class="cmd"><code>cd ${esc(level.id)}
+      <div class="howto">
+        <h2>How to solve it</h2>
+        <ol>
+          <li>Click <b>Open in Codespaces</b> and sign in with GitHub. The first start takes a minute or two.</li>
+          <li>Open <code>${esc(level.id)}/${esc(level.sourceName)}</code> in the file list and fix it.</li>
+          <li>Open a terminal (<b>Terminal → New Terminal</b>) and run the check:
+            <pre class="cmd"><code>cd ${esc(level.id)}
 ./check.sh</code></pre>
-          <p class="note">Nothing to install. It runs on your GitHub account's free Codespaces hours, and every level is already in there. Clicking the button again takes you back to the same codespace with your changes.</p>
-        </div>
+          </li>
+          <li>When it prints <b>PASS</b>, come back here and click <b>I solved it</b>.</li>
+        </ol>
+        <p class="note">Nothing to install. It runs on your GitHub account's free Codespaces hours. Clicking the button again takes you back to the same codespace with your changes.</p>
+      </div>
 
-        <div class="howto">
-          <h2>On your own computer</h2>
-          <ol>
-            <li>Download the level and unzip it.</li>
-            <li>Fix <code>${esc(level.sourceName)}</code> in any editor.</li>
-            <li>Run the check.</li>
-          </ol>
-          <pre class="cmd"><code>unzip ${esc(zip)}
-cd ${esc(level.id)}
-./check.sh</code></pre>
-          <details class="setup">
-            <summary>Setting up gcc, make and bash</summary>
-            <h3>Linux</h3>
-            <ul>
-              <li>Debian or Ubuntu: <code>sudo apt install build-essential</code></li>
-              <li>Fedora: <code>sudo dnf install gcc make libasan libubsan</code></li>
-              <li>Arch: <code>sudo pacman -S base-devel</code></li>
-            </ul>
-            <h3>macOS</h3>
-            <p>Run <code>xcode-select --install</code>. That gives you clang, which <code>gcc</code> points to on macOS. The sanitizers work with it.</p>
-            <h3>Windows</h3>
-            <p>Use WSL, which runs Ubuntu inside Windows:</p>
-            <ol>
-              <li>Open PowerShell as administrator and run <code>wsl --install</code>. Restart when it asks.</li>
-              <li>Open <b>Ubuntu</b> from the Start menu and pick a username and password.</li>
-              <li>Install the tools: <code>sudo apt update && sudo apt install build-essential unzip</code></li>
-              <li>Copy the level in from your Downloads folder (replace <code>YourName</code> with your Windows user name), then run the commands above:
-                <pre class="cmd"><code>cp /mnt/c/Users/YourName/Downloads/${esc(zip)} ~
-cd ~</code></pre>
-              </li>
-            </ol>
-            <p>If <code>./check.sh</code> says <code>Permission denied</code>, run <code>chmod +x check.sh</code> once.</p>
-          </details>
-        </div>
-      </section>
+      <div class="actions">
+        <a class="btn btn-filled" href="${CODESPACES_URL}" target="_blank" rel="noopener"><span class="icon">terminal</span>Open in Codespaces</a>
+        <button class="btn btn-tonal solved-toggle" type="button" aria-pressed="false"></button>
+      </div>
+      <p class="note solved-note" aria-live="polite"></p>
 
-      <section class="workbench">
-        <div class="editor-card">
-          <div class="bar">
-            <span class="file">${esc(level.sourceName)}</span>
-            <span class="readonly">Read only</span>
-          </div>
-          <div class="editor-host"></div>
-        </div>
-        <div class="actions">
-          <a class="btn btn-filled" href="${CODESPACES_URL}" target="_blank" rel="noopener"><span class="icon">terminal</span>Open in Codespaces</a>
-          <a class="btn btn-tonal" href="/levels/${esc(zip)}" download="${esc(zip)}"><span class="icon">download</span>Download level</a>
-          <button class="btn btn-tonal solved-toggle" type="button" aria-pressed="false"></button>
-        </div>
-        <p class="note solved-note" aria-live="polite"></p>
-      </section>
-    </div>`;
+      <div class="hints"></div>
+      <button class="btn btn-text show-hint" type="button"><span class="icon">lightbulb</span>Show a hint</button>
+    </article>`;
 
   const hintsEl = app.querySelector(".hints");
   const hintBtn = app.querySelector(".show-hint");
@@ -217,9 +169,6 @@ cd ~</code></pre>
     if (hintsShown >= level.hints.length) hintBtn.hidden = true;
     else hintBtn.lastChild.textContent = "Show another hint";
   });
-
-  codeView?.destroy();
-  codeView = createCodeView(app.querySelector(".editor-host"), { value: level.source, language: level.language });
 
   const toggle = app.querySelector(".solved-toggle");
   const note = app.querySelector(".solved-note");

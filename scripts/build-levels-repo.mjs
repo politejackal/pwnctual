@@ -78,8 +78,8 @@ ${levels.map(l => `| [${l.title}](https://pwnctual.pages.dev/level/${l.id}) | \`
 
 ## Without Codespaces
 
-Every level is also a download on its page on pwnctual, if you'd rather work on your own
-computer. The level pages cover the setup for Linux, macOS and Windows (WSL).
+You can also clone this repo and run the levels on your own machine. You need gcc (or clang),
+make and bash. On Windows, use WSL.
 `);
 
 console.log(`wrote ${levels.length} level(s) to ${out}`);
