@@ -205,7 +205,6 @@ a.path:active { transform: scale(.98); }
 }
 .cmd code { background: none; padding: 0; }
 .note { font-size: 14px; color: var(--on-surface-variant); margin-top: 10px; }
-.solved-toggle.on { background: var(--green-c); color: var(--on-green-c); }
 
 .running { display: flex; align-items: center; gap: 12px; }
 .spinner {
@@ -247,3 +246,21 @@ a.path:active { transform: scale(.98); }
   *, *::before { animation: none !important; transition: none !important; }
 }
 
+
+/* Flag entry */
+.flag-form { margin-top: 24px; }
+.flag-form label { display: block; font-weight: 500; margin-bottom: 6px; }
+.flag-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.flag-row input {
+  flex: 1; min-width: 0; height: 48px; padding: 0 16px;
+  font-family: var(--font-code); font-size: 15px; color: var(--on-surface);
+  background: var(--surface-container-lowest); border: 1px solid var(--outline-variant); border-radius: 16px;
+  outline: none; transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+.flag-row input:focus { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.flag-form.wrong input { border-color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
+.flag-msg { font-size: 14px; color: var(--on-surface-variant); margin-top: 8px; min-height: 1.4em; display: flex; align-items: center; gap: 6px; }
+.flag-form.wrong .flag-msg { color: var(--red); }
+.flag-form.solved .flag-msg { color: var(--green); font-weight: 500; }
+.flag-form.solved .flag-msg .icon { font-size: 20px; }
+@media (max-width: 640px) { .flag-row .btn { width: 100%; } }

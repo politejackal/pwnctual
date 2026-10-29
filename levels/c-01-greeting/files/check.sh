@@ -53,6 +53,12 @@ rm -f build.log
 
 passed=0
 failed=0
+outputs=""   # what the program printed in each passing test; the flag is built from it
+
+# sha256 of stdin, on Linux (sha256sum) or macOS (shasum)
+sha256() {
+    if command -v sha256sum >/dev/null 2>&1; then sha256sum; else shasum -a 256; fi | cut -d' ' -f1
+}
 
 # run_test KIND NAME INPUT EXPECTED_OUTPUT
 run_test() {
@@ -77,6 +83,7 @@ run_test() {
 
     if [ -z "$problem" ]; then
         passed=$((passed + 1))
+        outputs="$outputs|$output"
         echo "  ${GREEN}ok${RESET}    $kind: $name"
     else
         failed=$((failed + 1))
@@ -107,7 +114,11 @@ run_test attack "10,000 characters, no newline" "$(repeat B 10000)" "Hello, $(re
 echo
 total=$((passed + failed))
 if [ "$failed" -eq 0 ]; then
-    echo "${GREEN}${BOLD}PASS${RESET} All $total tests passed. Tick \"I solved it\" on the level page."
+    flag="pwnctual{greeting-$(printf 'c-01-greeting%s' "$outputs" | sha256 | cut -c1-16)}"
+    echo "${GREEN}${BOLD}PASS${RESET} All $total tests passed."
+    echo
+    echo "Your flag: ${BOLD}$flag${RESET}"
+    echo "Enter it on the level page to mark the level as solved."
     exit 0
 else
     echo "${RED}${BOLD}FAIL${RESET} $failed of $total tests failed. Edit vuln.c and run ./check.sh again."

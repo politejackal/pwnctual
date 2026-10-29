@@ -12,5 +12,6 @@
     "Look at how many characters <code>read_line</code> writes into <code>buf</code>, and how big <code>buf</code> is.",
     "<code>read_line</code> has no idea how big the buffer is. It needs to be told.",
     "Don't forget the <code>'\\0'</code> at the end. A 255-character name needs 256 bytes."
-  ]
+  ],
+  "flagSha256": "4a9dd7680cedb08a2371b58e672d4444c5f8ff74e7243c6c4a0c7f43489be370"
 }

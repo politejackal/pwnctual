@@ -65,7 +65,7 @@ security bug for you to fix.
    ./check.sh
    \`\`\`
 
-4. When it prints **PASS**, go back to the level page on pwnctual and tick **I solved it**.
+4. When it prints **PASS**, it also prints a flag. Enter the flag on the level page on pwnctual.
 
 Your changes stay in this codespace. If you close it, open it again from the level page or from
 [github.com/codespaces](https://github.com/codespaces) and carry on where you left off.

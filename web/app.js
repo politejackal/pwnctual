@@ -145,16 +145,23 @@ async function levelPage(id) {
             <pre class="cmd"><code>cd ${esc(level.id)}
 ./check.sh</code></pre>
           </li>
-          <li>When it prints <b>PASS</b>, come back here and click <b>I solved it</b>.</li>
+          <li>When it prints <b>PASS</b>, it also gives you a flag. Enter it below.</li>
         </ol>
         <p class="note">Nothing to install. It runs on your GitHub account's free Codespaces hours. Clicking the button again takes you back to the same codespace with your changes.</p>
       </div>
 
       <div class="actions">
         <a class="btn btn-filled" href="${CODESPACES_URL}" target="_blank" rel="noopener"><span class="icon">terminal</span>Open in Codespaces</a>
-        <button class="btn btn-tonal solved-toggle" type="button" aria-pressed="false"></button>
       </div>
-      <p class="note solved-note" aria-live="polite"></p>
+
+      <form class="flag-form" autocomplete="off">
+        <label for="flag">Flag</label>
+        <div class="flag-row">
+          <input id="flag" name="flag" type="text" spellcheck="false" autocapitalize="off" placeholder="pwnctual{...}" required>
+          <button class="btn btn-tonal" type="submit"><span class="icon">flag</span>Submit flag</button>
+        </div>
+        <p class="flag-msg" aria-live="polite"></p>
+      </form>
 
       <div class="hints"></div>
       <button class="btn btn-text show-hint" type="button"><span class="icon">lightbulb</span>Show a hint</button>
@@ -170,25 +177,35 @@ async function levelPage(id) {
     else hintBtn.lastChild.textContent = "Show another hint";
   });
 
-  const toggle = app.querySelector(".solved-toggle");
-  const note = app.querySelector(".solved-note");
-  const paint = solved => {
-    toggle.setAttribute("aria-pressed", String(solved));
-    toggle.classList.toggle("on", solved);
-    toggle.innerHTML = solved
-      ? `<span class="icon fill">check_circle</span>Solved`
-      : `<span class="icon">radio_button_unchecked</span>I solved it`;
+  // The page only knows the flag's SHA-256, so the flag itself isn't in the site's code
+  const form = app.querySelector(".flag-form");
+  const input = form.querySelector("input");
+  const msg = form.querySelector(".flag-msg");
+  const showSolved = () => {
+    form.classList.add("solved");
+    msg.innerHTML = `<span class="icon fill">check_circle</span>Solved. Saved in this browser.`;
   };
-  paint(solvedSet().has(level.id));
-  toggle.addEventListener("click", () => {
-    const solved = toggle.getAttribute("aria-pressed") !== "true";
-    if (!setSolved(level.id, solved)) {
-      note.textContent = "Couldn't save. Your browser is blocking local storage for this site.";
+  if (solvedSet().has(level.id)) showSolved();
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    form.classList.remove("wrong");
+    const flag = input.value.trim();
+    if (await sha256(flag) !== level.flagSha256) {
+      form.classList.add("wrong");
+      msg.textContent = "That's not the flag for this level. Copy the whole line check.sh prints after PASS.";
       return;
     }
-    paint(solved);
-    note.textContent = solved ? "Saved in this browser." : "";
+    if (!setSolved(level.id, true)) {
+      msg.textContent = "Right flag, but your browser is blocking local storage, so it can't be saved.";
+      return;
+    }
+    showSolved();
   });
+}
+
+async function sha256(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
 // ---- router ----
