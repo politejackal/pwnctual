@@ -50,13 +50,14 @@ for (const id of (await readdir(levelsDir)).sort()) {
 const langName = { c: "C", python: "Python" };
 await writeFile(join(out, "README.md"), `# pwnctual levels
 
-Every folder here is one level from [pwnctual](https://pwnctual.com): a small program with a
+Every folder here is one level from [pwnctual](https://pwnctual.pages.dev): a small program with a
 security bug for you to fix.
 
 ## How to play
 
-1. Pick a level below and open its folder in the file list on the left.
-2. Read its \`README.md\`, then fix the bug in \`vuln.c\` (or \`vuln.py\`).
+1. Open the folder for your level in the file list on the left.
+2. Read what the level is about on its page on pwnctual, then fix the bug in \`vuln.c\`
+   (or \`vuln.py\`).
 3. Open a terminal (**Terminal → New Terminal**) and run the check:
 
    \`\`\`bash
@@ -71,14 +72,14 @@ Your changes stay in this codespace. If you close it, open it again from the lev
 
 ## Levels
 
-| Level | Language | Difficulty |
-| --- | --- | --- |
-${levels.map(l => `| [${l.title}](${l.id}/README.md) | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n")}
+| Level | Folder | Language | Difficulty |
+| --- | --- | --- | --- |
+${levels.map(l => `| [${l.title}](https://pwnctual.pages.dev/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n")}
 
 ## Without Codespaces
 
-Every level is also a download on its page at pwnctual.com, if you'd rather work on your own
-computer. Each level's README covers the setup for Linux, macOS and Windows (WSL).
+Every level is also a download on its page on pwnctual, if you'd rather work on your own
+computer. The level pages cover the setup for Linux, macOS and Windows (WSL).
 `);
 
 console.log(`wrote ${levels.length} level(s) to ${out}`);

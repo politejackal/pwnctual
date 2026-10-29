@@ -34,7 +34,6 @@ levels/c-01-greeting/
     vuln.c          the vulnerable program (also shown on the page)
     Makefile        builds with the sanitizers
     check.sh        builds, runs the tests, prints PASS or FAIL
-    README.md       instructions, including WSL setup for Windows
   solution.c        a reference fix (not in this repo)
 ```
 

@@ -165,7 +165,29 @@ async function levelPage(id) {
           <pre class="cmd"><code>unzip ${esc(zip)}
 cd ${esc(level.id)}
 ./check.sh</code></pre>
-          <p class="note">You need gcc (or clang), make and bash. On Windows, use WSL. The README in the download walks through the setup.</p>
+          <details class="setup">
+            <summary>Setting up gcc, make and bash</summary>
+            <h3>Linux</h3>
+            <ul>
+              <li>Debian or Ubuntu: <code>sudo apt install build-essential</code></li>
+              <li>Fedora: <code>sudo dnf install gcc make libasan libubsan</code></li>
+              <li>Arch: <code>sudo pacman -S base-devel</code></li>
+            </ul>
+            <h3>macOS</h3>
+            <p>Run <code>xcode-select --install</code>. That gives you clang, which <code>gcc</code> points to on macOS. The sanitizers work with it.</p>
+            <h3>Windows</h3>
+            <p>Use WSL, which runs Ubuntu inside Windows:</p>
+            <ol>
+              <li>Open PowerShell as administrator and run <code>wsl --install</code>. Restart when it asks.</li>
+              <li>Open <b>Ubuntu</b> from the Start menu and pick a username and password.</li>
+              <li>Install the tools: <code>sudo apt update && sudo apt install build-essential unzip</code></li>
+              <li>Copy the level in from your Downloads folder (replace <code>YourName</code> with your Windows user name), then run the commands above:
+                <pre class="cmd"><code>cp /mnt/c/Users/YourName/Downloads/${esc(zip)} ~
+cd ~</code></pre>
+              </li>
+            </ol>
+            <p>If <code>./check.sh</code> says <code>Permission denied</code>, run <code>chmod +x check.sh</code> once.</p>
+          </details>
         </div>
       </section>
 

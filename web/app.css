@@ -274,3 +274,17 @@ a.path:active { transform: scale(.98); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before { animation: none !important; transition: none !important; }
 }
+
+/* Setup steps, collapsed by default */
+.setup { margin-top: 12px; font-size: 15px; }
+.setup summary {
+  cursor: pointer; font-weight: 500; color: var(--primary);
+  list-style: none; display: flex; align-items: center; gap: 6px;
+}
+.setup summary::-webkit-details-marker { display: none; }
+.setup summary::before { content: "expand_more"; font-family: "Material Symbols Rounded"; font-size: 20px; transition: transform .25s var(--ease); }
+.setup[open] summary::before { transform: rotate(180deg); }
+.setup h3 { font-size: 15px; font-weight: 600; margin: 14px 0 4px; }
+.setup ul, .setup ol { padding-left: 20px; }
+.setup li { margin: 3px 0; }
+.setup .cmd { margin-top: 6px; }
