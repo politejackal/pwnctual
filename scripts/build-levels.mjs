@@ -6,8 +6,8 @@
 import { readdir, readFile, writeFile, mkdir, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 
-// "bugfix": wrong for normal input. "harden": works normally, but some inputs break it.
-const CATEGORIES = ["bugfix", "harden"];
+// "bugfix": wrong for normal input. "breakfix": works normally, but some inputs break it.
+const CATEGORIES = ["bugfix", "breakfix"];
 
 const root = new URL("..", import.meta.url).pathname;
 const levelsDir = join(root, "levels");

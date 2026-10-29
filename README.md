@@ -14,7 +14,7 @@ players open in GitHub Codespaces on their own free Codespaces hours, with gcc a
 Levels come in two categories, inside each language:
 
 - **Bug fix** (`"category": "bugfix"`): the program gives the wrong result for normal input.
-- **Harden it** (`"category": "harden"`): it works for normal input, but some inputs break it.
+- **Break it and fix it** (`"category": "breakfix"`): it works for normal input, but some inputs break it.
 
 The site is static. Nothing runs on a server, and there are no accounts: progress is a
 checkbox saved in your browser.

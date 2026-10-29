@@ -48,7 +48,7 @@ for (const id of (await readdir(levelsDir)).sort()) {
 }
 
 const langName = { c: "C", python: "Python" };
-const catName = { bugfix: "Bug fix", harden: "Harden it" };
+const catName = { bugfix: "Bug fix", breakfix: "Break it and fix it" };
 await writeFile(join(out, "README.md"), `# pwnctual levels
 
 Every folder here is one level from [pwnctual](https://pwnctual.com): a small program with a

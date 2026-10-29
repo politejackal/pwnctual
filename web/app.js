@@ -4,7 +4,7 @@
 
 const CATEGORIES = {
   bugfix: { name: "Bug fix", blurb: "The program gives the wrong result for normal input. Find the bug and fix it." },
-  harden: { name: "Harden it", blurb: "The program works for normal input, but some inputs break it. Find them and make it safe." },
+  breakfix: { name: "Break it and fix it", blurb: "The program works for normal input, but some inputs break it. Find one that does, then fix the code so nothing can." },
 };
 
 const PATHS = {
@@ -92,7 +92,7 @@ async function homePage() {
       </div>
     </section>
     <section class="how" aria-label="How it works">
-      <div><span class="num">1</span><b>Pick a level</b><p><b>Bug fix</b> levels give the wrong result for normal input. <b>Harden it</b> levels work until someone sends the input that breaks them.</p></div>
+      <div><span class="num">1</span><b>Pick a level</b><p><b>Bug fix</b> levels give the wrong result for normal input. <b>Break it and fix it</b> levels work until someone sends the input that breaks them.</p></div>
       <div><span class="num">2</span><b>Fix it</b><p>Open it in GitHub Codespaces: VS Code in your browser, with the compiler and every level already set up.</p></div>
       <div><span class="num">3</span><b>Run the check</b><p><code>./check.sh</code> runs normal input and then attacks. C is built with AddressSanitizer, so memory bugs fail even when they don't crash.</p></div>
     </section>`;
