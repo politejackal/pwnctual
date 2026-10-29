@@ -61,7 +61,7 @@ security bug for you to fix.
 3. Open a terminal (**Terminal → New Terminal**) and run the check:
 
    \`\`\`bash
-   cd c-01-greeting
+   cd <level folder>
    ./check.sh
    \`\`\`
 
@@ -74,7 +74,7 @@ Your changes stay in this codespace. If you close it, open it again from the lev
 
 | Level | Folder | Language | Difficulty |
 | --- | --- | --- | --- |
-${levels.map(l => `| [${l.title}](https://pwnctual.com/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n")}
+${levels.map(l => `| [${l.title}](https://pwnctual.com/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n") || "| No levels yet | | | |"}
 
 ## Without Codespaces
 
