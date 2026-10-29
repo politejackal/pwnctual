@@ -6,6 +6,9 @@
 import { readdir, readFile, writeFile, mkdir, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 
+// "bugfix": wrong for normal input. "harden": works normally, but some inputs break it.
+const CATEGORIES = ["bugfix", "harden"];
+
 const root = new URL("..", import.meta.url).pathname;
 const levelsDir = join(root, "levels");
 const outDir = join(root, "web", "levels");
@@ -19,6 +22,7 @@ for (const id of (await readdir(levelsDir)).sort()) {
   if (!(await stat(dir)).isDirectory()) continue;
   const meta = JSON.parse(await readFile(join(dir, "level.json"), "utf8"));
   if (meta.id !== id) throw new Error(`${id}: level.json id is "${meta.id}"`);
+  if (!CATEGORIES.includes(meta.category)) throw new Error(`${id}: category must be one of ${CATEGORIES.join(", ")}`);
 
   const filesDir = join(dir, "files");
   const names = (await readdir(filesDir)).sort();
@@ -27,7 +31,7 @@ for (const id of (await readdir(levelsDir)).sort()) {
   if (!names.includes("check.sh")) throw new Error(`${id}: files/ needs check.sh`);
 
   await writeFile(join(outDir, `${id}.json`), JSON.stringify({ ...meta, sourceName }, null, 2));
-  index.push({ id, title: meta.title, language: meta.language, difficulty: meta.difficulty });
+  index.push({ id, title: meta.title, language: meta.language, category: meta.category, difficulty: meta.difficulty });
   console.log(`built ${id} (${names.join(", ")})`);
 }
 await writeFile(join(outDir, "index.json"), JSON.stringify(index, null, 2));

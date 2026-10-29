@@ -48,6 +48,7 @@ for (const id of (await readdir(levelsDir)).sort()) {
 }
 
 const langName = { c: "C", python: "Python" };
+const catName = { bugfix: "Bug fix", harden: "Harden it" };
 await writeFile(join(out, "README.md"), `# pwnctual levels
 
 Every folder here is one level from [pwnctual](https://pwnctual.com): a small program with a
@@ -72,9 +73,9 @@ Your changes stay in this codespace. If you close it, open it again from the lev
 
 ## Levels
 
-| Level | Folder | Language | Difficulty |
-| --- | --- | --- | --- |
-${levels.map(l => `| [${l.title}](https://pwnctual.com/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n") || "| No levels yet | | | |"}
+| Level | Folder | Language | Category | Difficulty |
+| --- | --- | --- | --- | --- |
+${levels.map(l => `| [${l.title}](https://pwnctual.com/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${catName[l.category] ?? l.category} | ${l.difficulty} |`).join("\n") || "| No levels yet | | | | |"}
 
 ## Without Codespaces
 

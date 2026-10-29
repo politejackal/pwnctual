@@ -11,6 +11,11 @@ It prints PASS or FAIL.
 Every level is in [pwnctual-levels](https://github.com/politejackal/pwnctual-levels), which
 players open in GitHub Codespaces on their own free Codespaces hours, with gcc already set up.
 
+Levels come in two categories, inside each language:
+
+- **Bug fix** (`"category": "bugfix"`): the program gives the wrong result for normal input.
+- **Harden it** (`"category": "harden"`): it works for normal input, but some inputs break it.
+
 The site is static. Nothing runs on a server, and there are no accounts: progress is a
 checkbox saved in your browser.
 
@@ -27,7 +32,7 @@ checkbox saved in your browser.
 
 ```
 levels/c-01-greeting/
-  level.json        title, description, hints, difficulty, language, flagSha256
+  level.json        title, description, hints, language, category, difficulty, flagSha256
   files/            copied into the level's folder in pwnctual-levels
     vuln.c          the vulnerable program
     Makefile        builds with the sanitizers

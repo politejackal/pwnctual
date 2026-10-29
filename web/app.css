@@ -153,6 +153,11 @@ a.path:active { transform: scale(.98); }
 .page-head { padding: 40px 0 24px; }
 .page-head h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 500; letter-spacing: -1px; }
 .page-head p { color: var(--on-surface-variant); font-size: 17px; margin-top: 6px; }
+.categories { display: grid; gap: 40px; max-width: 760px; }
+.category-head { display: flex; align-items: baseline; gap: 12px; }
+.category h2 { font-size: 26px; font-weight: 500; letter-spacing: -.3px; }
+.category-head .count { font-size: 14px; color: var(--on-surface-variant); }
+.category > p { color: var(--on-surface-variant); margin: 4px 0 14px; }
 .levels { display: grid; gap: 8px; max-width: 760px; }
 .level-row {
   display: flex; align-items: center; gap: 16px; padding: 18px 20px;
