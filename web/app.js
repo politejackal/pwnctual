@@ -1,9 +1,12 @@
 // pwnctual frontend: a small router, three pages, and calls to the API.
 import { createEditor } from "./vendor/editor.js";
 
-// In production the API is on the same origin under /api. Locally it runs on its own port.
+// On pwnctual.com the API is on the same origin under /api. On pages.dev it's on
+// workers.dev, and locally it runs on its own port.
 const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
-const API = LOCAL ? `http://${location.hostname}:8787` : "";
+const API = LOCAL ? `http://${location.hostname}:8787`
+  : location.hostname.endsWith(".pages.dev") ? "https://pwnctual-api.politejackal.workers.dev"
+  : "";
 
 const PATHS = {
   c: { name: "C", file: "main.c", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." },
