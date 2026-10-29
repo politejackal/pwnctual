@@ -1,0 +1,17 @@
+{
+  "id": "c-01-phone-number",
+  "title": "Phone number",
+  "language": "c",
+  "category": "bugfix",
+  "difficulty": "Easy",
+  "description": [
+    "This program asks for a 10-digit phone number and sends a verification code to it.",
+    "For some numbers it works. For most, the code goes to a completely different number.",
+    "Fix it so every 10-digit phone number comes back out exactly as it was typed in."
+  ],
+  "hints": [
+    "What's the largest number an <code>int</code> can hold?",
+    "Most 10-digit numbers are bigger than 2,147,483,647. Use a bigger type, or don't store the phone number as a number at all."
+  ],
+  "flagSha256": "9df325fa08c6e552434dae00cf486f2842c5b55a75b94325b43adaa3a2c2e45b"
+}

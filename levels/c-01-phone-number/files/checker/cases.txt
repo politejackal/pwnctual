@@ -1,0 +1,9 @@
+# Phone numbers check.sh types into ./vuln, one per line.
+# For each one the program must print: Sending verification code to: <the same number>
+1234567890
+2147483647
+2147483648
+5551234567
+9876543210
+4294967296
+9999999999
