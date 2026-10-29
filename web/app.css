@@ -126,23 +126,15 @@ main { flex: 1; outline: none; }
 a.chip { transition: background .2s var(--ease); }
 a.chip:hover { background: var(--surface-container); }
 
-/* Expressive "cookie" shape behind a language mark */
-.shape {
-  --size: 64px;
-  width: var(--size); height: var(--size); flex: none;
+/* Language logo tile */
+.logo {
+  width: 72px; height: 72px; flex: none; border-radius: 22px;
   display: grid; place-items: center;
-  font-weight: 600; font-size: calc(var(--size) * .34); letter-spacing: -.5px;
-  position: relative; isolation: isolate;
+  background: var(--surface-container-high);
+  transition: border-radius .5s var(--spring), transform .5s var(--spring);
 }
-.shape::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; background: currentColor;
-  -webkit-mask: url(/cookie.svg) center / contain no-repeat; mask: url(/cookie.svg) center / contain no-repeat;
-  transition: transform .6s var(--spring);
-}
-.shape > span { color: var(--shape-fg); }
-.shape.blue { color: var(--primary-container); --shape-fg: var(--on-primary-container); }
-.shape.yellow { color: var(--yellow-c); --shape-fg: var(--on-yellow-c); }
-.shape.grey { color: var(--surface-container-high); --shape-fg: var(--on-surface-variant); }
+.logo img { width: 44px; height: 44px; display: block; }
+.logo .icon { font-size: 40px; color: var(--on-surface-variant); }
 
 /* ---- cards ---- */
 .card {
@@ -165,7 +157,7 @@ a.chip:hover { background: var(--surface-container); }
 .path .status { font-size: 14px; font-weight: 600; color: var(--on-surface); margin-top: auto; }
 @media (hover: hover) {
   a.path:hover { border-radius: 44px; background: var(--surface-container); }
-  a.path:hover .shape::before { transform: rotate(40deg); }
+  a.path:hover .logo { border-radius: 36px; transform: rotate(-6deg); }
 }
 a.path:active { transform: scale(.98); }
 .path.soon { opacity: .75; }

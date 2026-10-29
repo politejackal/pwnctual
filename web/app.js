@@ -3,8 +3,8 @@
 // progress is kept in this browser's localStorage.
 
 const PATHS = {
-  c: { name: "C", mark: "C", shape: "blue", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." },
-  python: { name: "Python", mark: "Py", shape: "yellow", blurb: "Injection, unsafe parsing, and logic bugs in Python code." },
+  c: { name: "C", logo: "/logos/c.svg", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." },
+  python: { name: "Python", logo: "/logos/python.svg", blurb: "Injection, unsafe parsing, and logic bugs in Python code." },
 };
 
 // One shared repo with every level. quickstart=1 offers to reopen an existing
@@ -63,8 +63,8 @@ function header({ above = "", title, lead = "", below = "" }) {
     ${below}
   </header>`;
 }
-const shape = (mark, color) =>
-  `<span class="shape ${color}" aria-hidden="true"><span>${mark}</span></span>`;
+// Language logos sit in identical tiles so the cards stay matched
+const logo = src => `<span class="logo" aria-hidden="true"><img src="${src}" alt="" width="44" height="44"></span>`;
 
 function errorBox(err) {
   return `<div class="card empty">Couldn't load this page (${esc(err.message)}). Try again in a moment.</div>`;
@@ -85,7 +85,7 @@ async function homePage() {
     const mine = levels.filter(l => l.language === lang);
     const status = mine.length ? `${mine.filter(l => solved.has(l.id)).length} of ${mine.length} solved` : "Levels on the way";
     return `<a class="card path" href="/${lang}" data-link>
-      ${shape(p.mark, p.shape)}
+      ${logo(p.logo)}
       <h3>${p.name}</h3>
       <p>${p.blurb}</p>
       <span class="status">${status}</span>
@@ -102,7 +102,7 @@ async function homePage() {
       ${pathCard("c")}
       ${pathCard("python")}
       <div class="card path soon" aria-disabled="true">
-        ${shape("SQL", "grey")}
+        <span class="logo" aria-hidden="true"><span class="icon">database</span></span>
         <h3>SQL</h3>
         <p>Queries built from user input, and how to stop them being rewritten.</p>
         <span class="status">Coming soon</span>
