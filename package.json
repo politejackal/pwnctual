@@ -4,8 +4,8 @@
   "description": "Defensive security wargame: fix vulnerable C and Python programs on your own computer.",
   "scripts": {
     "build": "node scripts/build-levels.mjs",
-    "dev": "npm run build && wrangler pages dev web --port 8788",
-    "deploy": "npm run build && wrangler pages deploy web --project-name pwnctual --branch main",
+    "dev": "npm run build && wrangler dev --port 8788",
+    "deploy": "npm run build && wrangler deploy",
     "build:levels-repo": "node scripts/build-levels-repo.mjs"
   },
   "type": "module",

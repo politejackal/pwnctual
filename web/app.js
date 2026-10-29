@@ -27,7 +27,12 @@ function setSolved(id, solved) {
 // ---- data ----
 async function getJson(path) {
   const res = await fetch(path);
-  if (!res.ok) throw Object.assign(new Error(`${path} returned ${res.status}`), { status: res.status });
+  // Unknown paths get index.html (for client-side routing), so treat non-JSON as missing
+  const isJson = res.headers.get("content-type")?.includes("json");
+  if (!res.ok || !isJson) {
+    const status = res.ok ? 404 : res.status;
+    throw Object.assign(new Error(`${path} returned ${status}`), { status });
+  }
   return res.json();
 }
 let indexCache = null;

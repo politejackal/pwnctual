@@ -50,7 +50,7 @@ for (const id of (await readdir(levelsDir)).sort()) {
 const langName = { c: "C", python: "Python" };
 await writeFile(join(out, "README.md"), `# pwnctual levels
 
-Every folder here is one level from [pwnctual](https://pwnctual.pages.dev): a small program with a
+Every folder here is one level from [pwnctual](https://pwnctual.com): a small program with a
 security bug for you to fix.
 
 ## How to play
@@ -74,7 +74,7 @@ Your changes stay in this codespace. If you close it, open it again from the lev
 
 | Level | Folder | Language | Difficulty |
 | --- | --- | --- | --- |
-${levels.map(l => `| [${l.title}](https://pwnctual.pages.dev/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n")}
+${levels.map(l => `| [${l.title}](https://pwnctual.com/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n")}
 
 ## Without Codespaces
 

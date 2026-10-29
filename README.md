@@ -18,7 +18,7 @@ checkbox saved in your browser.
 
 | Path | What it is |
 | --- | --- |
-| `web/` | The site (Cloudflare Pages). Plain HTML, CSS and JS. |
+| `web/` | The site: plain HTML, CSS and JS, served as static files by the `pwnctual` Worker on pwnctual.com. |
 | `levels/` | One folder per level. |
 | `scripts/build-levels.mjs` | Turns `levels/` into `web/levels/`, the JSON each page reads. |
 | `scripts/build-levels-repo.mjs` | Builds [pwnctual-levels](https://github.com/politejackal/pwnctual-levels), the repo players open in GitHub Codespaces. |
@@ -61,7 +61,7 @@ npm run dev                      # builds the levels, serves http://127.0.0.1:87
 ## Deploy
 
 ```bash
-npm run deploy                   # builds everything, uploads web/ to Cloudflare Pages
+npm run deploy                   # builds the levels, deploys web/ to pwnctual.com
 ```
 
 After adding or changing a level, update the Codespaces repo too:
