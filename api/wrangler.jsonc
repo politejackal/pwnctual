@@ -3,8 +3,8 @@
   "name": "pwnctual-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
-  // Level source files are bundled as plain text. Hidden tests are bundled
-  // as JSON and only ever read inside the Worker.
+  // Level sources are bundled as plain text. Hidden tests are not bundled:
+  // they live on the runner VM.
   "rules": [
     { "type": "Text", "globs": ["**/*.c", "**/*.py"], "fallthrough": true }
   ],
@@ -17,16 +17,13 @@
     }
   ],
   "vars": {
-    // Your Judge0 server, e.g. https://judge0.example.com
-    "JUDGE0_URL": "",
-    // Judge0 CE 1.13.x ids: 50 = C (GCC 9.2.0), 71 = Python (3.8.1)
-    "JUDGE0_LANGUAGE_C": "50",
-    "JUDGE0_LANGUAGE_PYTHON": "71",
+    // The runner on the VM, e.g. https://runner.pwnctual.com
+    "RUNNER_URL": "",
     // Comma-separated origins allowed to call the API from a browser.
     // Same-origin requests (site and API both on pwnctual.com) don't need this.
     "ALLOWED_ORIGINS": "https://pwnctual.pages.dev,https://pwnctual.com"
   },
-  // JUDGE0_TOKEN is a secret: `wrangler secret put JUDGE0_TOKEN`
+  // RUNNER_KEY is a secret: `wrangler secret put RUNNER_KEY --config api/wrangler.jsonc`
   // Reachable at pwnctual-api.<your subdomain>.workers.dev until pwnctual.com moves to
   // Pages. Then add: "routes": [{ "pattern": "pwnctual.com/api/*", "zone_name": "pwnctual.com" }]
   "workers_dev": true

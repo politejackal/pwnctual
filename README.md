@@ -17,9 +17,9 @@ Free and open source. No sign-up: the browser gets an anonymous session token.
 | `web/` | The site (Cloudflare Pages). Plain HTML, CSS and JS, plus a bundled CodeMirror 6 editor in `web/vendor/`. |
 | `editor/` | Source for the editor bundle. Rebuild with `npm run build:editor`. |
 | `api/` | The API (Cloudflare Workers, TypeScript) and the D1 schema in `api/migrations/`. |
+| `runner/` | The service on the VM that runs submissions in containers. Setup: [`runner/deploy/SETUP.md`](runner/deploy/SETUP.md). |
 | `levels/` | One folder per level. |
 | `scripts/validate-levels.mjs` | Checks that every level is solvable and that its attacks catch the bug. |
-| `dev/fake-judge0.mjs` | **Development only.** Imitates Judge0's API with your local gcc. Not a sandbox. |
 
 ## Level format
 
@@ -32,47 +32,36 @@ levels/c-01-greeting/
 ```
 
 `tests.json` and `solution.*` are in `.gitignore` so the answers aren't public.
-Keep them somewhere private. Deploys and `validate-levels` read them from your local folder.
+Keep them somewhere private and copy them to the runner VM (see the setup guide).
 
 Tests are `{ "stdin": ..., "expected": ... }`. Either value can be a plain string or
 `{ "prefix", "repeat", "count", "suffix" }`, so a 10,000-character input stays one line.
 `expected` is optional on attack tests.
 
-New levels also need one line in `api/src/levels.ts`.
+New levels also need one line in `api/src/levels.ts`, and their folder copied to the runner VM.
 
 ## How code runs
 
-The Worker sends each submission to a self-hosted [Judge0](https://github.com/judge0/judge0)
-over HTTPS, as one batch with one run per test. Every run gets 2 s of CPU, 5 s of wall time,
-256 MB of memory, 64 KB of disk writes and no network. Submissions are limited to 64 KB of
-code, 5 per minute and 60 per hour per user. New sessions are limited to 10 per hour per IP.
-Hidden tests are bundled into the Worker and never sent to the browser.
+The Worker sends `{ levelId, code }` to the runner on an Oracle Ampere VM, over HTTPS through
+a Cloudflare Tunnel, with an API key. The runner holds the hidden tests. It compiles C with
+`-fsanitize=address,undefined` and runs every test in a fresh container: no network, read-only
+filesystem except `/tmp`, 2 s of CPU, 256 MB of memory, 64 KB of output. It returns pass/fail
+per category and the Worker records progress in D1.
+
+Submissions are limited to 64 KB of code, 5 per minute and 60 per hour per user. New sessions
+are limited to 10 per hour per IP.
 
 ## Run it locally
+
+Without Docker, the runner can run code directly on your machine. That is not a sandbox, so
+only do it with code you wrote.
 
 ```bash
 npm install
 cp api/.dev.vars.example api/.dev.vars
 npm run db:migrate:local
-node dev/fake-judge0.mjs      # or point JUDGE0_URL in api/.dev.vars at a real Judge0
+npm run dev:runner            # http://127.0.0.1:8080, RUNNER_EXECUTOR=local
 npm run dev:api               # http://127.0.0.1:8787
 npm run dev:web               # http://127.0.0.1:8788
 npm run validate-levels
 ```
-
-## Judge0 server settings
-
-Set these in `judge0.conf`:
-
-```
-AUTHN_TOKEN=<long random string>     # the Worker's JUDGE0_TOKEN secret
-ENABLE_NETWORK=false
-ALLOW_ENABLE_NETWORK=false
-ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT=false
-ALLOW_ENABLE_PER_PROCESS_AND_THREAD_MEMORY_LIMIT=false
-ALLOWED_LANGUAGES_FOR_COMPILER_OPTIONS=C
-```
-
-Put it behind HTTPS on a hostname (for example through Caddy, or a Cloudflare proxied DNS
-record) so the Worker can reach it.
-

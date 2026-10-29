@@ -1,0 +1,25 @@
+[Unit]
+Description=pwnctual runner
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+User=pwnctual
+Group=pwnctual
+# RUNNER_KEY=... (openssl rand -hex 32)
+EnvironmentFile=/etc/pwnctual-runner.env
+Environment=LEVELS_DIR=/srv/pwnctual-levels
+Environment=HOST=127.0.0.1
+Environment=PORT=8080
+# Job folders are bind-mounted into containers, so they must be on the real
+# filesystem where dockerd can see them (not a PrivateTmp).
+Environment=TMPDIR=/var/lib/pwnctual-runner
+StateDirectory=pwnctual-runner
+ExecStart=/usr/bin/node /srv/pwnctual/runner/server.mjs
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

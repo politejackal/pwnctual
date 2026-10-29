@@ -1,10 +1,9 @@
 // pwnctual API. Runs on Cloudflare Workers (free plan), stores users and
-// progress in D1, and sends code to a self-hosted Judge0 to compile and run.
-import { grade, type GradeEnv } from "./grade";
-import { Judge0Error } from "./judge0";
-import { LEVELS, findLevel, publicLevel } from "./levels";
+// progress in D1, and sends code to the pwnctual runner on the VM to be tested.
+import { LEVELS, findLevel } from "./levels";
+import { gradeOnRunner, RunnerError, type RunnerEnv } from "./runner";
 
-interface Env extends GradeEnv {
+interface Env extends RunnerEnv {
   DB: D1Database;
   ALLOWED_ORIGINS: string;
 }
@@ -26,7 +25,7 @@ export default {
       return res;
     } catch (err) {
       console.error(err);
-      const message = err instanceof Judge0Error
+      const message = err instanceof RunnerError
         ? "The code runner is unavailable right now. Try again in a few minutes."
         : "Something went wrong on our side.";
       return json({ error: message }, 503, cors);
@@ -53,7 +52,7 @@ async function route(request: Request, env: Env): Promise<Response> {
     if (!level) return json({ error: "No such level" }, 404);
     if (method === "GET" && !levelMatch[2]) {
       const solved = await solvedLevels(env, await currentUser(request, env));
-      return json({ ...publicLevel(level), solved: solved.has(level.id) });
+      return json({ ...level, solved: solved.has(level.id) });
     }
     if (method === "POST" && levelMatch[2]) return submit(request, env, level.id);
   }
@@ -99,7 +98,7 @@ async function submit(request: Request, env: Env, levelId: string): Promise<Resp
     "INSERT INTO submissions (user_id, level_id, created_at) VALUES (?, ?, ?) RETURNING id",
   ).bind(userId, levelId, now).first<{ id: number }>();
 
-  const result = await grade(env, findLevel(levelId)!, code);
+  const result = await gradeOnRunner(env, levelId, code);
 
   const writes = [
     env.DB.prepare("UPDATE submissions SET passed = ? WHERE id = ?").bind(result.passed ? 1 : 0, inserted!.id),

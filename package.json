@@ -9,7 +9,8 @@
     "db:migrate:local": "wrangler d1 migrations apply pwnctual --local --config api/wrangler.jsonc",
     "deploy:api": "wrangler deploy --config api/wrangler.jsonc",
     "deploy:web": "npm run build:editor && wrangler pages deploy web --project-name pwnctual",
-    "validate-levels": "node scripts/validate-levels.mjs"
+    "validate-levels": "node scripts/validate-levels.mjs",
+    "dev:runner": "RUNNER_EXECUTOR=local RUNNER_KEY=dev-key-dev-key-dev-key-dev-key-1234 node runner/server.mjs"
   },
   "type": "module",
   "devDependencies": {
