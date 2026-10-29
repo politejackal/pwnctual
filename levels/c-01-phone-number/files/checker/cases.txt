@@ -1,9 +1,21 @@
-# Phone numbers check.sh types into ./vuln, one per line.
-# For each one the program must print: Sending verification code to: <the same number>
-1234567890
-2147483647
-2147483648
-5551234567
-9876543210
-4294967296
-9999999999
+# What check.sh types into ./vuln. One test per line: <kind> <input>
+#
+# normal: a real 9-digit phone number. The program must print
+#         "Sending verification code to: <that number>".
+# attack: something a curious or naughty person might type. The program must
+#         not crash, and must not send a code to any number other than
+#         exactly what was typed. Refusing the input is fine.
+#
+# <nothing> means no input at all.
+
+normal 123456789
+normal 987654321
+normal 555123456
+normal 100000000
+
+attack 9876543210
+attack 2147483648
+attack 4418424085
+attack 99999999999999999999
+attack abc
+attack <nothing>

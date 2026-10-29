@@ -3,8 +3,10 @@
 #
 #   ./check.sh
 #
-# Builds vuln.c, then types each phone number from checker/cases.txt into it.
-# Every number must come back out exactly as it went in.
+# Builds vuln.c, then types each input from checker/cases.txt into it.
+#   normal: a 9-digit phone number must come back out exactly as typed.
+#   attack: the program must not crash, and must not send a code to a number
+#           that wasn't typed. Refusing the input is fine.
 # Prints PASS and a flag if every test passes.
 
 set -u
@@ -51,25 +53,53 @@ if ! $CC $CFLAGS -o "$build/vuln" vuln.c 2>"$build/log"; then
     exit 1
 fi
 
-echo
-echo "${BOLD}Phone numbers${RESET} ${DIM}(from checker/cases.txt)${RESET}"
-while read -r number; do
-    case "$number" in ''|'#'*) continue ;; esac
-    output="$(printf '%s\n' "$number" | limit "$build/vuln" 2>"$build/err")"
+# run_case KIND INPUT
+run_case() {
+    local kind="$1" input="$2" label stdin output status sent
+    if [ "$input" = "<nothing>" ]; then label="(no input)"; stdin=""; else label="$input"; stdin="$input"$'\n'; fi
+
+    output="$(printf '%s' "$stdin" | limit "$build/vuln" 2>"$build/err")"
     status=$?
+    # The prompt has no newline, so this text can follow it on the same line
+    sent="$(printf '%s\n' "$output" | sed -n 's/.*Sending verification code to: //p' | head -1)"
+
     if grep -qE 'AddressSanitizer|UndefinedBehaviorSanitizer|runtime error:' "$build/err"; then
-        fail "$number" "memory error: $(grep -m1 -oE '(AddressSanitizer|UndefinedBehaviorSanitizer): [a-z-]+|runtime error: .*' "$build/err" | cut -c1-70)"
-    elif [ "$status" -ne 0 ]; then
-        fail "$number" "exited with code $status"
-    else
-        # The prompt has no newline, so this text can follow it on the same line
-        sent="$(printf '%s\n' "$output" | sed -n 's/.*Sending verification code to: //p' | head -1)"
-        if [ "$sent" = "$number" ]; then
-            pass "$number" "$number"
+        fail "$label" "memory error: $(grep -m1 -oE '(AddressSanitizer|UndefinedBehaviorSanitizer): [a-z-]+|runtime error: .*' "$build/err" | cut -c1-70)"
+    elif [ "$status" -eq 124 ] || [ "$status" -eq 142 ]; then
+        fail "$label" "took longer than 5 seconds"
+    elif [ "$status" -gt 128 ]; then
+        fail "$label" "crashed (signal $((status - 128)))"
+    elif [ "$kind" = normal ]; then
+        if [ "$status" -ne 0 ]; then
+            fail "$label" "exited with code $status"
+        elif [ "$sent" = "$input" ]; then
+            pass "$label" "$input"
         else
-            fail "$number" "sent the code to ${sent:-nothing}"
+            fail "$label" "sent the code to ${sent:-nothing}"
+        fi
+    else
+        # Refusing and echoing exactly are both safe, so both count the same for the flag
+        if [ -z "$sent" ] || [ "$sent" = "$input" ]; then
+            pass "$label" "safe"
+        else
+            fail "$label" "sent a code to $sent"
         fi
     fi
+}
+
+section=""
+while read -r kind input; do
+    case "$kind" in ''|'#'*) continue ;; esac
+    if [ "$kind" != "$section" ]; then
+        section="$kind"
+        echo
+        if [ "$kind" = normal ]; then
+            echo "${BOLD}Normal phone numbers${RESET}"
+        else
+            echo "${BOLD}Curious and naughty inputs${RESET}"
+        fi
+    fi
+    run_case "$kind" "$input"
 done < checker/cases.txt
 
 echo

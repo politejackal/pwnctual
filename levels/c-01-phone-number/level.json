@@ -2,16 +2,18 @@
   "id": "c-01-phone-number",
   "title": "Phone number",
   "language": "c",
-  "category": "bugfix",
+  "category": "breakfix",
   "difficulty": "Easy",
   "description": [
-    "This program asks for a 10-digit phone number and sends a verification code to it.",
-    "For some numbers it works. For most, the code goes to a completely different number.",
-    "Fix it so every 10-digit phone number comes back out exactly as it was typed in."
+    "Our junior developer made a program login functionality in C. It's fine for most people, and works perfectly... until someone curious or naughty steps in. Now it's your job to be that curious and perhaps naughty person, and find out how this program might break, in other words, how it might give you a crash. But don't worry, as this is your first challenge on pwnctual, we will give you a lot of hints on the bottom of the page!",
+    "Now before we ask you to find crashes and stuff, you should know why we need to find these crashes, and what's this fuss all about. Well, it's because a crash in a program might sound very simple and harmless to you, but in the real-world applications, it can cause a lot of problems and attacks. The most immediate threat it creates is the Denial of Service (DoS) attack, which can knock a whole system offline. Anyway, you can research and find out other cool attacks people can do if a program crashes, anyhow, let's jump to business!"
   ],
   "hints": [
-    "What's the largest number an <code>int</code> can hold?",
-    "Most 10-digit numbers are bigger than 2,147,483,647. Use a bigger type, or don't store the phone number as a number at all."
+    "Run the program yourself with <code>gcc vuln.c -o vuln && ./vuln</code> and type things that aren't a 9-digit phone number. Try a longer number first.",
+    "An <code>int</code> can only hold numbers up to 2,147,483,647. What happens when someone types a 10-digit number?",
+    "Try letters, like <code>abc</code>, or press Ctrl+D without typing anything. What number does it send the code to then?",
+    "<code>scanf</code> returns how many values it managed to read. The program never checks it.",
+    "A safe version only sends the code when the input is exactly 9 digits, and refuses everything else. Reading the input as text instead of an <code>int</code> makes that easier to check."
   ],
-  "flagSha256": "9df325fa08c6e552434dae00cf486f2842c5b55a75b94325b43adaa3a2c2e45b"
+  "flagSha256": "d3b7c315f88eadb84d94dd5e09e641e22631df47656cbe4e49f5ccf14ddf4de9"
 }
