@@ -190,6 +190,7 @@ cd ${esc(level.id)}
   const hintBtn = app.querySelector(".show-hint");
   hintBtn.hidden = !level.hints.length;
   hintBtn.addEventListener("click", () => {
+    if (hintsShown >= level.hints.length) return;
     hintsEl.insertAdjacentHTML("beforeend", `<div class="hint">${level.hints[hintsShown++]}</div>`);
     if (hintsShown >= level.hints.length) hintBtn.hidden = true;
     else hintBtn.lastChild.textContent = "Show another hint";
