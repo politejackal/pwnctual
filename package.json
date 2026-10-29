@@ -1,0 +1,27 @@
+{
+  "name": "pwnctual",
+  "version": "1.0.0",
+  "description": "Security wargame: fix vulnerable C and Python programs.",
+  "scripts": {
+    "build:editor": "esbuild editor/editor.js --bundle --minify --format=esm --target=es2020 --outfile=web/vendor/editor.js",
+    "dev:api": "wrangler dev --config api/wrangler.jsonc --port 8787",
+    "dev:web": "wrangler pages dev web --port 8788",
+    "db:migrate:local": "wrangler d1 migrations apply pwnctual --local --config api/wrangler.jsonc",
+    "deploy:api": "wrangler deploy --config api/wrangler.jsonc",
+    "deploy:web": "npm run build:editor && wrangler pages deploy web --project-name pwnctual",
+    "validate-levels": "node scripts/validate-levels.mjs"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-cpp": "^6.0.3",
+    "@codemirror/lang-python": "^6.2.1",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@lezer/highlight": "^1.2.5",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.152.0"
+  },
+  "private": true
+}

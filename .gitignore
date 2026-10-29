@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+.dev.vars
+api/.dev.vars
+api/worker-configuration.d.ts
+.claude/
+
+# Hidden tests and reference fixes stay off the public repo.
+# The Worker bundles them from this folder when you deploy.
+levels/*/tests.json
+levels/*/solution.*

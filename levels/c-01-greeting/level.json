@@ -1,0 +1,16 @@
+{
+  "id": "c-01-greeting",
+  "title": "Greeting",
+  "language": "c",
+  "difficulty": "Easy",
+  "description": [
+    "This program reads a name from standard input and prints a greeting: <code>Ada</code> becomes <code>Hello, Ada!</code>",
+    "Whoever wrote it assumed nobody has a name longer than 255 characters. Someone will try anyway.",
+    "Fix it so any input is handled safely. A name longer than 255 characters should be cut down to its first 255 characters. Everything that works now has to keep working."
+  ],
+  "hints": [
+    "Look at how many characters <code>read_line</code> writes into <code>buf</code>, and how big <code>buf</code> is.",
+    "<code>read_line</code> has no idea how big the buffer is. It needs to be told.",
+    "Don't forget the <code>'\\0'</code> at the end. A 255-character name needs 256 bytes."
+  ]
+}
