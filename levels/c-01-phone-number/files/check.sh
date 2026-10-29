@@ -3,10 +3,11 @@
 #
 #   ./check.sh
 #
-# Builds vuln.c, then types each input from checker/cases.txt into it.
+# Builds vuln.c, then types each input below into it.
 #   normal: a 9-digit phone number must come back out exactly as typed.
-#   attack: the program must not crash, and must not send a code to a number
-#           that wasn't typed. Refusing the input is fine.
+#   attack: something a curious or naughty person might type. The program must
+#           not crash, and must not send a code to a number that wasn't typed.
+#           Refusing the input is fine.
 # Prints PASS and a flag if every test passes.
 
 set -u
@@ -87,9 +88,23 @@ run_case() {
     fi
 }
 
+# <kind> <input>. <nothing> means no input at all.
+cases="
+normal 123456789
+normal 987654321
+normal 555123456
+normal 100000000
+attack 9876543210
+attack 2147483648
+attack 4418424085
+attack 99999999999999999999
+attack abc
+attack <nothing>
+"
+
 section=""
 while read -r kind input; do
-    case "$kind" in ''|'#'*) continue ;; esac
+    [ -z "$kind" ] && continue
     if [ "$kind" != "$section" ]; then
         section="$kind"
         echo
@@ -100,7 +115,9 @@ while read -r kind input; do
         fi
     fi
     run_case "$kind" "$input"
-done < checker/cases.txt
+done <<EOF
+$cases
+EOF
 
 echo
 total=$((passed + failed))

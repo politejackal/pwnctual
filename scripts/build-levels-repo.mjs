@@ -1,5 +1,5 @@
 // Builds the contents of the public pwnctual-levels repo, which players open in
-// GitHub Codespaces. It gets every level's files/ folder plus a dev container.
+// GitHub Codespaces: every level's files/ folder plus a dev container.
 //
 //   node scripts/build-levels-repo.mjs [output dir]     (default: ../pwnctual-levels)
 //
@@ -18,7 +18,6 @@ const devcontainer = {
   hostRequirements: { cpus: 2 },
   postCreateCommand: "command -v python3 >/dev/null || (sudo apt-get update && sudo apt-get install -y python3)",
   customizations: {
-    codespaces: { openFiles: ["README.md"] },
     vscode: {
       extensions: ["ms-vscode.cpptools"],
       settings: { "files.trimTrailingWhitespace": false, "terminal.integrated.defaultProfile.linux": "bash" },
@@ -44,39 +43,7 @@ for (const id of (await readdir(levelsDir)).sort()) {
   levels.push(meta);
 }
 
-const langName = { c: "C", python: "Python" };
-await writeFile(join(out, "README.md"), `# pwnctual levels
-
-Every folder here is one level from [pwnctual](https://pwnctual.com): a small program with a
-security bug for you to fix.
-
-## How to play
-
-1. Open the folder for your level in the file list on the left.
-2. Read what the level is about on its page on pwnctual, then fix the bug in \`vuln.c\`
-   (or \`vuln.py\`).
-3. Open a terminal (**Terminal → New Terminal**) and run the check:
-
-   \`\`\`bash
-   cd <level folder>
-   ./check.sh
-   \`\`\`
-
-4. When it prints **PASS**, it also prints a flag. Enter the flag on the level page on pwnctual.
-
-Your changes stay in this codespace. If you close it, open it again from the level page or from
-[github.com/codespaces](https://github.com/codespaces) and carry on where you left off.
-
-## Levels
-
-| Level | Folder | Language | Difficulty |
-| --- | --- | --- | --- |
-${levels.map(l => `| [${l.title}](https://pwnctual.com/level/${l.id}) | \`${l.id}/\` | ${langName[l.language] ?? l.language} | ${l.difficulty} |`).join("\n") || "| No levels yet | | | |"}
-
-## Without Codespaces
-
-You can also clone this repo and run the levels on your own machine. You need gcc (or clang),
-make and bash. On Windows, use WSL.
-`);
+// The levels repo has no README; remove one left over from older builds
+await rm(join(out, "README.md"), { force: true });
 
 console.log(`wrote ${levels.length} level(s) to ${out}`);
