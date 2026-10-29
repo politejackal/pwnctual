@@ -27,12 +27,20 @@ checkbox saved in your browser.
 
 ```
 levels/c-01-greeting/
-  level.json        title, description, hints, difficulty, language (shown on the page)
+  level.json        title, description, hints, difficulty, language, flagSha256
   files/            copied into the level's folder in pwnctual-levels
     vuln.c          the vulnerable program
     Makefile        builds with the sanitizers
     check.sh        builds, runs the tests, prints PASS or FAIL
   solution.c        a reference fix (not in this repo)
+```
+
+`check.sh` prints a flag when every test passes. The site stores only its SHA-256
+(`flagSha256` in `level.json`), so after changing a level's tests, run `check.sh` on the
+reference fix and update the hash:
+
+```bash
+printf '%s' 'pwnctual{...}' | sha256sum
 ```
 
 Before publishing a level, check that `check.sh` fails on the original code and passes on a fix:
