@@ -4,7 +4,7 @@
 //   node scripts/build-levels-repo.mjs [output dir]     (default: ../pwnctual-levels)
 //
 // Only replaces what it generates, so the output folder can stay a git checkout.
-import { readdir, readFile, writeFile, mkdir, rm, stat, copyFile, chmod } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, rm, stat, cp } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
@@ -30,7 +30,7 @@ await mkdir(out, { recursive: true });
 await rm(join(out, ".devcontainer"), { recursive: true, force: true });
 await mkdir(join(out, ".devcontainer"));
 await writeFile(join(out, ".devcontainer", "devcontainer.json"), JSON.stringify(devcontainer, null, 2) + "\n");
-await writeFile(join(out, ".gitignore"), "# Built by make / check.sh\n*/vuln\n*/build.log\n");
+await writeFile(join(out, ".gitignore"), "# If you build vuln.c yourself, e.g. gcc vuln.c -o vuln\n*/vuln\n");
 
 const levels = [];
 for (const id of (await readdir(levelsDir)).sort()) {
@@ -39,11 +39,8 @@ for (const id of (await readdir(levelsDir)).sort()) {
   const meta = JSON.parse(await readFile(join(src, "level.json"), "utf8"));
   const dest = join(out, id);
   await rm(dest, { recursive: true, force: true });
-  await mkdir(dest);
-  for (const name of await readdir(join(src, "files"))) {
-    await copyFile(join(src, "files", name), join(dest, name));
-    await chmod(join(dest, name), (await stat(join(src, "files", name))).mode & 0o777);
-  }
+  // Copies subfolders such as checker/ too, keeping check.sh executable
+  await cp(join(src, "files"), dest, { recursive: true, preserveTimestamps: false });
   levels.push(meta);
 }
 

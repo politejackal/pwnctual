@@ -34,9 +34,9 @@ checkbox saved in your browser.
 levels/c-01-admin-pin/
   level.json        title, description, hints, language, category, difficulty, flagSha256
   files/            copied into the level's folder in pwnctual-levels
-    vuln.c          the vulnerable program
-    Makefile        builds with the sanitizers
-    check.sh        builds, runs the tests, prints PASS or FAIL
+    vuln.c          the vulnerable program (the only file players edit)
+    check.sh        builds with the sanitizers, runs the tests, prints PASS/FAIL and the flag
+    checker/        test code check.sh uses, e.g. harness.c calling the level's functions
   solution.c        a reference fix (not in this repo)
 ```
 
@@ -53,7 +53,7 @@ Before publishing a level, check that `check.sh` fails on the original code and 
 ```bash
 cd levels/c-01-admin-pin/files
 ./check.sh                       # must print FAIL
-cp ../solution.c vuln.c && ./check.sh && git checkout vuln.c   # must print PASS
+cp ../solution.c vuln.c; ./check.sh; git checkout vuln.c       # must print PASS
 ```
 
 ## Run it locally
