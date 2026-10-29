@@ -153,11 +153,7 @@ a.path:active { transform: scale(.98); }
 .page-head { padding: 40px 0 24px; max-width: 720px; margin: 0 auto; }
 .page-head h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 500; letter-spacing: -1px; }
 .page-head p { color: var(--on-surface-variant); font-size: 17px; margin-top: 6px; }
-.categories { display: grid; gap: 40px; max-width: 720px; margin: 0 auto; }
-.category-head { display: flex; align-items: baseline; gap: 12px; }
-.category h2 { font-size: 26px; font-weight: 500; letter-spacing: -.3px; }
-.category-head .count { font-size: 14px; color: var(--on-surface-variant); }
-.category > p { color: var(--on-surface-variant); margin: 4px 0 14px; }
+.level-list { max-width: 720px; margin: 0 auto; }
 .levels { display: grid; gap: 8px; }
 .level-row {
   display: flex; align-items: center; gap: 16px; padding: 18px 20px;
@@ -196,7 +192,8 @@ a.path:active { transform: scale(.98); }
 .hint code { background: rgba(0,0,0,.08); }
 @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } }
 
-.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+.show-hint { display: flex; margin: 0 auto; }
 
 /* How to solve */
 .howto { margin-top: 16px; background: var(--surface-container-low); border-radius: 24px; padding: 20px 22px; }

@@ -2,7 +2,6 @@
   "id": "c-01-phone-number",
   "title": "Phone number",
   "language": "c",
-  "category": "breakfix",
   "difficulty": "Easy",
   "description": [
     "Our junior developer made a program login functionality in C. It's fine for most people, and works perfectly... until someone curious or naughty steps in. Now it's your job to be that curious and perhaps naughty person, and find out how this program might break, in other words, how it might give you a crash. But don't worry, as this is your first challenge on pwnctual, we will give you a lot of hints on the bottom of the page!",

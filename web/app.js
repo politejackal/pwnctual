@@ -2,11 +2,6 @@
 // level data comes from /levels/*.json (built by scripts/build-levels.mjs) and
 // progress is kept in this browser's localStorage.
 
-const CATEGORIES = {
-  bugfix: { name: "Bug fix", blurb: "The program gives the wrong result for normal input. Find the bug and fix it." },
-  breakfix: { name: "Break it and fix it", blurb: "The program works for normal input, but some inputs break it. Find one that does, then fix the code so nothing can." },
-};
-
 const PATHS = {
   c: { name: "C", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." },
   python: { name: "Python", blurb: "Injection, unsafe parsing, and logic bugs in Python code." },
@@ -92,7 +87,7 @@ async function homePage() {
       </div>
     </section>
     <section class="how" aria-label="How it works">
-      <div><span class="num">1</span><b>Pick a level</b><p><b>Bug fix</b> levels give the wrong result for normal input. <b>Break it and fix it</b> levels work until someone sends the input that breaks them.</p></div>
+      <div><span class="num">1</span><b>Read the level</b><p>Each level tells you what the program is meant to do. The bug is somewhere in there.</p></div>
       <div><span class="num">2</span><b>Fix it</b><p>Open it in GitHub Codespaces: VS Code in your browser, with the compiler and every level already set up.</p></div>
       <div><span class="num">3</span><b>Run the check</b><p><code>./check.sh</code> runs normal input and then attacks. C is built with AddressSanitizer, so memory bugs fail even when they don't crash.</p></div>
     </section>`;
@@ -101,32 +96,24 @@ async function homePage() {
 async function pathPage(lang) {
   setTitle(PATHS[lang].name);
   markNav(lang);
-  app.innerHTML = `<div class="page-head"><h1>${PATHS[lang].name}</h1><p>${PATHS[lang].blurb}</p></div><div class="categories" aria-busy="true"></div>`;
-  const host = app.querySelector(".categories");
+  app.innerHTML = `<div class="page-head"><h1>${PATHS[lang].name}</h1><p>${PATHS[lang].blurb}</p></div><div class="level-list" aria-busy="true"></div>`;
+  const host = app.querySelector(".level-list");
   try {
     const levels = (await getIndex()).filter(l => l.language === lang);
     const solved = solvedSet();
     host.removeAttribute("aria-busy");
-    host.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => {
-      const mine = levels.filter(l => l.category === key);
-      const rows = mine.map((l, i) => {
-        const done = solved.has(l.id);
-        return `<a class="level-row ${done ? "solved" : ""}" href="/level/${esc(l.id)}" data-link>
-          <span class="num">${done ? '<span class="icon">check</span>' : i + 1}</span>
-          <span><span class="title">${esc(l.title)}</span><br><span class="meta">${esc(l.difficulty)}${done ? " · Solved" : ""}</span></span>
-          <span class="icon go">chevron_right</span>
-        </a>`;
-      }).join("");
-      const done = mine.filter(l => solved.has(l.id)).length;
-      return `<section class="category">
-        <div class="category-head">
-          <h2>${cat.name}</h2>
-          ${mine.length ? `<span class="count">${done} of ${mine.length} solved</span>` : ""}
-        </div>
-        <p>${cat.blurb}</p>
-        ${mine.length ? `<div class="levels">${rows}</div>` : `<div class="empty">No levels yet.</div>`}
-      </section>`;
-    }).join("");
+    if (!levels.length) {
+      host.innerHTML = `<div class="empty">No ${PATHS[lang].name} levels yet. They're being written.</div>`;
+      return;
+    }
+    host.innerHTML = `<div class="levels">${levels.map((l, i) => {
+      const done = solved.has(l.id);
+      return `<a class="level-row ${done ? "solved" : ""}" href="/level/${esc(l.id)}" data-link>
+        <span class="num">${done ? '<span class="icon">check</span>' : i + 1}</span>
+        <span><span class="title">${esc(l.title)}</span><br><span class="meta">${esc(l.difficulty)}${done ? " · Solved" : ""}</span></span>
+        <span class="icon go">chevron_right</span>
+      </a>`;
+    }).join("")}</div>`;
   } catch (err) {
     host.outerHTML = errorBox(err);
   }
@@ -151,7 +138,6 @@ async function levelPage(id) {
     <div class="crumbs"><a href="/${level.language}" data-link>← ${path.name}</a></div>
     <article class="level">
       <div class="chips">
-        <span class="chip">${esc(CATEGORIES[level.category]?.name ?? "")}</span>
         <span class="chip">${esc(level.difficulty)}</span>
       </div>
       <h1>${esc(level.title)}</h1>
