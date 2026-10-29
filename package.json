@@ -1,16 +1,13 @@
 {
   "name": "pwnctual",
   "version": "1.0.0",
-  "description": "Security wargame: fix vulnerable C and Python programs.",
+  "description": "Defensive security wargame: fix vulnerable C and Python programs on your own computer.",
   "scripts": {
     "build:editor": "esbuild editor/editor.js --bundle --minify --format=esm --target=es2020 --outfile=web/vendor/editor.js",
-    "dev:api": "wrangler dev --config api/wrangler.jsonc --port 8787",
-    "dev:web": "wrangler pages dev web --port 8788",
-    "db:migrate:local": "wrangler d1 migrations apply pwnctual --local --config api/wrangler.jsonc",
-    "deploy:api": "wrangler deploy --config api/wrangler.jsonc",
-    "deploy:web": "npm run build:editor && wrangler pages deploy web --project-name pwnctual",
-    "validate-levels": "node scripts/validate-levels.mjs",
-    "dev:runner": "RUNNER_EXECUTOR=local RUNNER_KEY=dev-key-dev-key-dev-key-dev-key-1234 node runner/server.mjs"
+    "build:levels": "node scripts/build-levels.mjs",
+    "build": "npm run build:editor && npm run build:levels",
+    "dev": "npm run build:levels && wrangler pages dev web --port 8788",
+    "deploy": "npm run build && wrangler pages deploy web --project-name pwnctual --branch main"
   },
   "type": "module",
   "devDependencies": {
@@ -21,7 +18,6 @@
     "@codemirror/state": "^6.7.6",
     "@codemirror/view": "^6.43.15",
     "@lezer/highlight": "^1.2.5",
-    "typescript": "^7.0.2",
     "wrangler": "^4.152.0"
   },
   "private": true

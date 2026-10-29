@@ -20,8 +20,7 @@
   --green: #146c2e;
   --red: #b3261e;
 
-  --editor-active-line: rgba(11, 87, 208, .05);
-  --editor-selection: rgba(11, 87, 208, .18);
+  --code-selection: rgba(11, 87, 208, .18);
   --tok-keyword: #a8227f; --tok-string: #146c2e; --tok-comment: #6b7280;
   --tok-number: #b55b00; --tok-meta: #0b57d0; --tok-function: #6639ba; --tok-type: #00639b;
 
@@ -50,8 +49,7 @@
     --blue-c: #0842a0;   --on-blue-c: #d3e3fd;
     --green: #6dd58c;
     --red: #f2b8b5;
-    --editor-active-line: rgba(168, 199, 250, .06);
-    --editor-selection: rgba(168, 199, 250, .22);
+    --code-selection: rgba(168, 199, 250, .22);
     --tok-keyword: #ff8bcb; --tok-string: #6dd58c; --tok-comment: #8e918f;
     --tok-number: #ffb870; --tok-meta: #a8c7fa; --tok-function: #d0bcff; --tok-type: #7fcfff;
   }
@@ -189,7 +187,7 @@ a.path:active { transform: scale(.98); }
 }
 .chip.ok { background: var(--green-c); color: var(--on-green-c); }
 .brief p { margin-bottom: 12px; }
-.hints { margin-top: 20px; display: grid; gap: 8px; }
+.hints { margin-top: 20px; margin-bottom: 12px; display: grid; gap: 8px; }
 .hint {
   background: var(--yellow-c); color: var(--on-yellow-c); border-radius: 20px; padding: 14px 18px;
   font-size: 15px; animation: pop .4s var(--spring);
@@ -200,14 +198,14 @@ a.path:active { transform: scale(.98); }
 .workbench { display: grid; gap: 12px; min-width: 0; }
 .editor-card {
   background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);
-  border-radius: 24px; overflow: hidden; height: min(560px, 70dvh); display: flex; flex-direction: column;
+  border-radius: 24px; overflow: hidden; max-height: min(640px, 75dvh); display: flex; flex-direction: column;
 }
 .editor-card .bar {
   display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 20px;
   border-bottom: 1px solid var(--outline-variant); font-size: 14px; color: var(--on-surface-variant);
 }
 .editor-card .bar .file { font-family: var(--font-code); margin-right: auto; }
-.editor-host { flex: 1; min-height: 0; }
+.editor-host { flex: 1; min-height: 0; overflow: auto; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* CodeMirror syntax colours (classHighlighter adds tok-* classes) */
@@ -219,23 +217,20 @@ a.path:active { transform: scale(.98); }
 .tok-typeName { color: var(--tok-type); }
 .tok-variableName.tok-definition, .tok-propertyName.tok-definition { color: var(--tok-function); }
 
-/* Results */
-.results { border-radius: 24px; padding: 20px; background: var(--surface-container-low); animation: pop .4s var(--spring); }
-.results.pass { background: var(--green-c); color: var(--on-green-c); }
-.results h2 { font-size: 20px; font-weight: 500; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.results .row { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
-.results .row + .row { border-top: 1px solid var(--outline-variant); }
-.results .row .label { font-weight: 500; }
-.results .row .count { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
-.results .row .icon.ok { color: var(--green); }
-.results .row .icon.bad { color: var(--red); }
-.results ul { list-style: none; padding: 0 0 6px 36px; font-size: 14px; color: var(--on-surface-variant); }
-.results pre {
-  font-family: var(--font-code); font-size: 13px; white-space: pre-wrap; word-break: break-word;
-  background: var(--surface-container-lowest); border-radius: 16px; padding: 14px; max-height: 280px; overflow: auto;
+/* How to solve */
+.howto { margin-top: 16px; background: var(--surface-container-low); border-radius: 24px; padding: 20px 22px; }
+.howto h2 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+.howto ol { padding-left: 20px; margin-bottom: 12px; }
+.howto li { margin: 2px 0; }
+.cmd {
+  font-family: var(--font-code); font-size: 14px; line-height: 1.6;
+  background: var(--surface-container-lowest); border-radius: 16px; padding: 12px 16px; overflow-x: auto;
 }
-.results .note { font-size: 14px; color: var(--on-surface-variant); }
-.results.pass .note { color: inherit; opacity: .85; }
+.cmd code { background: none; padding: 0; }
+.note { font-size: 14px; color: var(--on-surface-variant); margin-top: 10px; }
+.editor-card .bar .readonly { font-size: 13px; padding: 4px 12px; border-radius: 999px; background: var(--surface-container); }
+.solved-toggle.on { background: var(--green-c); color: var(--on-green-c); }
+
 .running { display: flex; align-items: center; gap: 12px; }
 .spinner {
   width: 24px; height: 24px; border-radius: 50%;
@@ -259,7 +254,7 @@ a.path:active { transform: scale(.98); }
   .hero { padding: 32px 0 28px; }
   .hero p { font-size: 17px; }
   .footer { padding-bottom: 96px; }
-  .editor-card { height: 60dvh; border-radius: 20px; }
+  .editor-card { max-height: 60dvh; border-radius: 20px; }
   .actions .btn { flex: 1; }
   .bottomnav {
     display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;

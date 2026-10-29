@@ -1,4 +1,0 @@
-# Copy to .dev.vars for `wrangler dev`. Never commit .dev.vars.
-RUNNER_URL=http://127.0.0.1:8080
-RUNNER_KEY=dev-key-dev-key-dev-key-dev-key-1234
-ALLOWED_ORIGINS=http://127.0.0.1:8788,http://localhost:8788

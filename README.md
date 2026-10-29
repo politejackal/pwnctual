@@ -1,67 +1,71 @@
 # pwnctual
 
 A defensive security wargame. Each level is a small C or Python program with a real
-vulnerability. You fix the code in the browser and submit it. The server compiles it, runs it
-against hidden tests, and records your progress.
+vulnerability. You download it, fix it on your own computer, and run the included
+`check.sh`. It prints PASS or FAIL.
 
 - **Functional tests** check that the program still does its job.
 - **Attack tests** feed it hostile input (oversized lines, format strings and so on). C is built
   with `-fsanitize=address,undefined`, so a memory bug fails the test even if it doesn't crash.
 
-Free and open source. No sign-up: the browser gets an anonymous session token.
+Players can work in GitHub Codespaces (every level is in
+[pwnctual-levels](https://github.com/politejackal/pwnctual-levels), with gcc set up, on the
+player's own free Codespaces hours) or download a level and work on their own computer.
+
+The site is static. Nothing runs on a server, and there are no accounts: progress is a
+checkbox saved in your browser.
 
 ## Layout
 
 | Path | What it is |
 | --- | --- |
-| `web/` | The site (Cloudflare Pages). Plain HTML, CSS and JS, plus a bundled CodeMirror 6 editor in `web/vendor/`. |
-| `editor/` | Source for the editor bundle. Rebuild with `npm run build:editor`. |
-| `api/` | The API (Cloudflare Workers, TypeScript) and the D1 schema in `api/migrations/`. |
-| `runner/` | The service on the VM that runs submissions in containers. Setup: [`runner/deploy/SETUP.md`](runner/deploy/SETUP.md). |
+| `web/` | The site (Cloudflare Pages). Plain HTML, CSS and JS, plus a bundled CodeMirror 6 viewer in `web/vendor/`. |
+| `editor/` | Source for the CodeMirror bundle. Rebuild with `npm run build:editor`. |
 | `levels/` | One folder per level. |
-| `scripts/validate-levels.mjs` | Checks that every level is solvable and that its attacks catch the bug. |
+| `scripts/build-levels.mjs` | Turns `levels/` into `web/levels/`: the JSON each page reads and the zip players download. |
+| `scripts/build-levels-repo.mjs` | Builds [pwnctual-levels](https://github.com/politejackal/pwnctual-levels), the repo players open in GitHub Codespaces. |
 
 ## Level format
 
 ```
 levels/c-01-greeting/
-  level.json      title, description, hints, difficulty, language (shown to players)
-  vulnerable.c    the code players start from (shown to players)
-  tests.json      functional and attack tests (server only, not in this repo)
-  solution.c      a reference fix (server only, not in this repo)
+  level.json        title, description, hints, difficulty, language (shown on the page)
+  files/            exactly what goes in the zip
+    vuln.c          the vulnerable program (also shown on the page)
+    Makefile        builds with the sanitizers
+    check.sh        builds, runs the tests, prints PASS or FAIL
+    README.md       instructions, including WSL setup for Windows
+  solution.c        a reference fix (not in this repo)
 ```
 
-`tests.json` and `solution.*` are in `.gitignore` so the answers aren't public.
-Keep them somewhere private and copy them to the runner VM (see the setup guide).
+The zip unpacks to a folder named after the level. `check.sh` keeps its executable bit.
 
-Tests are `{ "stdin": ..., "expected": ... }`. Either value can be a plain string or
-`{ "prefix", "repeat", "count", "suffix" }`, so a 10,000-character input stays one line.
-`expected` is optional on attack tests.
+Before publishing a level, check that `check.sh` fails on the original code and passes on a fix:
 
-New levels also need one line in `api/src/levels.ts`, and their folder copied to the runner VM.
-
-## How code runs
-
-The Worker sends `{ levelId, code }` to the runner on an Oracle Ampere VM, over HTTPS through
-a Cloudflare Tunnel, with an API key. The runner holds the hidden tests. It compiles C with
-`-fsanitize=address,undefined` and runs every test in a fresh container: no network, read-only
-filesystem except `/tmp`, 2 s of CPU, 256 MB of memory, 64 KB of output. It returns pass/fail
-per category and the Worker records progress in D1.
-
-Submissions are limited to 64 KB of code, 5 per minute and 60 per hour per user. New sessions
-are limited to 10 per hour per IP.
+```bash
+npm run build:levels
+cd "$(mktemp -d)" && unzip -q ~/path/to/pwnctual/web/levels/c-01-greeting.zip && cd c-01-greeting
+./check.sh                       # must print FAIL
+cp ~/path/to/solution.c vuln.c
+./check.sh                       # must print PASS
+```
 
 ## Run it locally
 
-Without Docker, the runner can run code directly on your machine. That is not a sandbox, so
-only do it with code you wrote.
-
 ```bash
 npm install
-cp api/.dev.vars.example api/.dev.vars
-npm run db:migrate:local
-npm run dev:runner            # http://127.0.0.1:8080, RUNNER_EXECUTOR=local
-npm run dev:api               # http://127.0.0.1:8787
-npm run dev:web               # http://127.0.0.1:8788
-npm run validate-levels
+npm run dev                      # builds the levels, serves http://127.0.0.1:8788
+```
+
+## Deploy
+
+```bash
+npm run deploy                   # builds everything, uploads web/ to Cloudflare Pages
+```
+
+After adding or changing a level, update the Codespaces repo too:
+
+```bash
+node scripts/build-levels-repo.mjs ../pwnctual-levels
+cd ../pwnctual-levels && git add -A && git commit -m "Update levels" && git push
 ```
