@@ -4,7 +4,7 @@
   "language": "c",
   "difficulty": "Easy",
   "description": [
-    "Our junior developer made a program login functionality in C. It's fine for most people, and works perfectly... until someone curious or naughty steps in. Now it's your job to be that curious and perhaps naughty person, and find out how this program might break, in other words, how it might give you a crash. But don't worry, as this is your first challenge on pwnctual, we will give you a lot of hints on the bottom of the page!",
+    "Our junior developer wrote a simple login program in C. It's fine for most people, and works perfectly... until someone curious or naughty steps in. And now, it's your job to be that curious and perhaps naughty person, and find out how this program might break, in other words, how it might give you a crash. But don't worry, as this is your first challenge on pwnctual, we will give you a lot of hints for this challenge, on the bottom of this page!",
     "Now before we ask you to find crashes and stuff, you should know why we need to find these crashes, and what's this fuss all about. Well, it's because a crash in a program might sound very simple and harmless to you, but in the real-world applications, it can cause a lot of problems and attacks. The most immediate threat it creates is the Denial of Service (DoS) attack, which can knock a whole system offline. Anyway, you can research and find out other cool attacks people can do if a program crashes, anyhow, let's jump to business!"
   ],
   "hints": [
