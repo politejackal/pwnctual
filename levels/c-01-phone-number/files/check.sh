@@ -5,9 +5,7 @@ if [ -z "$INPUT" ]; then
   echo "Usage: ./check.sh \"your input\""; exit 1
 fi
 
-if [ ! -x ./vuln ]; then
-  echo "Compile it first: gcc -o vuln vuln.c"; exit 1
-fi
+gcc -o vuln vuln.c || exit 1
 
 OUTPUT=$(printf '%s\n' "$INPUT" | ./vuln 2>/dev/null)
 PRINTED=$(printf '%s' "$OUTPUT" | sed -n 's/.*Sending verification code to: //p' | tr -d '[:space:]')
