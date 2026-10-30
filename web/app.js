@@ -4,7 +4,7 @@
 
 // The two paths. Their folders in the levels repo have the same names.
 const PATHS = {
-  learning: { name: "C For Hackers", url: "/learn", logo: "/logos/c.svg", empty: "Lessons and levels are on the way.",
+  learning: { name: "C for hackers", url: "/learn", logo: "/logos/c.svg", empty: "Lessons and levels are on the way.",
     blurb: "Lessons and levels that teach C from the start, so you can read and write the programs in the other path." },
   finding: { name: "Find bugs", url: "/find", icon: "bug_report", empty: "Levels are on the way.",
     blurb: "C programs with a security bug in them. Find an input that breaks each one and submit the flag." },
