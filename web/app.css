@@ -242,6 +242,19 @@ a.path:active { transform: scale(.98); }
 .flag-card.solved .flag-msg { color: var(--on-green-c); font-weight: 600; }
 .flag-card.solved .flag-msg .icon { font-size: 20px; }
 
+/* ---- writeup, shown after solving ---- */
+.writeup { animation: pop .6s var(--spring); scroll-margin-top: 96px; }
+.writeup .eyebrow {
+  display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px;
+  font-size: 13px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase;
+  color: var(--primary);
+}
+.writeup .eyebrow .icon { font-size: 18px; }
+.writeup h3 { font-size: 17px; font-weight: 600; margin-top: 22px; margin-bottom: 6px; }
+.writeup .cmd { margin: 12px 0; }
+.writeup ul, .writeup ol { padding-left: 22px; margin-top: 10px; display: grid; gap: 6px; }
+.writeup .note { margin-top: 0; }
+
 /* ---- hints ---- */
 .hints { display: grid; gap: 8px; }
 .hints:empty { display: none; }

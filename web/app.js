@@ -188,7 +188,7 @@ async function levelPage(id) {
         <li><div>Open a terminal, and run the following:
           <pre class="cmd"><code>cd ${esc(level.id)}
 ./check.sh "your input"</code></pre></div></li>
-        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number or causes a segmentation fault, it gives you the flag!</div></li>
+        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number, it gives you the flag!</div></li>
       </ol>
     </section>
 
@@ -204,6 +204,12 @@ async function levelPage(id) {
       </div>
       <p class="flag-msg" aria-live="polite"></p>
     </form>
+
+    <section class="card writeup" hidden>
+      <span class="eyebrow"><span class="icon fill">menu_book</span>Writeup</span>
+      <h2>Why it broke</h2>
+      ${level.writeup?.length ? level.writeup.join("") : `<p class="note">The writeup for this level is coming soon.</p>`}
+    </section>
 
     <div class="hints"></div>
     <div class="actions">
@@ -225,9 +231,12 @@ async function levelPage(id) {
   const form = app.querySelector(".flag-card");
   const input = form.querySelector("input");
   const msg = form.querySelector(".flag-msg");
+  // The writeup only shows once the level is solved
+  const writeup = app.querySelector(".writeup");
   const showSolved = () => {
     form.classList.add("solved");
     app.querySelector(".solved-chip").hidden = false;
+    writeup.hidden = false;
     msg.innerHTML = `<span class="icon fill">check_circle</span>Solved. Saved in this browser.`;
   };
   if (solvedSet().has(level.id)) showSolved();
@@ -245,6 +254,7 @@ async function levelPage(id) {
       return;
     }
     showSolved();
+    writeup.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
 
