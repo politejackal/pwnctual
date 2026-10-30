@@ -13,5 +13,5 @@
     "That limit is only 10 digits long, so most 10-digit phone numbers are bigger than it. Try one that starts with 9, like <code>./check.sh \"9876543210\"</code>.",
     "Letters break it too. <code>scanf</code> can't read <code>abc</code> as a number, so <code>phone</code> is never set, and the program prints whatever was already in memory."
   ],
-  "flagSha256": "ad94a0b8f528459505a75ab927844a739363dfa7b9d0a60e6861f278db3a3a7e"
+  "flagSha256": "5e59abfcfd57c18defe706d13d51150620134db47bdda4c82cec3d24ced0b6a4"
 }

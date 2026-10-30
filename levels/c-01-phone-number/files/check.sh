@@ -17,7 +17,7 @@ echo "Program sent to:  $PRINTED"
 if [ "$PRINTED" != "$EXPECTED" ]; then
   echo
   echo "You broke it! The code went to the wrong number."
-  echo "pwnctual{phone_number_is_not_an_int}"
+  echo "pwnctual{9fvA3hhs2JDyR5J5jiL5j494}"
 else
   echo
   echo "Same number. The program handled that one correctly. Keep trying."
