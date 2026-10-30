@@ -144,21 +144,28 @@ a.chip:hover { background: var(--surface-container); }
 .card p + p { margin-top: 12px; }
 .card .note { font-size: 14px; color: var(--on-surface-variant); margin-top: 14px; }
 
-/* C levels on the home page: a header card joined to the level list */
-.track { display: grid; gap: 3px; }
-.track-head {
-  display: flex; align-items: center; gap: 20px; text-decoration: none; color: inherit;
-  border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;
-  transition: background .2s var(--ease);
+/* The two path cards on the home page */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+.path {
+  display: flex; flex-direction: column; gap: 10px; min-height: 300px; padding: 32px;
+  text-decoration: none; color: inherit;
+  transition: border-radius .45s var(--spring), background .2s var(--ease), transform .45s var(--spring);
 }
-.track-head h2 { margin-bottom: 2px; }
-.track-text { flex: 1; min-width: 0; }
-.track-text .muted { color: var(--on-surface-variant); font-size: 15px; }
-.track .list-item:first-child { border-top-left-radius: 6px; border-top-right-radius: 6px; }
+.path h2 { font-size: 30px; letter-spacing: -.6px; margin: 14px 0 0; }
+.path p { color: var(--on-surface-variant); }
+.path-foot { margin-top: auto; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; }
+.path-foot .go {
+  width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--primary); color: var(--on-primary);
+  transition: border-radius .5s var(--spring), transform .5s var(--spring);
+}
+.path .logo .icon { color: var(--primary); }
 @media (hover: hover) {
-  a.track-head:hover { background: var(--surface-container); }
-  a.track-head:hover .logo { border-radius: 36px; transform: rotate(-6deg); }
+  a.path:hover { border-radius: 44px; background: var(--surface-container); }
+  a.path:hover .logo { border-radius: 36px; transform: rotate(-6deg); }
+  a.path:hover .go { border-radius: 16px; transform: translateX(4px); }
 }
+a.path:active { transform: scale(.98); }
 
 /* Numbered steps */
 .steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 18px; }
@@ -279,7 +286,8 @@ a.chip:hover { background: var(--surface-container); }
 /* ---- phone: bottom navigation like the Google app ---- */
 .bottomnav { display: none; }
 @media (max-width: 900px) {
-  .steps.row { grid-template-columns: 1fr; }
+  .steps.row, .grid-2 { grid-template-columns: 1fr; }
+  .path { min-height: 0; }
 }
 @media (max-width: 640px) {
   .wrap { padding: 0 16px; }
@@ -289,13 +297,10 @@ a.chip:hover { background: var(--surface-container); }
   .card { padding: 22px; border-radius: 24px; }
   .actions .btn { flex: none; }
   .actions { flex-direction: column; justify-self: stretch; }
-  .track-head { flex-wrap: wrap; gap: 16px; }
-  .track-head .chip { margin-left: auto; }
-  .track-text { flex: 1 1 100%; order: 1; }
+  .path { padding: 24px; }
+  .path h2 { font-size: 26px; margin-top: 8px; }
   .steps.row > li { grid-template-columns: 40px 1fr; gap: 14px; }
   .steps.row > li > div { padding-top: 8px; }
-  .track-head .logo { width: 56px; height: 56px; border-radius: 18px; }
-  .track-head .logo img { width: 34px; height: 34px; }
   .flag-row { flex-direction: column; }
   .flag-row input { flex: none; }
   .footer { padding-bottom: 100px; }

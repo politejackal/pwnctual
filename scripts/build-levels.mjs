@@ -1,6 +1,8 @@
 // Builds what the site serves for each level in /levels:
 //   web/levels/index.json   list of levels (for the path pages)
-//   web/levels/<id>.json    level.json plus the source file name (for the level page)
+//   web/levels/<id>.json    level.json plus its path and source file name (for the level page)
+//
+// Levels live in levels/<path>/<id>, where <path> is learning or finding.
 //
 //   npm run build
 import { readdir, readFile, writeFile, mkdir, rm, stat } from "node:fs/promises";
@@ -13,10 +15,15 @@ const outDir = join(root, "web", "levels");
 await rm(outDir, { recursive: true, force: true });
 await mkdir(outDir, { recursive: true });
 
+const PATHS = ["learning", "finding"];
+
 const index = [];
-for (const id of (await readdir(levelsDir)).sort()) {
-  const dir = join(levelsDir, id);
+const seen = new Set();
+for (const path of PATHS) for (const id of (await readdir(join(levelsDir, path))).sort()) {
+  const dir = join(levelsDir, path, id);
   if (!(await stat(dir)).isDirectory()) continue;
+  if (seen.has(id)) throw new Error(`${id}: used in more than one path`);
+  seen.add(id);
   const meta = JSON.parse(await readFile(join(dir, "level.json"), "utf8"));
   if (meta.id !== id) throw new Error(`${id}: level.json id is "${meta.id}"`);
 
@@ -26,9 +33,9 @@ for (const id of (await readdir(levelsDir)).sort()) {
   if (!sourceName) throw new Error(`${id}: files/ needs vuln.c or vuln.py`);
   if (!names.includes("check.sh")) throw new Error(`${id}: files/ needs check.sh`);
 
-  await writeFile(join(outDir, `${id}.json`), JSON.stringify({ ...meta, sourceName }, null, 2));
-  index.push({ id, title: meta.title, language: meta.language, difficulty: meta.difficulty });
-  console.log(`built ${id} (${names.join(", ")})`);
+  await writeFile(join(outDir, `${id}.json`), JSON.stringify({ ...meta, path, sourceName }, null, 2));
+  index.push({ id, path, title: meta.title, language: meta.language, difficulty: meta.difficulty });
+  console.log(`built ${path}/${id} (${names.join(", ")})`);
 }
 await writeFile(join(outDir, "index.json"), JSON.stringify(index, null, 2));
 

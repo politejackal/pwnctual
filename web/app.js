@@ -2,7 +2,13 @@
 // level data comes from /levels/*.json (built by scripts/build-levels.mjs) and
 // progress is kept in this browser's localStorage.
 
-const C = { logo: "/logos/c.svg", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." };
+// The two paths. Their folders in the levels repo have the same names.
+const PATHS = {
+  learning: { name: "Learn C", url: "/learn", logo: "/logos/c.svg", empty: "Lessons and levels are on the way.",
+    blurb: "Lessons and levels that teach C from the start, so you can read and write the programs in the other path." },
+  finding: { name: "Find bugs", url: "/find", icon: "bug_report", empty: "Levels are on the way.",
+    blurb: "C programs with a security bug in them. Find an input that breaks each one and submit the flag." },
+};
 
 // One shared repo with every level. quickstart=1 offers to reopen an existing
 // codespace instead of always making a new one.
@@ -60,8 +66,6 @@ function header({ above = "", title, lead = "", below = "" }) {
     ${below}
   </header>`;
 }
-// The language logo sits in a rounded tile
-const logo = src => `<span class="logo" aria-hidden="true"><img src="${src}" alt="" width="44" height="44"></span>`;
 
 function errorBox(err) {
   return `<div class="card empty">Couldn't load this page (${esc(err.message)}). Try again in a moment.</div>`;
@@ -71,8 +75,8 @@ function loading(text) {
 }
 
 // ---- pages ----
-function levelList(levels, solved) {
-  return `<nav class="list" aria-label="C levels">${levels.map((l, i) => {
+function levelList(levels, solved, label) {
+  return `<nav class="list" aria-label="${label}">${levels.map((l, i) => {
     const isDone = solved.has(l.id);
     return `<a class="list-item ${isDone ? "solved" : ""}" href="/level/${esc(l.id)}" data-link>
       <span class="num">${isDone ? '<span class="icon">check</span>' : i + 1}</span>
@@ -82,59 +86,63 @@ function levelList(levels, solved) {
   }).join("")}</nav>`;
 }
 const progressChip = (done, total) =>
-  `<span class="chip${total && done === total ? " ok" : ""}">${total ? `${done} of ${total} solved` : "No levels yet"}</span>`;
+  `<span class="chip${total && done === total ? " ok" : ""}">${total ? `${done} of ${total} solved` : "Coming soon"}</span>`;
+const pathIcon = p => `<span class="logo" aria-hidden="true">${p.logo
+  ? `<img src="${p.logo}" alt="" width="44" height="44">`
+  : `<span class="icon">${p.icon}</span>`}</span>`;
+
+const HOW_FINDING = `<section class="card" aria-label="How it works">
+  <h2>How it works</h2>
+  <ol class="steps row">
+    <li><div><b class="title">Read the level</b><span class="muted">Each level tells you what the program is meant to do. The bug is somewhere in there.</span></div></li>
+    <li><div><b class="title">Break it</b><span class="muted">Open it in GitHub Codespaces and run <code>./check.sh</code> with your input. If the program breaks, it prints a flag.</span></div></li>
+    <li><div><b class="title">Submit the flag</b><span class="muted">Enter the flag on the level page, then read the writeup to see why the program broke.</span></div></li>
+  </ol>
+</section>`;
 
 async function homePage() {
   setTitle("");
   markNav("home");
   let levels = [];
-  try { levels = (await getIndex()).filter(l => l.language === "c"); } catch {}
+  try { levels = await getIndex(); } catch {}
   const solved = solvedSet();
-  const done = levels.filter(l => solved.has(l.id)).length;
-  // Send people to the first level they haven't solved yet
-  const next = levels.find(l => !solved.has(l.id));
-  const start = next
-    ? `<a class="btn btn-filled" href="/level/${esc(next.id)}" data-link><span class="icon">arrow_forward</span>${done ? "Continue" : "Start the first level"}</a>`
-    : "";
+  const pathCard = key => {
+    const p = PATHS[key];
+    const mine = levels.filter(l => l.path === key);
+    return `<a class="card path" href="${p.url}" data-link>
+      ${pathIcon(p)}
+      <h2>${p.name}</h2>
+      <p>${p.blurb}</p>
+      <span class="path-foot">${progressChip(mine.filter(l => solved.has(l.id)).length, mine.length)}<span class="icon go">arrow_forward</span></span>
+    </a>`;
+  };
   app.innerHTML = page(
     header({
       above: `<div class="chips"><span class="chip">Free and open source</span></div>`,
       title: "Find the bug.<br>Understand it.",
       lead: "Every level is a program, small or big, with a security bug intentionally in it. Analyze the code and find the bug and submit it using the respective check.sh file. And lastly, after submitting the flag, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
-      below: `<div class="actions">${start}<a class="btn btn-tonal" href="/c" data-link>All levels</a></div>`,
     }),
-    `<section class="card how" aria-label="How it works">
-      <h2>How it works</h2>
-      <ol class="steps row">
-        <li><div><b class="title">Read the level</b><span class="muted">Each level tells you what the program is meant to do. The bug is somewhere in there.</span></div></li>
-        <li><div><b class="title">Break it</b><span class="muted">Open it in GitHub Codespaces and run <code>./check.sh</code> with your input. If the program breaks, it prints a flag.</span></div></li>
-        <li><div><b class="title">Submit the flag</b><span class="muted">Enter the flag on the level page, then read the writeup to see why the program broke.</span></div></li>
-      </ol>
-    </section>
-
-    <section class="track" aria-label="C levels">
-      <a class="card track-head" href="/c" data-link>
-        ${logo(C.logo)}
-        <span class="track-text"><h2>C levels</h2><span class="muted">${C.blurb}</span></span>
-        ${progressChip(done, levels.length)}
-      </a>
-      ${levels.length ? levelList(levels, solved) : `<div class="card empty">Levels are on the way.</div>`}
+    `<section class="grid-2" aria-label="Paths">
+      ${pathCard("learning")}
+      ${pathCard("finding")}
     </section>`
   );
 }
 
-async function levelsPage() {
-  setTitle("C levels");
-  markNav("c");
-  const head = chip => header({ above: `<div class="chips">${chip}</div>`, title: "C levels", lead: C.blurb });
+async function pathPage(key) {
+  const p = PATHS[key];
+  setTitle(p.name);
+  markNav(key);
+  const head = chip => header({ above: `<div class="chips">${chip}</div>`, title: p.name, lead: p.blurb });
+  const intro = key === "finding" ? HOW_FINDING : "";
   app.innerHTML = page(head(`<span class="chip">Loading</span>`));
   try {
-    const levels = (await getIndex()).filter(l => l.language === "c");
+    const levels = (await getIndex()).filter(l => l.path === key);
     const solved = solvedSet();
     const done = levels.filter(l => solved.has(l.id)).length;
     app.innerHTML = page(
       head(progressChip(done, levels.length)),
-      levels.length ? levelList(levels, solved) : `<div class="card empty">Levels are on the way.</div>`
+      intro + (levels.length ? levelList(levels, solved, p.name) : `<div class="card empty">${p.empty}</div>`)
     );
   } catch (err) {
     app.innerHTML = page(head(""), errorBox(err));
@@ -154,14 +162,15 @@ async function levelPage(id) {
     return;
   }
   setTitle(level.title);
-  markNav("c");
+  const path = PATHS[level.path];
+  markNav(level.path);
   let hintsShown = 0;
   const solvedChip = `<span class="chip ok solved-chip"${solvedSet().has(level.id) ? "" : " hidden"}><span class="icon">check</span>Solved</span>`;
 
   app.innerHTML = page(
     header({
       above: `<div class="chips">
-        <a class="chip" href="/c" data-link><span class="icon">arrow_back</span>C levels</a>
+        <a class="chip" href="${path.url}" data-link><span class="icon">arrow_back</span>${path.name}</a>
         <span class="chip">${esc(level.difficulty)}</span>
         ${solvedChip}
       </div>`,
@@ -177,7 +186,7 @@ async function levelPage(id) {
       <ol class="steps">
         <li><div>Click <b>Open in Codespaces</b> and sign in with GitHub.</div></li>
         <li><div>Open a terminal, and run the following:
-          <pre class="cmd"><code>cd ${esc(level.id)}
+          <pre class="cmd"><code>cd ${esc(level.path)}/${esc(level.id)}
 ./check.sh "your input"</code></pre></div></li>
         <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number, it gives you the flag!</div></li>
       </ol>
@@ -260,7 +269,9 @@ function render() {
   const level = p.match(/^\/level\/([a-z0-9-]+)$/);
   window.scrollTo(0, 0);
   if (p === "/") return homePage();
-  if (p === "/c") return levelsPage();
+  if (p === "/learn") return pathPage("learning");
+  // /c was the old address of the finding path
+  if (p === "/find" || p === "/c") return pathPage("finding");
   if (level) return levelPage(level[1]);
   setTitle("Not found");
   markNav("");
