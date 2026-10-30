@@ -94,8 +94,8 @@ async function homePage() {
   app.innerHTML = page(
     header({
       above: `<div class="chips"><span class="chip">Free and open source</span></div>`,
-      title: "Find the bug.<br>Fix the code.",
-      lead: "Every level is a small program with a real security bug. Fix it in GitHub Codespaces, then run the included check to see if your fix holds up against attacks.",
+      title: "Find the bug.<br>Submit the flag.",
+      lead: "Every level is a small program with a security bug. Find an input that breaks it, and the level gives you a flag.",
       below: `<div class="actions"><a class="btn btn-filled" href="/c" data-link><span class="icon">arrow_forward</span>Start with C</a></div>`,
     }),
     `<section class="grid-3" aria-label="Paths">
@@ -112,8 +112,8 @@ async function homePage() {
       <h2>How it works</h2>
       <ol class="steps row">
         <li><div><b class="title">Read the level</b><span class="muted">Each level tells you what the program is meant to do. The bug is somewhere in there.</span></div></li>
-        <li><div><b class="title">Fix it</b><span class="muted">Open it in GitHub Codespaces: VS Code in your browser, with the compiler and every level already set up.</span></div></li>
-        <li><div><b class="title">Run the check</b><span class="muted"><code>./check.sh</code> runs normal input and then attacks. C is built with AddressSanitizer, so memory bugs fail even when they don't crash.</span></div></li>
+        <li><div><b class="title">Break it</b><span class="muted">Open it in GitHub Codespaces and run <code>./check.sh</code> with your input. If the program breaks, it prints a flag.</span></div></li>
+        <li><div><b class="title">Submit the flag</b><span class="muted">Enter the flag on the level page. Your progress is saved in your browser.</span></div></li>
       </ol>
     </section>`
   );
