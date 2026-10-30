@@ -8,11 +8,10 @@
     "Now before we ask you to find crashes and stuff, you should know why we need to find these crashes, and what's this fuss all about. Well, it's because a crash in a program might sound very simple and harmless to you, but in the real-world applications, it can cause a lot of problems and attacks. The most immediate threat it creates is the Denial of Service (DoS) attack, which can knock a whole system offline. Anyway, you can research and find out other cool attacks people can do if a program crashes, anyhow, let's jump to business!"
   ],
   "hints": [
-    "Run the program yourself with <code>gcc vuln.c -o vuln && ./vuln</code> and type things that aren't a 9-digit phone number. Try a longer number first.",
-    "An <code>int</code> can only hold numbers up to 2,147,483,647. What happens when someone types a 10-digit number?",
-    "Try letters, like <code>abc</code>, or press Ctrl+D without typing anything. What number does it send the code to then?",
-    "<code>scanf</code> returns how many values it managed to read. The program never checks it.",
-    "A safe version only sends the code when the input is exactly 9 digits, and refuses everything else. Reading the input as text instead of an <code>int</code> makes that easier to check."
+    "Compile it and run it yourself: <code>gcc -o vuln vuln.c && ./vuln</code>. Type a 10-digit phone number and check what number it sends the code to.",
+    "The number is stored in an <code>int</code>. An <code>int</code> can only hold numbers up to 2,147,483,647.",
+    "That limit is only 10 digits long, so most 10-digit phone numbers are bigger than it. Try one that starts with 9, like <code>./check.sh \"9876543210\"</code>.",
+    "Letters break it too. <code>scanf</code> can't read <code>abc</code> as a number, so <code>phone</code> is never set, and the program prints whatever was already in memory."
   ],
-  "flagSha256": "d3b7c315f88eadb84d94dd5e09e641e22631df47656cbe4e49f5ccf14ddf4de9"
+  "flagSha256": "ad94a0b8f528459505a75ab927844a739363dfa7b9d0a60e6861f278db3a3a7e"
 }

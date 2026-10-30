@@ -3,7 +3,7 @@
 int main() {
     int phone;
 
-    printf("Enter your 9-digit phone number: ");
+    printf("Enter your 10-digit phone number: ");
     scanf("%d", &phone);
 
     printf("Sending verification code to: %d\n", phone);

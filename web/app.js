@@ -184,14 +184,13 @@ async function levelPage(id) {
     <section class="card">
       <h2>How to solve it</h2>
       <ol class="steps">
-        <li><div>Click <b>Open in Codespaces</b> and sign in with GitHub. The first start takes a minute or two.</div></li>
-        <li><div>Open <code>${esc(level.id)}/${esc(level.sourceName)}</code> in the file list and fix it.</div></li>
-        <li><div>Open a terminal (<b>Terminal → New Terminal</b>) and run the check:
+        <li><div>Click <b>Open in Codespaces</b> and sign in with GitHub.</div></li>
+        <li><div>Open a terminal, and run the following:
           <pre class="cmd"><code>cd ${esc(level.id)}
-./check.sh</code></pre></div></li>
-        <li><div>When it prints <b>PASS</b>, it also gives you a flag. Enter it below.</div></li>
+gcc -o vuln vuln.c
+./check.sh "your input"</code></pre></div></li>
+        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program run with those arguments crashes, it gives you the flag!</div></li>
       </ol>
-      <p class="note">Nothing to install. It runs on your GitHub account's free Codespaces hours. Clicking the button again takes you back to the same codespace with your changes.</p>
     </section>
 
     <div class="actions">
@@ -239,7 +238,7 @@ async function levelPage(id) {
     const flag = input.value.trim();
     if (await sha256(flag) !== level.flagSha256) {
       form.classList.add("wrong");
-      msg.textContent = "That's not the flag for this level. Copy the whole line check.sh prints after PASS.";
+      msg.textContent = `That's not the flag for this level. Copy the whole line check.sh prints after "You broke it!".`;
       return;
     }
     if (!setSolved(level.id, true)) {
