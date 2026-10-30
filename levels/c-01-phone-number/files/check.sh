@@ -8,10 +8,20 @@ fi
 gcc -o vuln vuln.c || exit 1
 
 OUTPUT=$(printf '%s\n' "$INPUT" | ./vuln 2>/dev/null)
+CODE=$?
 PRINTED=$(printf '%s' "$OUTPUT" | sed -n 's/.*Sending verification code to: //p' | tr -d '[:space:]')
 EXPECTED=$(printf '%s' "$INPUT" | tr -d '[:space:]')
 
 echo "You entered:      $EXPECTED"
+
+if [ $CODE -eq 139 ]; then
+  echo "Program crashed:  segmentation fault"
+  echo
+  echo "You broke it! The program crashed."
+  echo "pwnctual{9fvA3hhs2JDyR5J5jiL5j494}"
+  exit 0
+fi
+
 echo "Program sent to:  $PRINTED"
 
 if [ "$PRINTED" != "$EXPECTED" ]; then

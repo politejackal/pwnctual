@@ -188,7 +188,7 @@ async function levelPage(id) {
         <li><div>Open a terminal, and run the following:
           <pre class="cmd"><code>cd ${esc(level.id)}
 ./check.sh "your input"</code></pre></div></li>
-        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number, it gives you the flag!</div></li>
+        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number or causes a segmentation fault, it gives you the flag!</div></li>
       </ol>
     </section>
 
