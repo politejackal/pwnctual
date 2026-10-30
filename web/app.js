@@ -95,7 +95,7 @@ async function homePage() {
     header({
       above: `<div class="chips"><span class="chip">Free and open source</span></div>`,
       title: "Find the bug.<br>Submit the flag.",
-      lead: "Every level is a small program with a security bug. Find an input that breaks it, and the level gives you a flag.",
+      lead: "Every level is a program, small or big, with a security bug intentionally in it. Analyze the code and find the bug and submit it using the respective check.sh file. And lastly, after submitting the flag, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
       below: `<div class="actions"><a class="btn btn-filled" href="/c" data-link><span class="icon">arrow_forward</span>Start with C</a></div>`,
     }),
     `<section class="grid-3" aria-label="Paths">
