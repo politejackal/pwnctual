@@ -2,10 +2,7 @@
 // level data comes from /levels/*.json (built by scripts/build-levels.mjs) and
 // progress is kept in this browser's localStorage.
 
-const PATHS = {
-  c: { name: "C", logo: "/logos/c.svg", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." },
-  python: { name: "Python", logo: "/logos/python.svg", blurb: "Injection, unsafe parsing, and logic bugs in Python code." },
-};
+const C = { logo: "/logos/c.svg", blurb: "Buffer overflows, format strings, integer bugs and other ways C programs go wrong." };
 
 // One shared repo with every level. quickstart=1 offers to reopen an existing
 // codespace instead of always making a new one.
@@ -63,7 +60,7 @@ function header({ above = "", title, lead = "", below = "" }) {
     ${below}
   </header>`;
 }
-// Language logos sit in identical tiles so the cards stay matched
+// The language logo sits in a rounded tile
 const logo = src => `<span class="logo" aria-hidden="true"><img src="${src}" alt="" width="44" height="44"></span>`;
 
 function errorBox(err) {
@@ -74,75 +71,70 @@ function loading(text) {
 }
 
 // ---- pages ----
+function levelList(levels, solved) {
+  return `<nav class="list" aria-label="C levels">${levels.map((l, i) => {
+    const isDone = solved.has(l.id);
+    return `<a class="list-item ${isDone ? "solved" : ""}" href="/level/${esc(l.id)}" data-link>
+      <span class="num">${isDone ? '<span class="icon">check</span>' : i + 1}</span>
+      <span><span class="title">${esc(l.title)}</span><span class="meta">${esc(l.difficulty)}${isDone ? " · Solved" : ""}</span></span>
+      <span class="icon go">chevron_right</span>
+    </a>`;
+  }).join("")}</nav>`;
+}
+const progressChip = (done, total) =>
+  `<span class="chip${total && done === total ? " ok" : ""}">${total ? `${done} of ${total} solved` : "No levels yet"}</span>`;
+
 async function homePage() {
   setTitle("");
   markNav("home");
   let levels = [];
-  try { levels = await getIndex(); } catch {}
+  try { levels = (await getIndex()).filter(l => l.language === "c"); } catch {}
   const solved = solvedSet();
-  const pathCard = lang => {
-    const p = PATHS[lang];
-    const mine = levels.filter(l => l.language === lang);
-    const status = mine.length ? `${mine.filter(l => solved.has(l.id)).length} of ${mine.length} solved` : "Levels on the way";
-    return `<a class="card path" href="/${lang}" data-link>
-      ${logo(p.logo)}
-      <h3>${p.name}</h3>
-      <p>${p.blurb}</p>
-      <span class="status">${status}</span>
-    </a>`;
-  };
+  const done = levels.filter(l => solved.has(l.id)).length;
+  // Send people to the first level they haven't solved yet
+  const next = levels.find(l => !solved.has(l.id));
+  const start = next
+    ? `<a class="btn btn-filled" href="/level/${esc(next.id)}" data-link><span class="icon">arrow_forward</span>${done ? "Continue" : "Start the first level"}</a>`
+    : "";
   app.innerHTML = page(
     header({
       above: `<div class="chips"><span class="chip">Free and open source</span></div>`,
       title: "Find the bug.<br>Understand it.",
       lead: "Every level is a program, small or big, with a security bug intentionally in it. Analyze the code and find the bug and submit it using the respective check.sh file. And lastly, after submitting the flag, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
-      below: `<div class="actions"><a class="btn btn-filled" href="/c" data-link><span class="icon">arrow_forward</span>Start with C</a></div>`,
+      below: `<div class="actions">${start}<a class="btn btn-tonal" href="/c" data-link>All levels</a></div>`,
     }),
-    `<section class="grid-3" aria-label="Paths">
-      ${pathCard("c")}
-      ${pathCard("python")}
-      <div class="card path soon" aria-disabled="true">
-        <span class="logo" aria-hidden="true"><span class="icon">database</span></span>
-        <h3>SQL</h3>
-        <p>Queries built from user input, and how to stop them being rewritten.</p>
-        <span class="status">Coming soon</span>
-      </div>
-    </section>
-    <section class="card" aria-label="How it works">
+    `<section class="card how" aria-label="How it works">
       <h2>How it works</h2>
       <ol class="steps row">
         <li><div><b class="title">Read the level</b><span class="muted">Each level tells you what the program is meant to do. The bug is somewhere in there.</span></div></li>
         <li><div><b class="title">Break it</b><span class="muted">Open it in GitHub Codespaces and run <code>./check.sh</code> with your input. If the program breaks, it prints a flag.</span></div></li>
-        <li><div><b class="title">Submit the flag</b><span class="muted">Enter the flag on the level page. Your progress is saved in your browser.</span></div></li>
+        <li><div><b class="title">Submit the flag</b><span class="muted">Enter the flag on the level page, then read the writeup to see why the program broke.</span></div></li>
       </ol>
+    </section>
+
+    <section class="track" aria-label="C levels">
+      <a class="card track-head" href="/c" data-link>
+        ${logo(C.logo)}
+        <span class="track-text"><h2>C levels</h2><span class="muted">${C.blurb}</span></span>
+        ${progressChip(done, levels.length)}
+      </a>
+      ${levels.length ? levelList(levels, solved) : `<div class="card empty">Levels are on the way.</div>`}
     </section>`
   );
 }
 
-async function pathPage(lang) {
-  const p = PATHS[lang];
-  setTitle(p.name);
-  markNav(lang);
-  const head = progress => header({ above: `<div class="chips">${progress}</div>`, title: p.name, lead: p.blurb });
+async function levelsPage() {
+  setTitle("C levels");
+  markNav("c");
+  const head = chip => header({ above: `<div class="chips">${chip}</div>`, title: "C levels", lead: C.blurb });
   app.innerHTML = page(head(`<span class="chip">Loading</span>`));
   try {
-    const levels = (await getIndex()).filter(l => l.language === lang);
+    const levels = (await getIndex()).filter(l => l.language === "c");
     const solved = solvedSet();
-    if (!levels.length) {
-      app.innerHTML = page(head(`<span class="chip">No levels yet</span>`), `<div class="card empty">No ${p.name} levels yet. They're being written.</div>`);
-      return;
-    }
     const done = levels.filter(l => solved.has(l.id)).length;
     app.innerHTML = page(
-      head(`<span class="chip${done === levels.length ? " ok" : ""}">${done} of ${levels.length} solved</span>`),
-      `<nav class="list" aria-label="${p.name} levels">${levels.map((l, i) => {
-        const isDone = solved.has(l.id);
-        return `<a class="list-item ${isDone ? "solved" : ""}" href="/level/${esc(l.id)}" data-link>
-          <span class="num">${isDone ? '<span class="icon">check</span>' : i + 1}</span>
-          <span><span class="title">${esc(l.title)}</span><span class="meta">${esc(l.difficulty)}${isDone ? " · Solved" : ""}</span></span>
-          <span class="icon go">chevron_right</span>
-        </a>`;
-      }).join("")}</nav>`
+      head(progressChip(done, levels.length)),
+      levels.length ? levelList(levels, solved) : `<div class="card empty">Levels are on the way.</div>`
     );
   } catch (err) {
     app.innerHTML = page(head(""), errorBox(err));
@@ -161,16 +153,15 @@ async function levelPage(id) {
       : page(header({ title: "Something went wrong" }), errorBox(err));
     return;
   }
-  const path = PATHS[level.language];
   setTitle(level.title);
-  markNav(level.language);
+  markNav("c");
   let hintsShown = 0;
   const solvedChip = `<span class="chip ok solved-chip"${solvedSet().has(level.id) ? "" : " hidden"}><span class="icon">check</span>Solved</span>`;
 
   app.innerHTML = page(
     header({
       above: `<div class="chips">
-        <a class="chip" href="/${level.language}" data-link><span class="icon">arrow_back</span>${path.name}</a>
+        <a class="chip" href="/c" data-link><span class="icon">arrow_back</span>C levels</a>
         <span class="chip">${esc(level.difficulty)}</span>
         ${solvedChip}
       </div>`,
@@ -269,7 +260,7 @@ function render() {
   const level = p.match(/^\/level\/([a-z0-9-]+)$/);
   window.scrollTo(0, 0);
   if (p === "/") return homePage();
-  if (p === "/c" || p === "/python") return pathPage(p.slice(1));
+  if (p === "/c") return levelsPage();
   if (level) return levelPage(level[1]);
   setTitle("Not found");
   markNav("");

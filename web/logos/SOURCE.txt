@@ -1,4 +1,2 @@
-Logos from Devicon (https://devicon.dev), MIT license.
+Logo from Devicon (https://devicon.dev), MIT license.
 c.svg: devicon 2.16.0 icons/c/c-original.svg
-python.svg: devicon 2.17.0 icons/python/python-original.svg
-Python is a trademark of the Python Software Foundation.
