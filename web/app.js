@@ -189,7 +189,7 @@ async function levelPage(id) {
           <pre class="cmd"><code>cd ${esc(level.id)}
 gcc -o vuln vuln.c
 ./check.sh "your input"</code></pre></div></li>
-        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program run with those arguments crashes, it gives you the flag!</div></li>
+        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number, it gives you the flag!</div></li>
       </ol>
     </section>
 
