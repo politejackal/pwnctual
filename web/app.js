@@ -120,7 +120,7 @@ async function homePage() {
     header({
       above: `<div class="chips"><span class="chip">Free and open source</span></div>`,
       title: "Learn C.<br>Then find bugs.",
-      lead: "Start with the Learn C path, where lessons and levels teach you C from the very basics. Then move on to the Find bugs path, where every level is a program, small or big, with a security bug intentionally in it. Analyze the code, find the bug and submit the flag using the respective check.sh file. And lastly, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
+      lead: "Start with the Learn C path, where lessons and levels teach you C from the very basics. Once you finish learning C from here or already know C, move on to the Find bugs path, where every level is a program, small or big, with a security bug intentionally in it. Analyze the code, find the bug and submit the flag using the respective check.sh file. And lastly, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
     }),
     `<section class="grid-2" aria-label="Paths">
       ${pathCard("learning")}
