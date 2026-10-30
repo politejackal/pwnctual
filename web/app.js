@@ -119,8 +119,8 @@ async function homePage() {
   app.innerHTML = page(
     header({
       above: `<div class="chips"><span class="chip">Free and open source</span></div>`,
-      title: "Find the bug.<br>Understand it.",
-      lead: "Every level is a program, small or big, with a security bug intentionally in it. Analyze the code and find the bug and submit it using the respective check.sh file. And lastly, after submitting the flag, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
+      title: "Learn C.<br>Then find bugs.",
+      lead: "Start with the Learn C path, where lessons and levels teach you C from the very basics. Then move on to the Find bugs path, where every level is a program, small or big, with a security bug intentionally in it. Analyze the code, find the bug and submit the flag using the respective check.sh file. And lastly, read the writeup to better understand why the code broke. It is encouraged to try to fix the program, to better understand how the stuff actually works.",
     }),
     `<section class="grid-2" aria-label="Paths">
       ${pathCard("learning")}
