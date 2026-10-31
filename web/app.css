@@ -238,9 +238,8 @@ a.path:active { transform: scale(.98); }
 .byte .bit {
   display: grid; place-items: center; height: 56px; border-radius: 14px;
   font-family: var(--font-code); font-size: 24px; font-weight: 600;
-  background: var(--surface-container-lowest); color: var(--on-surface-variant);
+  background: var(--surface-container-lowest); color: var(--on-surface);
 }
-.byte .bit.on { background: var(--primary); color: var(--on-primary); }
 .challenge .prompt { display: block; font-weight: 500; margin-bottom: 8px; }
 .challenge-msg { font-size: 14px; margin-top: 10px; min-height: 1.4em; display: flex; align-items: flex-start; gap: 6px; }
 .challenge-msg .icon { font-size: 20px; }

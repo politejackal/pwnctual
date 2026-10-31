@@ -366,7 +366,7 @@ const CHALLENGES = {
       return [...set];
     },
     show: n => `<div class="byte" aria-label="${n.toString(2).padStart(8, "0")}">${
-      [...n.toString(2).padStart(8, "0")].map(b => `<span class="bit${b === "1" ? " on" : ""}">${b}</span>`).join("")
+      [...n.toString(2).padStart(8, "0")].map(b => `<span class="bit">${b}</span>`).join("")
     }</div>`,
     prompt: "What is this byte in decimal?",
     answer: n => String(n),
