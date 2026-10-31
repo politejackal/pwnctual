@@ -8,6 +8,11 @@
         "title": "Binary",
         "file": "1-1-binary.html",
         "challenge": "binary-to-decimal"
+      },
+      {
+        "id": "1-2",
+        "title": "Hex",
+        "file": "1-2-hex.html"
       }
     ]
   }

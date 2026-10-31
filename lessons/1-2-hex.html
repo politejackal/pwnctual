@@ -1,0 +1,76 @@
+<section class="card">
+  <h2>What does Base-10 vs. Base-16 actually mean?</h2>
+  <p>Before looking at computers, think about how you count in everyday life. Humans use Decimal (Base-10) because we have 10 fingers. In Base-10, you only have 10 single-character symbols available: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code></p>
+  <p>What happens when you are at <code>9</code> and add <code>1</code>? You run out of single symbols. So, you reset the column back to <code>0</code> and carry a <code>1</code> over to a new column on the left, creating a two-digit number (<code>10</code>).</p>
+  <p>Now imagine you had 16 fingers instead of 10. You would use Hexadecimal (Base-16). In Base-16, you need 16 single-character symbols before you run out and have to roll over to two digits.</p>
+  <ul>
+    <li>For the first ten values (0 to 9), we just reuse normal numbers: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code>.</li>
+    <li>For the next six values (10 to 15), we can't write <code>10</code> or <code>11</code> because those take up two characters! So computer scientists borrowed the first six letters of the alphabet—<code>A, B, C, D, E, F</code>—to act as single-character numbers:</li>
+  </ul>
+  <div class="hex-letters">
+    <span><code>A</code> = 10</span><span><code>B</code> = 11</span><span><code>C</code> = 12</span>
+    <span><code>D</code> = 13</span><span><code>E</code> = 14</span><span><code>F</code> = 15</span>
+  </div>
+  <p>So pretty much the same idea, just some extra numbers!</p>
+</section>
+
+<aside class="callout">
+  <span class="icon fill">directions_walk</span>
+  <div>Now go take a break, have a mini walk, and come back. You need to refresh before learning more of this cryptic stuff!</div>
+</aside>
+
+<section class="card">
+  <h2>Why Decimal Fails for Computers (And Why Hex is Perfect)</h2>
+  <p>Why did computer scientists bother inventing a 16-symbol counting system when we could just use the same numbers like a normal person? Well, because Decimal (Base-10) does not fit neatly into binary bits, while Hexadecimal (Base-16) fits like a key in a lock.</p>
+  <p>Let's look at a Nibble (a group of 4 bits).</p>
+  <p>As you learned in the previous part, in the computer, each bit from right to left doubles in value: 8, 4, 2, 1.</p>
+  <ul>
+    <li>The smallest number 4 bits can hold is <code>0000</code> (0 + 0 + 0 + 0 = 0).</li>
+    <li>The largest number 4 bits can hold is <code>1111</code> (8 + 4 + 2 + 1 = 15).</li>
+  </ul>
+  <p>Notice that! Four bits can hold any number from 0 to 15 (16 possible values).</p>
+  <p>If you use Decimal, a single digit only goes from 0 to 9 (<code>0000</code> to <code>1001</code>). It runs out of symbols too early, leaving six binary combinations (<code>1010</code> to <code>1111</code>) that require two decimal digits (10 to 15).</p>
+  <p>If you use Hexadecimal, a single Hex character goes from 0 to F (0 to 15)—which matches the exact range of 4 bits (<code>0000</code> to <code>1111</code>) with zero waste and zero leftover bits.</p>
+  <p>Therefore, you can easily represent bytes with 2 hexadecimal digits, like <code>3B</code> or <code>1F</code> or <code>12</code>.</p>
+</section>
+
+<section class="card">
+  <h2>The Complete 4-Bit Nibble Table (All 16 Values)</h2>
+  <p>Look at how every single 4-bit combination maps to exactly 1 Hex character:</p>
+  <div class="table-wrap">
+    <table class="nibbles">
+      <thead>
+        <tr><th>Decimal Value</th><th>4-Bit Binary Nibble</th><th class="bit">8s bit</th><th class="bit">4s bit</th><th class="bit">2s bit</th><th class="bit">1s bit</th><th>Single Hex Digit</th><th>How the Bits Add Up</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>0</td><td><code>0000</code></td><td class="bit">0</td><td class="bit">0</td><td class="bit">0</td><td class="bit">0</td><td class="hex">0</td><td class="sum">0</td></tr>
+      <tr><td>1</td><td><code>0001</code></td><td class="bit">0</td><td class="bit">0</td><td class="bit">0</td><td class="bit on">1</td><td class="hex">1</td><td class="sum">1</td></tr>
+      <tr><td>2</td><td><code>0010</code></td><td class="bit">0</td><td class="bit">0</td><td class="bit on">1</td><td class="bit">0</td><td class="hex">2</td><td class="sum">2</td></tr>
+      <tr><td>3</td><td><code>0011</code></td><td class="bit">0</td><td class="bit">0</td><td class="bit on">1</td><td class="bit on">1</td><td class="hex">3</td><td class="sum">2 + 1 = 3</td></tr>
+      <tr><td>4</td><td><code>0100</code></td><td class="bit">0</td><td class="bit on">1</td><td class="bit">0</td><td class="bit">0</td><td class="hex">4</td><td class="sum">4</td></tr>
+      <tr><td>5</td><td><code>0101</code></td><td class="bit">0</td><td class="bit on">1</td><td class="bit">0</td><td class="bit on">1</td><td class="hex">5</td><td class="sum">4 + 1 = 5</td></tr>
+      <tr><td>6</td><td><code>0110</code></td><td class="bit">0</td><td class="bit on">1</td><td class="bit on">1</td><td class="bit">0</td><td class="hex">6</td><td class="sum">4 + 2 = 6</td></tr>
+      <tr><td>7</td><td><code>0111</code></td><td class="bit">0</td><td class="bit on">1</td><td class="bit on">1</td><td class="bit on">1</td><td class="hex">7</td><td class="sum">4 + 2 + 1 = 7</td></tr>
+      <tr><td>8</td><td><code>1000</code></td><td class="bit on">1</td><td class="bit">0</td><td class="bit">0</td><td class="bit">0</td><td class="hex">8</td><td class="sum">8</td></tr>
+      <tr><td>9</td><td><code>1001</code></td><td class="bit on">1</td><td class="bit">0</td><td class="bit">0</td><td class="bit on">1</td><td class="hex">9</td><td class="sum">8 + 1 = 9</td></tr>
+      <tr><td>10</td><td><code>1010</code></td><td class="bit on">1</td><td class="bit">0</td><td class="bit on">1</td><td class="bit">0</td><td class="hex">A</td><td class="sum">8 + 2 = 10</td></tr>
+      <tr><td>11</td><td><code>1011</code></td><td class="bit on">1</td><td class="bit">0</td><td class="bit on">1</td><td class="bit on">1</td><td class="hex">B</td><td class="sum">8 + 2 + 1 = 11</td></tr>
+      <tr><td>12</td><td><code>1100</code></td><td class="bit on">1</td><td class="bit on">1</td><td class="bit">0</td><td class="bit">0</td><td class="hex">C</td><td class="sum">8 + 4 = 12</td></tr>
+      <tr><td>13</td><td><code>1101</code></td><td class="bit on">1</td><td class="bit on">1</td><td class="bit">0</td><td class="bit on">1</td><td class="hex">D</td><td class="sum">8 + 4 + 1 = 13</td></tr>
+      <tr><td>14</td><td><code>1110</code></td><td class="bit on">1</td><td class="bit on">1</td><td class="bit on">1</td><td class="bit">0</td><td class="hex">E</td><td class="sum">8 + 4 + 2 = 14</td></tr>
+      <tr><td>15</td><td><code>1111</code></td><td class="bit on">1</td><td class="bit on">1</td><td class="bit on">1</td><td class="bit on">1</td><td class="hex">F</td><td class="sum">8 + 4 + 2 + 1 = 15</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<aside class="callout">
+  <span class="icon fill">shield</span>
+  <div>
+    <b>This gives you the golden rule in C and security:</b>
+    <ul class="rules">
+      <li>1 Hex digit = 4 bits (1 nibble)</li>
+      <li>2 Hex digits = 8 bits (1 full byte)</li>
+    </ul>
+  </div>
+</aside>
