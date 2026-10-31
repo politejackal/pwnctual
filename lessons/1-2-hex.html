@@ -96,11 +96,11 @@
   <h3>Example 1: Why does Decimal <code>65</code> equal <code>0x41</code> in Hex?</h3>
   <p>In the previous topic, we converted the letter <code>'A'</code> (Decimal <code>65</code>) into its 8-bit binary byte: <code>01000001</code> (because the 64-bit and the 1-bit are turned on: <code>64 + 1 = 65</code>).</p>
   <p>Now, how do we turn that 8-bit byte (<code>01000001</code>) into Hexadecimal? Never do complex division. Just slice the 8-bit byte straight down the middle into two separate 4-bit nibbles, and convert each half using <code>8 - 4 - 2 - 1</code>:</p>
-  <div class="split" aria-label="01000001 split into 0100 and 0001, which are 4 and 1, so 0x41">
-    <div class="half"><code>0100</code><span class="icon">arrow_downward</span><b>4</b></div>
-    <div class="half"><code>0001</code><span class="icon">arrow_downward</span><b>1</b></div>
-    <div class="result"><span class="icon">arrow_forward</span><b>0x41</b></div>
-  </div>
+  <table class="split">
+    <tr><th scope="row">Nibbles</th><td><code>0100</code></td><td><code>0001</code></td></tr>
+    <tr><th scope="row">Hex digit</th><td>4</td><td>1</td></tr>
+    <tr><th scope="row">Together</th><td colspan="2" class="result">0x41</td></tr>
+  </table>
   <ol class="units">
     <li>Start with the 8-bit byte for 65: <code>01000001</code></li>
     <li>Cut it in half into two 4-bit nibbles: <code>0100</code> (left half) and <code>0001</code> (right half).</li>
