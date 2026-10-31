@@ -226,6 +226,32 @@ a.path:active { transform: scale(.98); }
 .lesson-nav .title { font-size: 17px; font-weight: 500; }
 @media (hover: hover) { .lesson-nav:hover { background: var(--surface-container); border-radius: 40px; } }
 
+/* End-of-topic challenge */
+.challenge h2 { margin-bottom: 6px; }
+.challenge .intro { color: var(--on-surface-variant); }
+.rounds { display: flex; gap: 6px; margin: 18px 0 4px; }
+.rounds span { width: 28px; height: 8px; border-radius: 4px; background: var(--surface-container-high); transition: background .3s var(--ease), width .4s var(--spring); }
+.rounds span.now { width: 44px; background: var(--primary-container); }
+.rounds span.done { background: var(--primary); }
+.question { margin: 14px 0; }
+.byte { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; max-width: 520px; animation: pop .45s var(--spring); }
+.byte .bit {
+  display: grid; place-items: center; height: 56px; border-radius: 14px;
+  font-family: var(--font-code); font-size: 24px; font-weight: 600;
+  background: var(--surface-container-lowest); color: var(--on-surface-variant);
+}
+.byte .bit.on { background: var(--primary); color: var(--on-primary); }
+.challenge .prompt { display: block; font-weight: 500; margin-bottom: 8px; }
+.challenge-msg { font-size: 14px; margin-top: 10px; min-height: 1.4em; display: flex; align-items: flex-start; gap: 6px; }
+.challenge-msg .icon { font-size: 20px; }
+.challenge.wrong .challenge-msg { color: var(--red); }
+.challenge.wrong .question { animation: shake .4s var(--ease); }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.challenge.completed { background: var(--green-c); color: var(--on-green-c); }
+.challenge.completed .intro, .challenge.completed .eyebrow { color: var(--on-green-c); }
+.challenge.completed .challenge-msg { font-weight: 600; }
+.challenge .again { justify-content: flex-start; margin-top: 8px; }
+
 /* Numbered steps */
 .steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 18px; }
 .steps > li { counter-increment: step; display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; }
@@ -354,6 +380,8 @@ a.path:active { transform: scale(.98); }
   .actions { flex-direction: column; justify-self: stretch; }
   .path { padding: 24px; }
   .switches, .lesson-navs { grid-template-columns: 1fr; }
+  .byte { gap: 4px; }
+  .byte .bit { height: 44px; font-size: 18px; border-radius: 10px; }
   .lesson-navs > span { display: none; }
   .callout { padding: 20px; }
   .bits th { font-size: 12px; white-space: normal; width: 64px; line-height: 1.3; padding-right: 2px; }

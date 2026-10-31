@@ -3,7 +3,12 @@
     "number": 1,
     "title": "Binary, Hex and Memory Architecture",
     "topics": [
-      { "id": "1-1", "title": "Binary", "file": "1-1-binary.html" }
+      {
+        "id": "1-1",
+        "title": "Binary",
+        "file": "1-1-binary.html",
+        "challenge": "binary-to-decimal"
+      }
     ]
   }
 ]
