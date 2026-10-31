@@ -1,6 +1,6 @@
-// pwnctual frontend: a small router and three pages. Everything is static:
-// level data comes from /levels/*.json (built by scripts/build-levels.mjs) and
-// progress is kept in this browser's localStorage.
+// pwnctual frontend: a small router and a few pages. Everything is static:
+// level data comes from /levels/*.json and lessons from /lessons/ (both built by
+// scripts/build-levels.mjs), and progress is kept in this browser's localStorage.
 
 // The two paths. Their folders in the levels repo have the same names.
 const PATHS = {
@@ -40,6 +40,10 @@ async function getJson(path) {
 }
 let indexCache = null;
 const getIndex = async () => (indexCache ??= await getJson("/levels/index.json"));
+let chaptersCache = null;
+const getChapters = async () => (chaptersCache ??= await getJson("/lessons/chapters.json"));
+const topicCount = chapters => chapters.reduce((n, c) => n + c.topics.length, 0);
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 // ---- helpers ----
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -104,16 +108,22 @@ async function homePage() {
   setTitle("");
   markNav("home");
   let levels = [];
+  let chapters = [];
   try { levels = await getIndex(); } catch {}
+  try { chapters = await getChapters(); } catch {}
   const solved = solvedSet();
   const pathCard = key => {
     const p = PATHS[key];
     const mine = levels.filter(l => l.path === key);
+    const topics = key === "learning" ? topicCount(chapters) : 0;
+    const chip = !mine.length && topics
+      ? `<span class="chip">${plural(topics, "topic")}</span>`
+      : progressChip(mine.filter(l => solved.has(l.id)).length, mine.length);
     return `<a class="card path" href="${p.url}" data-link>
       ${pathIcon(p)}
       <h2>${p.name}</h2>
       <p>${p.blurb}</p>
-      <span class="path-foot">${progressChip(mine.filter(l => solved.has(l.id)).length, mine.length)}<span class="icon go">arrow_forward</span></span>
+      <span class="path-foot">${chip}<span class="icon go">arrow_forward</span></span>
     </a>`;
   };
   app.innerHTML = page(
@@ -138,12 +148,15 @@ async function pathPage(key) {
   app.innerHTML = page(head(`<span class="chip">Loading</span>`));
   try {
     const levels = (await getIndex()).filter(l => l.path === key);
+    const chapters = key === "learning" ? await getChapters() : [];
     const solved = solvedSet();
     const done = levels.filter(l => solved.has(l.id)).length;
-    app.innerHTML = page(
-      head(progressChip(done, levels.length)),
-      intro + (levels.length ? levelList(levels, solved, p.name) : `<div class="card empty">${p.empty}</div>`)
-    );
+    const chip = !levels.length && chapters.length
+      ? `<span class="chip">${plural(chapters.length, "chapter")} · ${plural(topicCount(chapters), "topic")}</span>`
+      : progressChip(done, levels.length);
+    const body = chapters.map(chapterBlock).join("")
+      + (levels.length ? levelList(levels, solved, p.name) : chapters.length ? "" : `<div class="card empty">${p.empty}</div>`);
+    app.innerHTML = page(head(chip), intro + body);
   } catch (err) {
     app.innerHTML = page(head(""), errorBox(err));
   }
@@ -264,15 +277,80 @@ async function sha256(text) {
 }
 
 // ---- router ----
+// A chapter of the C for hackers path: a header card joined to its topics
+function chapterBlock(c) {
+  return `<section class="chapter" aria-label="Chapter ${c.number}">
+    <div class="card chapter-head">
+      <span class="eyebrow">Chapter ${c.number}</span>
+      <h2>${esc(c.title)}</h2>
+    </div>
+    <nav class="list">${c.topics.map(t => `<a class="list-item" href="/learn/${esc(t.id)}" data-link>
+      <span class="num">${esc(t.id.replace("-", "."))}</span>
+      <span><span class="title">${esc(t.title)}</span><span class="meta">Topic ${esc(t.id.split("-")[1])}</span></span>
+      <span class="icon go">chevron_right</span>
+    </a>`).join("")}</nav>
+  </section>`;
+}
+
+async function lessonPage(id) {
+  const p = PATHS.learning;
+  setTitle("");
+  markNav("learning");
+  app.innerHTML = loading("Loading lesson");
+  let chapters;
+  try { chapters = await getChapters(); } catch (err) {
+    app.innerHTML = page(header({ title: "Something went wrong" }), errorBox(err));
+    return;
+  }
+  // Every topic in order, so the page can link to the previous and next one
+  const all = chapters.flatMap(c => c.topics.map(t => ({ ...t, chapter: c })));
+  const i = all.findIndex(t => t.id === id);
+  if (i < 0) {
+    app.innerHTML = page(header({ title: "No such lesson", below: `<div class="actions"><a class="btn btn-tonal" href="${p.url}" data-link>${p.name}</a></div>` }));
+    return;
+  }
+  const topic = all[i], prev = all[i - 1], next = all[i + 1];
+  let body;
+  try {
+    const res = await fetch(`/lessons/${topic.file}`);
+    if (!res.ok) throw new Error(`/lessons/${topic.file} returned ${res.status}`);
+    body = await res.text();
+  } catch (err) {
+    body = errorBox(err);
+  }
+  const num = topic.id.replace("-", ".");
+  setTitle(`${num} ${topic.title}`);
+  const navLink = (t, dir) => `<a class="card lesson-nav ${dir}" href="/learn/${esc(t.id)}" data-link>
+      <span class="meta">${dir === "prev" ? "Previous" : "Next"}</span>
+      <span class="title">${esc(t.id.replace("-", "."))} ${esc(t.title)}</span>
+    </a>`;
+  app.innerHTML = page(
+    header({
+      above: `<div class="chips">
+        <a class="chip" href="${p.url}" data-link><span class="icon">arrow_back</span>${p.name}</a>
+        <span class="chip">Chapter ${topic.chapter.number}: ${esc(topic.chapter.title)}</span>
+      </div>`,
+      title: `<span class="topic-num">${num}</span> ${esc(topic.title)}`,
+    }),
+    `<article class="lesson">${body}</article>
+    <nav class="lesson-navs" aria-label="Topics">
+      ${prev ? navLink(prev, "prev") : "<span></span>"}
+      ${next ? navLink(next, "next") : `<a class="card lesson-nav next" href="${p.url}" data-link><span class="meta">Next</span><span class="title">More topics are on the way</span></a>`}
+    </nav>`
+  );
+}
+
 function render() {
   const p = location.pathname.replace(/\/+$/, "") || "/";
   const level = p.match(/^\/level\/([a-z0-9-]+)$/);
+  const lesson = p.match(/^\/learn\/(\d+-\d+)$/);
   window.scrollTo(0, 0);
   if (p === "/") return homePage();
   if (p === "/learn") return pathPage("learning");
   // /c was the old address of the finding path
   if (p === "/find" || p === "/c") return pathPage("finding");
   if (level) return levelPage(level[1]);
+  if (lesson) return lessonPage(lesson[1]);
   setTitle("Not found");
   markNav("");
   app.innerHTML = page(header({ title: "Page not found", below: `<div class="actions"><a class="btn btn-tonal" href="/" data-link>Go home</a></div>` }));

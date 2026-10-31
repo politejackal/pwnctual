@@ -1,0 +1,42 @@
+<section class="card">
+  <p>At the physical level, your computer's processor and memory (RAM) are made up of billions of tiny <em>switches</em> called <em>transistors</em>.</p>
+  <p>A switch has only 2 states:</p>
+  <div class="switches">
+    <div class="switch off"><span class="icon">toggle_off</span><code>OFF</code><span>(no electrical charge)</span><b>= 0</b></div>
+    <div class="switch on"><span class="icon fill">toggle_on</span><code>ON</code><span>(electrical charge present)</span><b>= 1</b></div>
+  </div>
+  <p>Every single piece of data on your device, whether it is a C program, a password, or a movie, is just a massive sequence of <code>0</code>s and <code>1</code>s.</p>
+</section>
+
+<section class="card">
+  <h2>The Core Units of Data</h2>
+  <ol class="units">
+    <li><b>A Bit (A Binary Digit):</b> A single <code>0</code> or <code>1</code>, it is the smallest possible unit of our data.</li>
+    <li><b>A Nibble:</b> A group of 4 bits. Example: <code>1011</code>.</li>
+    <li><b>A Byte:</b> A group of 8 bits. Example: <code>10110010</code>.</li>
+  </ol>
+</section>
+
+<aside class="callout">
+  <span class="icon fill">shield</span>
+  <div><b>The Hacker's First Law of Memory:</b> In C and modern computer architecture, 1 Byte (8 bits) is the smallest addressable unit of memory. You cannot point to a single bit in RAM; every memory address (we will come back to this) points to a full 8-bit byte.</div>
+</aside>
+
+<section class="card">
+  <h2>How to Read an 8-Bit Byte</h2>
+  <p>In normal everyday math (Decimal, or Base-10), each digit column goes up by a power of 10 (100, 10, 1). As you might recall from school, we are talking about the 1's place, 10's place, 100's place, and so on. Hence the name Base-10 because each digit's place is multiplied by 10.</p>
+  <p>What do you get if you instead multiply each digit's place by 2 instead of 10? Well you get binary or Base-2! In Binary (Base-2), each bit column doubles in value from right to left, as is being multiplied by 2 (128, 64, 32, 16, 8, 4, 2, 1).</p>
+  <p>So to convert a binary byte like <code>01000001</code> into a normal number, just add up the column values where a <code>1</code> is switched ON:</p>
+  <div class="bits-wrap">
+    <table class="bits">
+      <tr><th scope="row">Bit Value (Place)</th><td>128</td><td class="on">64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td class="on">1</td></tr>
+      <tr><th scope="row">Binary Byte</th><td>0</td><td class="on">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="on">1</td></tr>
+    </table>
+  </div>
+  <ul>
+    <li>Only the 64 column and the 1 column are turned on (<code>1</code>).</li>
+    <li>Now you add the columns which are turned on. 64 + 1 = 65.</li>
+    <li>So <code>01000001</code> in binary equals 65 in decimal (which also happens to be how the capital letter <code>'A'</code> is stored inside a computer, its just that somebody decided that 65 in binary would mean the letter A).</li>
+  </ul>
+  <p>If all 8 bits are turned off (<code>00000000</code>), the value is 0. If all 8 bits are turned on (<code>11111111</code>), you add 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1, which equals 255. Therefore, a single byte can hold a value anywhere from 0 to 255.</p>
+</section>

@@ -5,7 +5,7 @@
 // Levels live in levels/<path>/<id>, where <path> is learning or finding.
 //
 //   npm run build
-import { readdir, readFile, writeFile, mkdir, rm, stat } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, rm, stat, cp } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = new URL("..", import.meta.url).pathname;
@@ -39,3 +39,15 @@ for (const path of PATHS) for (const id of (await readdir(join(levelsDir, path))
 }
 await writeFile(join(outDir, "index.json"), JSON.stringify(index, null, 2));
 
+
+// Lessons for the C for hackers path: lessons/chapters.json lists the chapters
+// and their topics, and each topic is an HTML file in lessons/.
+const lessonsDir = join(root, "lessons");
+const lessonsOut = join(root, "web", "lessons");
+await rm(lessonsOut, { recursive: true, force: true });
+const chapters = JSON.parse(await readFile(join(lessonsDir, "chapters.json"), "utf8"));
+for (const chapter of chapters) for (const topic of chapter.topics) {
+  await stat(join(lessonsDir, topic.file)).catch(() => { throw new Error(`lessons/${topic.file} is missing`); });
+}
+await cp(lessonsDir, lessonsOut, { recursive: true });
+console.log(`built ${chapters.reduce((n, c) => n + c.topics.length, 0)} lesson topic(s)`);
