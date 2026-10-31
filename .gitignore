@@ -7,3 +7,6 @@ web/levels/
 
 # Reference fixes stay private so the answers aren't in the repo
 levels/*/solution.*
+
+
+.DS_store
