@@ -74,3 +74,52 @@
     </ul>
   </div>
 </aside>
+
+<aside class="callout">
+  <span class="icon fill">directions_walk</span>
+  <div>Another walk is recommended here!</div>
+</aside>
+
+<section class="card">
+  <h2>Why We Write 0x in Front of Hex Numbers</h2>
+  <p>Suppose I write the number <code>41</code> on a whiteboard. How do you know if I mean forty-one in Decimal, or the Hex digits <code>4</code> and <code>1</code>? They look identical, wtf!</p>
+  <p>To prevent confusion, C compilers and hackers always put the prefix <code>0x</code> in front of a Hexadecimal number:</p>
+  <ul>
+    <li><code>41</code> = Decimal forty-one.</li>
+    <li><code>0x41</code> = Hexadecimal <code>41</code> (the <code>0x</code> is not part of the number itself; it is just a label that tells the C compiler "read the digits after <code>0x</code> as Base-16").</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>How to Convert Between Binary, Decimal, and Hex</h2>
+  <p>Let's walk through the exact examples from earlier so you can see how the math works in both directions.</p>
+  <h3>Example 1: Why does Decimal <code>65</code> equal <code>0x41</code> in Hex?</h3>
+  <p>In the previous topic, we converted the letter <code>'A'</code> (Decimal <code>65</code>) into its 8-bit binary byte: <code>01000001</code> (because the 64-bit and the 1-bit are turned on: <code>64 + 1 = 65</code>).</p>
+  <p>Now, how do we turn that 8-bit byte (<code>01000001</code>) into Hexadecimal? Never do complex division. Just slice the 8-bit byte straight down the middle into two separate 4-bit nibbles, and convert each half using <code>8 - 4 - 2 - 1</code>:</p>
+  <div class="split" aria-label="01000001 split into 0100 and 0001, which are 4 and 1, so 0x41">
+    <div class="half"><code>0100</code><span class="icon">arrow_downward</span><b>4</b></div>
+    <div class="half"><code>0001</code><span class="icon">arrow_downward</span><b>1</b></div>
+    <div class="result"><span class="icon">arrow_forward</span><b>0x41</b></div>
+  </div>
+  <ol class="units">
+    <li>Start with the 8-bit byte for 65: <code>01000001</code></li>
+    <li>Cut it in half into two 4-bit nibbles: <code>0100</code> (left half) and <code>0001</code> (right half).</li>
+    <li>Convert the left nibble (<code>0100</code>) using <code>8 - 4 - 2 - 1</code>:
+      <ul>
+        <li>Only the 4 bit is on (<code>0 + 4 + 0 + 0 = 4</code>).</li>
+        <li>So the first Hex digit is <code>4</code>.</li>
+      </ul>
+    </li>
+    <li>Convert the right nibble (<code>0001</code>) using <code>8 - 4 - 2 - 1</code>:
+      <ul>
+        <li>Only the 1 bit is on (<code>0 + 0 + 0 + 1 = 1</code>).</li>
+        <li>So the second Hex digit is <code>1</code>.</li>
+      </ul>
+    </li>
+    <li>Put them side-by-side with <code>0x</code> in front: <code>0x41</code>.</li>
+  </ol>
+  <div class="bonus">
+    <b>Bonus Check (Converting <code>0x41</code> directly back to Decimal):</b>
+    <p>In normal Decimal, the number <code>41</code> means <code>(4 × 10) + (1 × 1) = 41</code> because the left column is the 10s place. In Hexadecimal (Base-16), the left column is the 16s place! So <code>0x41</code> means <code>(4 × 16) + (1 × 1)</code> = <code>64 + 1</code> = <code>65</code>! Both methods give you the exact same answer. Eazy!</p>
+  </div>
+</section>
