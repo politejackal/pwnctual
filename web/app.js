@@ -54,7 +54,11 @@ const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 // ---- helpers ----
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-function setTitle(t) { document.title = t ? `${t} · pwnctual` : "pwnctual"; }
+function setTitle(t) {
+  document.title = t ? `${t} · pwnctual` : "pwnctual: learn C, then find bugs";
+  // Keep the canonical link on the page being shown
+  document.querySelector('link[rel="canonical"]')?.setAttribute("href", `https://pwnctual.com${location.pathname.replace(/\/+$/, "") || "/"}`);
+}
 
 function markNav(tab) {
   document.querySelectorAll(".topnav a, .bottomnav a").forEach(a => {

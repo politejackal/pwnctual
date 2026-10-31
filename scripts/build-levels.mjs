@@ -51,3 +51,13 @@ for (const chapter of chapters) for (const topic of chapter.topics) {
 }
 await cp(lessonsDir, lessonsOut, { recursive: true });
 console.log(`built ${chapters.reduce((n, c) => n + c.topics.length, 0)} lesson topic(s)`);
+
+// Sitemap for search engines: the main pages, every lesson topic and every level
+const urls = ["/", "/learn", "/find",
+  ...chapters.flatMap(c => c.topics.map(t => `/learn/${t.id}`)),
+  ...index.map(l => `/level/${l.id}`)];
+await writeFile(join(root, "web", "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url><loc>https://pwnctual.com${u}</loc></url>`).join("\n")}
+</urlset>
+`);

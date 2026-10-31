@@ -5,6 +5,7 @@ node_modules/
 # Built by `npm run build:levels`
 web/levels/
 web/lessons/
+web/sitemap.xml
 
 # Reference fixes stay private so the answers aren't in the repo
 levels/*/*/solution.*
