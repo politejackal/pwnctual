@@ -225,6 +225,11 @@ a.path:active { transform: scale(.98); }
 .split td { background: var(--surface-container-lowest); border-radius: 12px; padding: 10px 4px; font-size: 20px; font-weight: 600; }
 .split td code { background: none; padding: 0; font-size: inherit; letter-spacing: 1px; }
 .split td.result { background: var(--primary); color: var(--on-primary); }
+.nibble-row { border-collapse: separate; border-spacing: 4px; text-align: center; font-size: 15px; }
+.nibble-row th { font-weight: 500; font-size: 14px; text-align: left; color: var(--on-surface-variant); padding-right: 10px; white-space: nowrap; }
+.nibble-row td { background: var(--surface-container-lowest); border-radius: 10px; padding: 8px 10px; white-space: nowrap; }
+.nibble-row td code { background: none; padding: 0; }
+.nibble-row td.hex { background: var(--primary); color: var(--on-primary); font-family: var(--font-code); font-weight: 700; font-size: 17px; }
 .bonus { background: var(--surface-container-lowest); border-radius: 18px; padding: 16px 20px; }
 .bonus p { margin-top: 6px; }
 .hex-letters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }

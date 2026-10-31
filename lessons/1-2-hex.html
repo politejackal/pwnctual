@@ -93,7 +93,7 @@
 <section class="card">
   <h2>How to Convert Between Binary, Decimal, and Hex</h2>
   <p>Let's walk through the exact examples from earlier so you can see how the math works in both directions.</p>
-  <h3>Example: Why does Decimal <code>65</code> equal <code>0x41</code> in Hex?</h3>
+  <h3>Example 1: Why does Decimal <code>65</code> equal <code>0x41</code> in Hex?</h3>
   <p>In the previous topic, we converted the letter <code>'A'</code> (Decimal <code>65</code>) into its 8-bit binary byte: <code>01000001</code> (because the 64-bit and the 1-bit are turned on: <code>64 + 1 = 65</code>).</p>
   <p>Now, how do we turn that 8-bit byte (<code>01000001</code>) into Hexadecimal? Never do complex division. Just slice the 8-bit byte straight down the middle into two separate 4-bit nibbles, and convert each half using <code>8 - 4 - 2 - 1</code>:</p>
   <table class="split">
@@ -122,4 +122,19 @@
     <b>Bonus Check (Converting <code>0x41</code> directly back to Decimal):</b>
     <p>In normal Decimal, the number <code>41</code> means <code>(4 × 10) + (1 × 1) = 41</code> because the left column is the 10s place. In Hexadecimal (Base-16), the left column is the 16s place! So <code>0x41</code> means <code>(4 × 16) + (1 × 1)</code> = <code>64 + 1</code> = <code>65</code>! Both methods give you the exact same answer. Eazy!</p>
   </div>
+
+  <h3>Example 2: Reading a 32-Bit Binary Address in Seconds</h3>
+  <p>Suppose a C program loads a function into RAM at this 32-bit binary memory address: <code>00001000000001001001000110110110</code></p>
+  <p>If you convert that into Decimal (<code>134,517,174</code>), you have no idea what the 4 individual bytes inside it look like.</p>
+  <p>Watch what happens when you chop those 32 bits into eight 4-bit nibbles and convert each nibble using <code>8 - 4 - 2 - 1</code>:</p>
+  <div class="table-wrap">
+    <table class="nibble-row">
+      <tr><th scope="row">4-Bit Nibble</th><td><code>0000</code></td><td><code>1000</code></td><td><code>0000</code></td><td><code>0100</code></td><td><code>1001</code></td><td><code>0001</code></td><td><code>1011</code></td><td><code>0110</code></td></tr>
+      <tr><th scope="row">Add <code>8-4-2-1</code></th><td>0</td><td>8</td><td>0</td><td>4</td><td>8+0+0+1</td><td>1</td><td>8+0+2+1</td><td>0+4+2+0</td></tr>
+      <tr><th scope="row">Decimal (0–15)</th><td>0</td><td>8</td><td>0</td><td>4</td><td>9</td><td>1</td><td>11</td><td>6</td></tr>
+      <tr><th scope="row">Hex Digit</th><td class="hex">0</td><td class="hex">8</td><td class="hex">0</td><td class="hex">4</td><td class="hex">9</td><td class="hex">1</td><td class="hex">B</td><td class="hex">6</td></tr>
+    </table>
+  </div>
+  <p>Put those 8 Hex digits together with <code>0x</code> in front, and that 32-bit binary string is <code>0x080491B6</code>.</p>
+  <p>Because every 2 Hex digits = 1 Byte, you can immediately see all 4 bytes of the memory address at a glance: <code>08</code>, <code>04</code>, <code>91</code>, and <code>B6</code>.</p>
 </section>
