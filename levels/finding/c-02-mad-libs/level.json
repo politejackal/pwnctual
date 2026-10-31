@@ -12,11 +12,14 @@
     "Each box only has room for 20 characters. What happens if your object is a LOT longer than that? Try watching what happens to the colour and the name in the story as your object gets longer.",
     "Keep going. Somewhere past around 100 characters, the program stops telling stories altogether."
   ],
-  "flagSha256": "a304ecf3d6b6cbfb4cc548a01e224ca49c5b60107d2ac710764e27aca4de99e0",
+  "flagSha256": "bbf462e90b3c61b077fe7344653e748fb79321b24bcdb4d2026f1cbb3d79d73a",
   "writeup": [
     "<p>The name and colour are read with <code>scanf(\"%19s\", ...)</code>, which tells C to read at most 19 characters (leaving 1 spot for the <code>\\0</code> that marks the end of a string). But the object is read with a plain <code>scanf(\"%s\", object)</code>, which has no limit at all. It will happily keep writing whatever you type into memory, even long after the 20-byte <code>object</code> box is full. This is called a <strong>buffer overflow</strong>.</p>",
     "<p>The three arrays live next to each other on the <em>stack</em>, a region of memory where a function keeps its local variables. When your object is too long, the extra characters spill over into whatever sits next to it. If you try an object of 40, 60 or 80 A's, you'll see the story start to change: first the hero's body turns <code>AAAAAAAA</code> instead of your colour, and then the hero's name itself becomes <code>AAAAAAAA</code>. You never typed those as the name or colour, but the object overwrote them! In a real program, this is how an attacker could change a variable like <code>is_admin</code> or a password without ever being asked for it.</p>",
     "<p>Keep going and the overflow reaches something much more important. Also stored on the stack is the <strong>return address</strong>, which tells the CPU where to jump back to once <code>main</code> finishes. With roughly 104+ characters, your A's overwrite it with <code>0x4141414141414141</code> (<code>0x41</code> is the letter A). When <code>main</code> returns, the CPU tries to jump to that nonsense address, the operating system steps in and kills the program with a <strong>segmentation fault</strong>. A careful attacker wouldn't use A's, though. They would carefully choose the bytes so the program jumps to code of <em>their</em> choosing, which is how many real-world exploits take over a machine.</p>",
     "<p>The fix is simple: give every <code>scanf</code> a width limit, so <code>scanf(\"%19s\", object)</code> instead of <code>scanf(\"%s\", object)</code>. It's also good practice to check that <code>scanf</code> actually returned <code>1</code> (meaning it read something). For reading whole lines, <code>fgets(object, sizeof(object), stdin)</code> is another safe option, because it always respects the size of the buffer.</p>"
-  ]
+  ],
+  "prepare": "Make a file called <code>answers.txt</code> in the level folder with your three answers on separate lines: the name, the colour and the object.",
+  "command": "./check.sh < answers.txt",
+  "goal": "<code>check.sh</code> will run the program with your answers, and if the program crashes with a segmentation fault, it gives you the flag!"
 }

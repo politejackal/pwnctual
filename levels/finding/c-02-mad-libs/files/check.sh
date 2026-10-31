@@ -33,7 +33,7 @@ die() { echo "[!] $*" >&2; exit 1; }
 # Example of a lightly obfuscated version:
 #   generate_flag() { echo "ZmxhZ3t5MHVfbTRkM18xdF9zM2dmNHVsdH0K" | base64 -d; }
 generate_flag() {
-    echo "flag{y0u_m4d3_1t_s3gf4ult}"
+    echo "pwnctual{xVPSGrIxhznzcHGQ7wlmFIVy}"
 }
 # ======================================================
 

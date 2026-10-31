@@ -198,10 +198,11 @@ async function levelPage(id) {
       <h2>How to solve it</h2>
       <ol class="steps">
         <li><div>Click <b>Open in Codespaces</b> and sign in with GitHub.</div></li>
+        ${level.prepare ? `<li><div>${level.prepare}</div></li>` : ""}
         <li><div>Open a terminal, and run the following:
           <pre class="cmd"><code>cd ${esc(level.path)}/${esc(level.id)}
-./check.sh "your input"</code></pre></div></li>
-        <li><div><code>check.sh</code> will run the program using the arguments you pass it, and if the program sends the code to the wrong number, it gives you the flag!</div></li>
+${esc(level.command)}</code></pre></div></li>
+        <li><div>${level.goal}</div></li>
       </ol>
     </section>
 
