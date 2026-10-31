@@ -4,7 +4,7 @@
   "language": "c",
   "difficulty": "Easy",
   "description": [
-    "Our junior developer wrote MAD LIBS 3000, a cutting-edge storytelling engine in C. You give it a name, a colour and an object, and it spins you an epic tale of heroism, breakfast and a deeply disappointed cat. It works fine for most people... until someone curious or naughty steps in. Now, it's your job to be that curious—and perhaps naughty—person, and find out how to make this program break and behave in ways the developer never intended.",
+    "We hired a freelancer from Upwork to build MAD LIBS 3000: you give it a name, a colour and an object, and it writes you an epic story. He delivered it in 20 minutes, sent us an invoice for $4,000, and blocked us on every platform. The code compiles and the stories are kind of funny, but we have no idea what else it does, and honestly we're scared to look. Now is your perfect chance to abuse us. Find the input that makes this program break in ways our freelancer definitely never tested.",
     "As you try and complete this challenge, you can understand the various ways in which this program can cause critical problems which we don't want!"
   ],
   "hints": [
