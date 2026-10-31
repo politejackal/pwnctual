@@ -4,7 +4,7 @@
   "language": "c",
   "difficulty": "Easy",
   "description": [
-    "We hired a freelancer from Upwork to build MAD LIBS 3000: you give it a name, a colour and an object, and it writes you an epic story. He delivered it in 20 minutes, sent us an invoice for $4,000, and blocked us on every platform. The code compiles and the stories are kind of funny, but we have no idea what else it does, and honestly we're scared to look. Now is your perfect chance to abuse us. Find the input that makes this program break in ways our freelancer definitely never tested."
+    "We hired a freelancer from Upwork to build MAD LIBS 3000: you give it a name, a colour and an object, and it writes you an epic story. He delivered it in 20 minutes, sent us an invoice for $100, and ran away. The code compiles and the stories are kind of funny, but we have no idea what else it does, and honestly we're scared to look. Now is your perfect chance to abuse us. Find the input that makes this program break in ways our freelancer definitely never tested."
   ],
   "hints": [
     "Look closely at the three scanf calls. Is one of them not like the others?",
