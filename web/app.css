@@ -273,6 +273,7 @@ a.path:active { transform: scale(.98); }
   display: inline-block; padding: 10px 22px; border-radius: 16px; background: var(--surface-container-lowest);
   font-size: 32px; font-weight: 700; color: var(--primary); animation: pop .45s var(--spring);
 }
+.hex-q.dec code { color: var(--on-surface); }
 .challenge .prompt { display: block; font-weight: 500; margin-bottom: 8px; }
 .challenge-msg { font-size: 14px; margin-top: 10px; min-height: 1.4em; display: flex; align-items: flex-start; gap: 6px; }
 .challenge-msg .icon { font-size: 20px; }

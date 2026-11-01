@@ -363,17 +363,11 @@ const bin8 = n => n.toString(2).padStart(8, "0");
 const hex2 = n => n.toString(16).toUpperCase().padStart(2, "0");
 const showByte = n => `<div class="byte" aria-label="${bin8(n)}">${[...bin8(n)].map(b => `<span class="bit">${b}</span>`).join("")}</div>`;
 const showHex = n => `<div class="hex-q"><code>0x${hex2(n)}</code></div>`;
+const showDec = n => `<div class="hex-q dec"><code>${n}</code></div>`;
 const randomBytes = count => {
   const set = new Set();
   while (set.size < count) set.add(Math.floor(Math.random() * 256));
   return [...set];
-};
-const shuffle = list => {
-  for (let i = list.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [list[i], list[j]] = [list[j], list[i]];
-  }
-  return list;
 };
 // Answers are compared loosely: any case, spaces ignored, 0x optional for hex
 const clean = a => a.replace(/\s+/g, "").toLowerCase();
@@ -385,6 +379,11 @@ const QUESTION = {
     answer: `<code>${bin8(n)}</code> is <code>0x${hex2(n)}</code>` }),
   hexToBin: n => ({ html: showHex(n), prompt: "What is this byte in binary? Write all 8 bits.", mode: "numeric",
     check: a => clean(a) === bin8(n), answer: `<code>0x${hex2(n)}</code> is <code>${bin8(n)}</code>` }),
+  decToBin: n => ({ html: showDec(n), prompt: "What is this number in binary? Write all 8 bits.", mode: "numeric",
+    check: a => clean(a) === bin8(n), answer: `${n} is <code>${bin8(n)}</code>` }),
+  decToHex: n => ({ html: showDec(n), prompt: "What is this number in hex?", mode: "text",
+    check: a => /^(0x)?[0-9a-f]{1,2}$/.test(clean(a)) && parseInt(clean(a).replace(/^0x/, ""), 16) === n,
+    answer: `${n} is <code>0x${hex2(n)}</code>` }),
   hexToDec: n => ({ html: showHex(n), prompt: "What is this byte in decimal?", mode: "numeric",
     check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>0x${hex2(n)}</code> is ${n}` }),
 };
@@ -397,14 +396,11 @@ const CHALLENGES = {
   },
   "hex-mix": {
     title: "Convert 6 bytes in a row",
-    intro: "Binary to hex, hex to binary and hex to decimal, twice each. Get one wrong and it starts again with new bytes.",
-    // The first four are mixed up; the last two are always binary to hex and hex to binary, in either order
+    intro: "Binary and decimal, then decimal and hex, then binary and hex, both ways. Get one wrong and it starts again with new bytes.",
     make() {
       const [a, b, c, d, e, f] = randomBytes(6);
-      return [
-        ...shuffle([QUESTION.binToHex(a), QUESTION.hexToBin(b), QUESTION.hexToDec(c), QUESTION.hexToDec(d)]),
-        ...shuffle([QUESTION.binToHex(e), QUESTION.hexToBin(f)]),
-      ];
+      return [QUESTION.binToDec(a), QUESTION.decToBin(b), QUESTION.decToHex(c),
+        QUESTION.hexToDec(d), QUESTION.binToHex(e), QUESTION.hexToBin(f)];
     },
   },
 };
