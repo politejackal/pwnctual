@@ -12,7 +12,8 @@
       {
         "id": "1-2",
         "title": "Hex",
-        "file": "1-2-hex.html"
+        "file": "1-2-hex.html",
+        "challenge": "hex-mix"
       }
     ]
   }

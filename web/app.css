@@ -269,6 +269,10 @@ a.path:active { transform: scale(.98); }
   font-family: var(--font-code); font-size: 24px; font-weight: 600;
   background: var(--surface-container-lowest); color: var(--on-surface);
 }
+.hex-q code {
+  display: inline-block; padding: 10px 22px; border-radius: 16px; background: var(--surface-container-lowest);
+  font-size: 32px; font-weight: 700; color: var(--primary); animation: pop .45s var(--spring);
+}
 .challenge .prompt { display: block; font-weight: 500; margin-bottom: 8px; }
 .challenge-msg { font-size: 14px; margin-top: 10px; min-height: 1.4em; display: flex; align-items: flex-start; gap: 6px; }
 .challenge-msg .icon { font-size: 20px; }

@@ -358,23 +358,54 @@ async function lessonPage(id) {
 
 // ---- end-of-topic challenges ----
 // Answer a few questions in a row. One wrong answer starts it again with new questions.
+// make() returns the questions; each has html, a prompt, an inputmode, check(answer) and the right answer.
+const bin8 = n => n.toString(2).padStart(8, "0");
+const hex2 = n => n.toString(16).toUpperCase().padStart(2, "0");
+const showByte = n => `<div class="byte" aria-label="${bin8(n)}">${[...bin8(n)].map(b => `<span class="bit">${b}</span>`).join("")}</div>`;
+const showHex = n => `<div class="hex-q"><code>0x${hex2(n)}</code></div>`;
+const randomBytes = count => {
+  const set = new Set();
+  while (set.size < count) set.add(Math.floor(Math.random() * 256));
+  return [...set];
+};
+const shuffle = list => {
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  return list;
+};
+// Answers are compared loosely: any case, spaces ignored, 0x optional for hex
+const clean = a => a.replace(/\s+/g, "").toLowerCase();
+const QUESTION = {
+  binToDec: n => ({ html: showByte(n), prompt: "What is this byte in decimal?", mode: "numeric",
+    check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>${bin8(n)}</code> is ${n}` }),
+  binToHex: n => ({ html: showByte(n), prompt: "What is this byte in hex?", mode: "text",
+    check: a => /^(0x)?[0-9a-f]{1,2}$/.test(clean(a)) && parseInt(clean(a).replace(/^0x/, ""), 16) === n,
+    answer: `<code>${bin8(n)}</code> is <code>0x${hex2(n)}</code>` }),
+  hexToBin: n => ({ html: showHex(n), prompt: "What is this byte in binary? Write all 8 bits.", mode: "numeric",
+    check: a => clean(a) === bin8(n), answer: `<code>0x${hex2(n)}</code> is <code>${bin8(n)}</code>` }),
+  hexToDec: n => ({ html: showHex(n), prompt: "What is this byte in decimal?", mode: "numeric",
+    check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>0x${hex2(n)}</code> is ${n}` }),
+};
+
 const CHALLENGES = {
   "binary-to-decimal": {
     title: "Convert 3 bytes in a row",
     intro: "Convert each byte from binary to decimal. Get one wrong and it starts again with new bytes.",
-    rounds: 3,
-    // Three different random bytes
+    make: () => randomBytes(3).map(QUESTION.binToDec),
+  },
+  "hex-mix": {
+    title: "Convert 6 bytes in a row",
+    intro: "Binary to hex, hex to binary and hex to decimal, twice each. Get one wrong and it starts again with new bytes.",
+    // The first four are mixed up; the last two are always binary to hex and hex to binary, in either order
     make() {
-      const set = new Set();
-      while (set.size < this.rounds) set.add(Math.floor(Math.random() * 256));
-      return [...set];
+      const [a, b, c, d, e, f] = randomBytes(6);
+      return [
+        ...shuffle([QUESTION.binToHex(a), QUESTION.hexToBin(b), QUESTION.hexToDec(c), QUESTION.hexToDec(d)]),
+        ...shuffle([QUESTION.binToHex(e), QUESTION.hexToBin(f)]),
+      ];
     },
-    show: n => `<div class="byte" aria-label="${n.toString(2).padStart(8, "0")}">${
-      [...n.toString(2).padStart(8, "0")].map(b => `<span class="bit">${b}</span>`).join("")
-    }</div>`,
-    prompt: "What is this byte in decimal?",
-    answer: n => String(n),
-    explain: n => `<code>${n.toString(2).padStart(8, "0")}</code> is ${n}`,
   },
 };
 
@@ -387,7 +418,7 @@ const CHALLENGE_CARD = `<section class="card challenge" aria-label="Challenge">
     <div class="question"></div>
     <label class="prompt" for="challenge-answer"></label>
     <div class="flag-row">
-      <input id="challenge-answer" type="text" inputmode="numeric" spellcheck="false" required>
+      <input id="challenge-answer" type="text" spellcheck="false" autocapitalize="off" required>
       <button class="btn btn-filled" type="submit"><span class="icon">check</span>Check</button>
     </div>
   </form>
@@ -402,13 +433,15 @@ function startChallenge(card, c, key) {
   const again = card.querySelector(".again");
   card.querySelector("h2").textContent = c.title;
   card.querySelector(".intro").textContent = c.intro;
-  card.querySelector(".prompt").textContent = c.prompt;
   let questions, round;
 
   const showRound = () => {
+    const q = questions[round];
     card.querySelector(".rounds").innerHTML = questions
       .map((_, i) => `<span class="${i < round ? "done" : i === round ? "now" : ""}"></span>`).join("");
-    card.querySelector(".question").innerHTML = c.show(questions[round]);
+    card.querySelector(".question").innerHTML = q.html;
+    card.querySelector(".prompt").textContent = q.prompt;
+    input.inputMode = q.mode;
     input.value = "";
   };
   const restart = () => { questions = c.make(); round = 0; showRound(); };
@@ -417,25 +450,25 @@ function startChallenge(card, c, key) {
     form.hidden = true;
     again.hidden = false;
     card.querySelector(".rounds").innerHTML = "";
-    msg.innerHTML = `<span class="icon fill">check_circle</span><span>${fresh ? "All 3 right. " : ""}Topic completed. Saved in this browser.</span>`;
+    msg.innerHTML = `<span class="icon fill">check_circle</span><span>${fresh ? `All ${questions.length} right. ` : ""}Topic completed. Saved in this browser.</span>`;
   };
 
   form.addEventListener("submit", e => {
     e.preventDefault();
     const q = questions[round];
-    if (input.value.trim() === c.answer(q)) {
+    if (q.check(input.value)) {
       msg.textContent = "";
       card.classList.remove("wrong");
       if (++round < questions.length) return showRound();
       const saved = setSolved(key, true);
       complete(true);
-      if (!saved) msg.textContent = "All 3 right, but your browser is blocking local storage, so it can't be saved.";
+      if (!saved) msg.textContent = `All ${questions.length} right, but your browser is blocking local storage, so it can't be saved.`;
       return;
     }
     card.classList.remove("wrong");
     void card.offsetWidth; // restart the shake animation
     card.classList.add("wrong");
-    msg.innerHTML = `Not quite: ${c.explain(q)}. Starting again with new bytes.`;
+    msg.innerHTML = `Not quite: ${q.answer}. Starting again with new bytes.`;
     restart();
     input.focus();
   });
