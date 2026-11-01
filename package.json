@@ -1,12 +1,9 @@
 {
   "name": "pwnctual",
   "version": "1.0.0",
-  "description": "Defensive security wargame: fix vulnerable C and Python programs on your own computer.",
   "scripts": {
-    "build": "node scripts/build-levels.mjs",
-    "dev": "npm run build && wrangler dev --port 8788",
-    "deploy": "npm run build && wrangler deploy",
-    "build:levels-repo": "node scripts/build-levels-repo.mjs"
+    "dev": "wrangler dev --port 8788",
+    "deploy": "wrangler deploy"
   },
   "type": "module",
   "devDependencies": {

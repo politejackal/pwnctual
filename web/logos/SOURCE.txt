@@ -1,2 +1,0 @@
-Logo from Devicon (https://devicon.dev), MIT license.
-c.svg: devicon 2.16.0 icons/c/c-original.svg
