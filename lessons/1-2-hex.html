@@ -138,3 +138,57 @@
   <p>Put those 8 Hex digits together with <code>0x</code> in front, and that 32-bit binary string is <code>0x080491B6</code>. Which still doesn't make sense, but is somewhat easier to read :')</p>
   <p>Because every 2 Hex digits = 1 Byte, you can immediately see all 4 bytes of the memory address at a glance: <code>08</code>, <code>04</code>, <code>91</code>, and <code>B6</code>.</p>
 </section>
+
+<section class="card">
+  <h2>Fact 1: Computers Can Only Store Numbers (Not Letters)</h2>
+  <p>Memory can only hold numbers (0s and 1s). It cannot draw the shape of the letter <code>'A'</code> inside a memory chip.</p>
+  <p>So computer engineers created a universal chart where every key on your keyboard has a secret code number:</p>
+  <ul>
+    <li>Capital <code>'A'</code> = Decimal <code>65</code> = Hex <code>0x41</code></li>
+    <li>Capital <code>'B'</code> = Decimal <code>66</code> = Hex <code>0x42</code></li>
+    <li>Capital <code>'C'</code> = Decimal <code>67</code> = Hex <code>0x43</code></li>
+  </ul>
+  <p>Whenever you press <code>A</code> on your keyboard, the computer actually writes the byte <code>0x41</code> into memory.</p>
+</section>
+
+<section class="card">
+  <h2>Fact 2: Memory Is Just One Long Row of Boxes</h2>
+  <p>Imagine a C program uses 8 memory boxes in a row to do two jobs:</p>
+  <ul>
+    <li>Boxes 1 to 4 hold a 4-letter Username that you type in.</li>
+    <li>Boxes 5 to 8 hold the 4-byte Address of the Next Screen the program should go to after you type your name (for example, our address <code>0x080491B6</code>).</li>
+  </ul>
+  <p>Before you type anything, those 8 boxes sitting side-by-side in memory look like this:</p>
+  <div class="table-wrap">
+    <table class="boxes">
+      <thead><tr><th scope="col">Box 1 (Name)</th><th scope="col">Box 2 (Name)</th><th scope="col">Box 3 (Name)</th><th scope="col">Box 4 (Name)</th><th scope="col">Box 5 (Next Address)</th><th scope="col">Box 6 (Next Address)</th><th scope="col">Box 7 (Next Address)</th><th scope="col">Box 8 (Next Address)</th></tr></thead>
+      <tbody><tr><td><em>empty</em></td><td><em>empty</em></td><td><em>empty</em></td><td><em>empty</em></td><td><code>0x08</code></td><td><code>0x04</code></td><td><code>0x91</code></td><td><code>0xB6</code></td></tr></tbody>
+    </table>
+  </div>
+  <p>If you type a normal 4-letter name like <code>AAAA</code>, each <code>'A'</code> (<code>0x41</code>) fills Boxes 1 to 4, and Boxes 5 to 8 stay untouched (<code>0x080491B6</code>). Everything works normally.</p>
+</section>
+
+<section class="card">
+  <h2>Fact 3: C Doesn't Stop at Box 4</h2>
+  <p>Here is the quirk of the C language: there is no wall between Box 4 and Box 5.</p>
+  <p>If the program asks for your 4-letter name, and you type eight <code>'A'</code>s (<code>AAAAAAAA</code>) instead of four, C does not stop you at Box 4. It blindly keeps putting <code>0x41</code> into Boxes 5, 6, 7, and 8—erasing whatever was sitting there before:</p>
+  <div class="table-wrap">
+    <table class="boxes">
+      <thead><tr><th scope="col">Box 1 (Name)</th><th scope="col">Box 2 (Name)</th><th scope="col">Box 3 (Name)</th><th scope="col">Box 4 (Name)</th><th scope="col">Box 5 (Next Address)</th><th scope="col">Box 6 (Next Address)</th><th scope="col">Box 7 (Next Address)</th><th scope="col">Box 8 (Next Address)</th></tr></thead>
+      <tbody><tr><td><code>0x41</code> (A)</td><td><code>0x41</code> (A)</td><td><code>0x41</code> (A)</td><td><code>0x41</code> (A)</td><td class="spill"><code>0x41</code> (A)</td><td class="spill"><code>0x41</code> (A)</td><td class="spill"><code>0x41</code> (A)</td><td class="spill"><code>0x41</code> (A)</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Fact 4: Why the Computer Gets Tricked</h2>
+  <p>Now the program finishes taking your name and says: "Okay, let me read Boxes 5, 6, 7, and 8 to see what memory address I should jump to next."</p>
+  <p>The computer looks inside Boxes 5, 6, 7, and 8.</p>
+  <p>It doesn't know that you accidentally spilled your <code>'A'</code>s into those boxes. It only sees the numbers <code>41</code>, <code>41</code>, <code>41</code>, <code>41</code>.</p>
+  <p>So the computer glues those 4 boxes together and tries to jump to memory address <code>0x41414141</code>.</p>
+  <p>Because <code>0x41414141</code> is not a real place in the program, the program crashes and prints an error:</p>
+  <pre class="cmd"><code>Error: Tried to jump to address 0x41414141</code></pre>
+  <h3>Why Knowing Hex Matters Here</h3>
+  <p>If you didn't know Hex, seeing <code>0x41414141</code> in an error message would look like random computer gibberish.</p>
+  <p>Because you know that <code>0x41</code> is the Hex code for <code>'A'</code>, seeing <code>0x41414141</code> tells you: "Wait—the four extra <code>'A'</code>s I typed spilled over into the 'Next Address' boxes! That means whatever I put into Boxes 5, 6, 7, and 8 controls where the program goes next."</p>
+</section>
