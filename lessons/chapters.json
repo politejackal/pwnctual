@@ -14,11 +14,6 @@
         "title": "Hex",
         "file": "1-2-hex.html",
         "challenge": "hex-mix"
-      },
-      {
-        "id": "1-3",
-        "title": "Memory",
-        "file": "1-3-memory.html"
       }
     ]
   }

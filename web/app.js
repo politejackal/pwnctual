@@ -143,8 +143,11 @@ async function lessonPage(id) {
       </div>`,
       title: `<span class="topic-num">${num}</span> ${esc(topic.title)}`,
     }),
-    `<article class="lesson">${body}</article>
-    ${topic.challenge ? CHALLENGE_CARD : ""}
+    // A lesson can mark where its challenge goes with <div class="challenge-slot"></div>;
+    // without one, the challenge comes after the whole lesson
+    `${body.split(CHALLENGE_SLOT).map(part => `<article class="lesson">${part}</article>`)
+      .join(topic.challenge ? CHALLENGE_CARD : "")}
+    ${topic.challenge && !body.includes(CHALLENGE_SLOT) ? CHALLENGE_CARD : ""}
     <nav class="lesson-navs" aria-label="Topics">
       ${prev ? navLink(prev, "prev") : "<span></span>"}
       ${next ? navLink(next, "next") : `<a class="card lesson-nav next" href="${p.url}" data-link><span class="meta">Next</span><span class="title">More topics are on the way</span></a>`}
@@ -202,6 +205,7 @@ const CHALLENGES = {
   },
 };
 
+const CHALLENGE_SLOT = '<div class="challenge-slot"></div>';
 const CHALLENGE_CARD = `<section class="card challenge" aria-label="Challenge">
   <span class="eyebrow"><span class="icon fill">bolt</span>Challenge</span>
   <h2></h2>
