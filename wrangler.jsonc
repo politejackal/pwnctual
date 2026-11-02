@@ -1,9 +1,11 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
+  // The site: static files in web/, served by a Worker on pwnctual.com.
   "name": "pwnctual",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./web",
+    // Paths like /learn/1-1 load index.html; the app routes them
     "not_found_handling": "single-page-application"
   },
   "routes": [

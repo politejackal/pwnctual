@@ -1,3 +1,9 @@
 node_modules/
 .wrangler/
 .claude/
+
+# Built by `npm run build`
+web/lessons/
+web/sitemap.xml
+
+.DS_store

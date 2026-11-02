@@ -1,9 +1,11 @@
 {
   "name": "pwnctual",
   "version": "1.0.0",
+  "description": "C for hackers: learn C completely from a hacker's perspective.",
   "scripts": {
-    "dev": "wrangler dev --port 8788",
-    "deploy": "wrangler deploy"
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && wrangler dev --port 8788",
+    "deploy": "npm run build && wrangler deploy"
   },
   "type": "module",
   "devDependencies": {

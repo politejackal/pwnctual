@@ -1,0 +1,306 @@
+// pwnctual frontend: a small router and a few pages. Everything is static:
+// lessons come from /lessons/ (built by scripts/build.mjs), and progress is
+// kept in this browser's localStorage.
+
+const SITE = { name: "C for hackers",
+  blurb: "Learn C completely from a hacker's perspective. No prior knowledge needed at all." };
+
+const app = document.getElementById("app");
+
+// ---- progress (localStorage can be unavailable, e.g. some private windows) ----
+const SOLVED_KEY = "pwnctual:solved";
+function solvedSet() {
+  try { return new Set(JSON.parse(localStorage.getItem(SOLVED_KEY)) ?? []); } catch { return new Set(); }
+}
+function setSolved(id, solved) {
+  const set = solvedSet();
+  solved ? set.add(id) : set.delete(id);
+  try { localStorage.setItem(SOLVED_KEY, JSON.stringify([...set])); return true; } catch { return false; }
+}
+
+// ---- data ----
+async function getJson(path) {
+  const res = await fetch(path);
+  // Unknown paths get index.html (for client-side routing), so treat non-JSON as missing
+  const isJson = res.headers.get("content-type")?.includes("json");
+  if (!res.ok || !isJson) {
+    const status = res.ok ? 404 : res.status;
+    throw Object.assign(new Error(`${path} returned ${status}`), { status });
+  }
+  return res.json();
+}
+let chaptersCache = null;
+const getChapters = async () => (chaptersCache ??= await getJson("/lessons/chapters.json"));
+const topicCount = chapters => chapters.reduce((n, c) => n + c.topics.length, 0);
+// Completed topics are kept in the solved list under "lesson:<id>"
+const topicKey = id => `lesson:${id}`;
+const topicsDone = (chapters, solved) =>
+  chapters.reduce((n, c) => n + c.topics.filter(t => solved.has(topicKey(t.id))).length, 0);
+const topicsChip = (done, total) =>
+  `<span class="chip${total && done === total ? " ok" : ""}">${done} of ${plural(total, "topic")} completed</span>`;
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+// ---- helpers ----
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+function setTitle(t) {
+  document.title = t ? `${t} · pwnctual` : "pwnctual: C for hackers";
+  // Keep the canonical link on the page being shown
+  document.querySelector('link[rel="canonical"]')?.setAttribute("href", `https://pwnctual.com${location.pathname.replace(/\/+$/, "") || "/"}`);
+}
+
+// Every page is a centered header followed by cards, in the same column
+function page(header, body = "") {
+  return `<div class="page">${header}${body}</div>`;
+}
+function header({ above = "", title, lead = "", below = "" }) {
+  return `<header class="page-header">
+    ${above}
+    <h1>${title}</h1>
+    ${lead ? `<p class="lead">${lead}</p>` : ""}
+    ${below}
+  </header>`;
+}
+
+function errorBox(err) {
+  return `<div class="card empty">Couldn't load this page (${esc(err.message)}). Try again in a moment.</div>`;
+}
+function loading(text) {
+  return page(header({ title: "&nbsp;", below: `<div class="running"><span class="spinner"></span>${text}</div>` }));
+}
+
+// ---- pages ----
+async function homePage() {
+  setTitle("");
+  const head = chip => header({
+    above: `<div class="chips"><span class="chip">Free and open source</span>${chip}</div>`,
+    title: SITE.name, lead: SITE.blurb });
+  app.innerHTML = page(head(""));
+  try {
+    const chapters = await getChapters();
+    const solved = solvedSet();
+    app.innerHTML = page(head(topicsChip(topicsDone(chapters, solved), topicCount(chapters))),
+      chapters.map(c => chapterBlock(c, solved)).join(""));
+  } catch (err) {
+    app.innerHTML = page(head(""), errorBox(err));
+  }
+}
+
+// A chapter of the C for hackers path: a header card joined to its topics
+function chapterBlock(c, solved) {
+  return `<section class="chapter" aria-label="Chapter ${c.number}">
+    <div class="card chapter-head">
+      <span class="eyebrow">Chapter ${c.number}</span>
+      <h2>${esc(c.title)}</h2>
+    </div>
+    <nav class="list">${c.topics.map(t => {
+      const isDone = solved.has(topicKey(t.id));
+      return `<a class="list-item ${isDone ? "solved" : ""}" href="/learn/${esc(t.id)}" data-link>
+      <span class="num">${isDone ? '<span class="icon">check</span>' : esc(t.id.replace("-", "."))}</span>
+      <span><span class="title">${esc(t.title)}</span><span class="meta">Topic ${esc(t.id.split("-")[1])}${isDone ? " · Completed" : ""}</span></span>
+      <span class="icon go">chevron_right</span>
+    </a>`;
+    }).join("")}</nav>
+  </section>`;
+}
+
+async function lessonPage(id) {
+  const p = { name: SITE.name, url: "/" };
+  setTitle("");
+  app.innerHTML = loading("Loading lesson");
+  let chapters;
+  try { chapters = await getChapters(); } catch (err) {
+    app.innerHTML = page(header({ title: "Something went wrong" }), errorBox(err));
+    return;
+  }
+  // Every topic in order, so the page can link to the previous and next one
+  const all = chapters.flatMap(c => c.topics.map(t => ({ ...t, chapter: c })));
+  const i = all.findIndex(t => t.id === id);
+  if (i < 0) {
+    app.innerHTML = page(header({ title: "No such lesson", below: `<div class="actions"><a class="btn btn-tonal" href="${p.url}" data-link>${p.name}</a></div>` }));
+    return;
+  }
+  const topic = all[i], prev = all[i - 1], next = all[i + 1];
+  let body;
+  try {
+    const res = await fetch(`/lessons/${topic.file}`);
+    if (!res.ok) throw new Error(`/lessons/${topic.file} returned ${res.status}`);
+    body = await res.text();
+  } catch (err) {
+    body = errorBox(err);
+  }
+  const num = topic.id.replace("-", ".");
+  setTitle(`${num} ${topic.title}`);
+  const navLink = (t, dir) => `<a class="card lesson-nav ${dir}" href="/learn/${esc(t.id)}" data-link>
+      <span class="meta">${dir === "prev" ? "Previous" : "Next"}</span>
+      <span class="title">${esc(t.id.replace("-", "."))} ${esc(t.title)}</span>
+    </a>`;
+  app.innerHTML = page(
+    header({
+      above: `<div class="chips">
+        <a class="chip" href="${p.url}" data-link><span class="icon">arrow_back</span>${p.name}</a>
+        <span class="chip">Chapter ${topic.chapter.number}: ${esc(topic.chapter.title)}</span>
+      </div>`,
+      title: `<span class="topic-num">${num}</span> ${esc(topic.title)}`,
+    }),
+    `<article class="lesson">${body}</article>
+    ${topic.challenge ? CHALLENGE_CARD : ""}
+    <nav class="lesson-navs" aria-label="Topics">
+      ${prev ? navLink(prev, "prev") : "<span></span>"}
+      ${next ? navLink(next, "next") : `<a class="card lesson-nav next" href="${p.url}" data-link><span class="meta">Next</span><span class="title">More topics are on the way</span></a>`}
+    </nav>`
+  );
+  if (topic.challenge) startChallenge(app.querySelector(".challenge"), CHALLENGES[topic.challenge], topicKey(topic.id));
+}
+
+// ---- end-of-topic challenges ----
+// Answer a few questions in a row. One wrong answer starts it again with new questions.
+// make() returns the questions; each has html, a prompt, an inputmode, check(answer) and the right answer.
+const bin8 = n => n.toString(2).padStart(8, "0");
+const hex2 = n => n.toString(16).toUpperCase().padStart(2, "0");
+const showByte = n => `<div class="byte" aria-label="${bin8(n)}">${[...bin8(n)].map(b => `<span class="bit">${b}</span>`).join("")}</div>`;
+const showHex = n => `<div class="hex-q"><code>0x${hex2(n)}</code></div>`;
+const showDec = n => `<div class="hex-q dec"><code>${n}</code></div>`;
+const randomBytes = count => {
+  const set = new Set();
+  while (set.size < count) set.add(Math.floor(Math.random() * 256));
+  return [...set];
+};
+// Answers are compared loosely: any case, spaces ignored, 0x optional for hex
+const clean = a => a.replace(/\s+/g, "").toLowerCase();
+const QUESTION = {
+  binToDec: n => ({ html: showByte(n), prompt: "What is this byte in decimal?", mode: "numeric",
+    check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>${bin8(n)}</code> is ${n}` }),
+  binToHex: n => ({ html: showByte(n), prompt: "What is this byte in hex?", mode: "text",
+    check: a => /^(0x)?[0-9a-f]{1,2}$/.test(clean(a)) && parseInt(clean(a).replace(/^0x/, ""), 16) === n,
+    answer: `<code>${bin8(n)}</code> is <code>0x${hex2(n)}</code>` }),
+  hexToBin: n => ({ html: showHex(n), prompt: "What is this byte in binary? Write all 8 bits.", mode: "numeric",
+    check: a => clean(a) === bin8(n), answer: `<code>0x${hex2(n)}</code> is <code>${bin8(n)}</code>` }),
+  decToBin: n => ({ html: showDec(n), prompt: "What is this number in binary? Write all 8 bits.", mode: "numeric",
+    check: a => clean(a) === bin8(n), answer: `${n} is <code>${bin8(n)}</code>` }),
+  decToHex: n => ({ html: showDec(n), prompt: "What is this number in hex?", mode: "text",
+    check: a => /^(0x)?[0-9a-f]{1,2}$/.test(clean(a)) && parseInt(clean(a).replace(/^0x/, ""), 16) === n,
+    answer: `${n} is <code>0x${hex2(n)}</code>` }),
+  hexToDec: n => ({ html: showHex(n), prompt: "What is this byte in decimal?", mode: "numeric",
+    check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>0x${hex2(n)}</code> is ${n}` }),
+};
+
+const CHALLENGES = {
+  "binary-to-decimal": {
+    title: "Convert 3 bytes in a row",
+    intro: "Convert each byte from binary to decimal. Get one wrong and it starts again with new bytes.",
+    make: () => randomBytes(3).map(QUESTION.binToDec),
+  },
+  "hex-mix": {
+    title: "Convert 6 bytes in a row",
+    intro: "Binary and decimal, then decimal and hex, then binary and hex, both ways. Get one wrong and it starts again with new bytes.",
+    make() {
+      const [a, b, c, d, e, f] = randomBytes(6);
+      return [QUESTION.binToDec(a), QUESTION.decToBin(b), QUESTION.decToHex(c),
+        QUESTION.hexToDec(d), QUESTION.binToHex(e), QUESTION.hexToBin(f)];
+    },
+  },
+};
+
+const CHALLENGE_CARD = `<section class="card challenge" aria-label="Challenge">
+  <span class="eyebrow"><span class="icon fill">bolt</span>Challenge</span>
+  <h2></h2>
+  <p class="intro"></p>
+  <div class="rounds" aria-hidden="true"></div>
+  <form class="challenge-form" autocomplete="off">
+    <div class="question"></div>
+    <label class="prompt" for="challenge-answer"></label>
+    <div class="flag-row">
+      <input id="challenge-answer" type="text" spellcheck="false" autocapitalize="off" required>
+      <button class="btn btn-filled" type="submit"><span class="icon">check</span>Check</button>
+    </div>
+  </form>
+  <p class="challenge-msg" aria-live="polite"></p>
+  <div class="actions again" hidden><button class="btn btn-tonal" type="button"><span class="icon">replay</span>Practice again</button></div>
+</section>`;
+
+function startChallenge(card, c, key) {
+  const form = card.querySelector("form");
+  const input = card.querySelector("input");
+  const msg = card.querySelector(".challenge-msg");
+  const again = card.querySelector(".again");
+  card.querySelector("h2").textContent = c.title;
+  card.querySelector(".intro").textContent = c.intro;
+  let questions, round;
+
+  const showRound = () => {
+    const q = questions[round];
+    card.querySelector(".rounds").innerHTML = questions
+      .map((_, i) => `<span class="${i < round ? "done" : i === round ? "now" : ""}"></span>`).join("");
+    card.querySelector(".question").innerHTML = q.html;
+    card.querySelector(".prompt").textContent = q.prompt;
+    input.inputMode = q.mode;
+    input.value = "";
+  };
+  const restart = () => { questions = c.make(); round = 0; showRound(); };
+  const complete = (fresh) => {
+    card.classList.add("completed");
+    form.hidden = true;
+    again.hidden = false;
+    card.querySelector(".rounds").innerHTML = "";
+    msg.innerHTML = `<span class="icon fill">check_circle</span><span>${fresh ? `All ${questions.length} right. ` : ""}Topic completed. Saved in this browser.</span>`;
+  };
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const q = questions[round];
+    if (q.check(input.value)) {
+      msg.textContent = "";
+      card.classList.remove("wrong");
+      if (++round < questions.length) return showRound();
+      const saved = setSolved(key, true);
+      complete(true);
+      if (!saved) msg.textContent = `All ${questions.length} right, but your browser is blocking local storage, so it can't be saved.`;
+      return;
+    }
+    card.classList.remove("wrong");
+    void card.offsetWidth; // restart the shake animation
+    card.classList.add("wrong");
+    msg.innerHTML = `Not quite: ${q.answer}. Starting again with new bytes.`;
+    restart();
+    input.focus();
+  });
+  again.querySelector("button").addEventListener("click", () => {
+    card.classList.remove("completed", "wrong");
+    form.hidden = false;
+    again.hidden = true;
+    msg.textContent = "";
+    restart();
+    input.focus();
+  });
+
+  restart();
+  if (solvedSet().has(key)) complete(false);
+}
+
+// ---- router ----
+function render() {
+  let p = location.pathname.replace(/\/+$/, "") || "/";
+  // Old addresses: /learn was the lesson list; /find, /c and /level/* were the
+  // levels, which are gone
+  if (p === "/learn" || p === "/find" || p === "/c" || p.startsWith("/level/")) {
+    history.replaceState(null, "", "/");
+    p = "/";
+  }
+  const lesson = p.match(/^\/learn\/(\d+-\d+)$/);
+  window.scrollTo(0, 0);
+  if (p === "/") return homePage();
+  if (lesson) return lessonPage(lesson[1]);
+  setTitle("Not found");
+  app.innerHTML = page(header({ title: "Page not found", below: `<div class="actions"><a class="btn btn-tonal" href="/" data-link>Go home</a></div>` }));
+}
+
+document.addEventListener("click", e => {
+  const a = e.target.closest("a[data-link]");
+  if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  e.preventDefault();
+  if (a.getAttribute("href") !== location.pathname) history.pushState(null, "", a.getAttribute("href"));
+  render();
+});
+addEventListener("popstate", render);
+render();
