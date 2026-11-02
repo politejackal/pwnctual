@@ -207,7 +207,8 @@ a.chip:hover { background: var(--surface-container); }
 .hex-letters span { background: var(--surface-container-lowest); border-radius: 14px; padding: 10px 14px; font-weight: 500; }
 .callout p { margin-top: 8px; }
 .callout .rules { margin-top: 8px; padding-left: 20px; display: grid; gap: 4px; }
-.table-wrap { overflow-x: auto; }
+/* Room under wide tables so an overlay scrollbar (Firefox, macOS) doesn't sit on the values */
+.table-wrap { overflow-x: auto; padding-bottom: 16px; }
 .boxes { border-collapse: collapse; font-size: 15px; }
 .boxes th { font-weight: 500; text-align: left; white-space: nowrap; padding: 4px 28px 14px 0; border-bottom: 1px solid var(--outline-variant); }
 .boxes td { white-space: nowrap; padding: 14px 28px 4px 0; }
