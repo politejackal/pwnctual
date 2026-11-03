@@ -224,6 +224,11 @@ a.chip:hover { background: var(--surface-container); }
 .nibbles td.bit.on { color: var(--primary); font-weight: 700; }
 .nibbles td.hex { font-family: var(--font-code); font-size: 17px; font-weight: 700; color: var(--primary); }
 .nibbles td.sum { text-align: left; color: var(--on-surface-variant); }
+.ram { border-collapse: collapse; width: 100%; font-size: 15px; text-align: left; }
+.ram th { font-weight: 500; padding: 4px 24px 14px 0; border-bottom: 1px solid var(--outline-variant); vertical-align: bottom; }
+.ram td { padding: 14px 24px 14px 0; border-bottom: 1px solid var(--outline-variant); white-space: nowrap; }
+.ram tr:last-child td { border-bottom: 0; }
+.ram td em { color: var(--on-surface-variant); }
 .lesson-navs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 .lesson-nav {
   display: grid; gap: 2px; padding: 20px 24px; text-decoration: none; color: inherit;

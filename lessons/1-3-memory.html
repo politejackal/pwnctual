@@ -1,0 +1,82 @@
+<section class="card">
+  <h2>How RAM Works: Addresses vs. Values</h2>
+  <p>When you run a program, the CPU needs a fast, temporary workspace to hold all the numbers, text, and instructions it is currently working on. That workspace is a physical chip in your computer called RAM (Random Access Memory).</p>
+  <p>Think of RAM as a single, massive street lined with billions of identical post office boxes. To understand how a computer stores data—and how hackers manipulate it—you must separate two concepts that beginners constantly mix up: the <b>Address</b> and the <b>Value</b>.</p>
+</section>
+
+<section class="card">
+  <h2>1. The Memory Address (Where the box is)</h2>
+  <ul>
+    <li>Every single byte-sized box in RAM has a permanent, unique number painted on the outside so the CPU can find it.</li>
+    <li>This label is the <b>Memory Address</b>.</li>
+    <li>Addresses start at <code>0x0000</code> and count upward one by one (<code>0x1000</code>, <code>0x1001</code>, <code>0x1002</code>, <code>0x1003</code>, and so on).</li>
+    <li>An address is not the data itself; it is just the location in RAM where a single byte of data lives.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>2. The Value (What is inside the box)</h2>
+  <ul>
+    <li>Inside every memory address sits the actual data.</li>
+    <li>This data is the <b>Value</b>.</li>
+    <li><b>The Strict Size Limit:</b> Every single address box in RAM holds <b>1 Byte (8 bits, or 2 Hex digits)</b>—never more, never less.</li>
+    <li>Because 1 byte is 8 bits (<code>00000000</code> to <code>11111111</code>), a single box in RAM can only hold a number between <b>0 and 255</b> (in Hex: <code>0x00</code> to <code>0xFF</code>).</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h2>How Does RAM Store Text If It Can Only Hold Numbers?</h2>
+  <p>Wait—if a RAM box can only hold a number from <code>0</code> to <code>255</code>, how does a computer store your username or a password?</p>
+  <p>Decades ago, computer engineers created a standard lookup chart called <b>ASCII</b>. They assigned every English letter, digit, and keyboard symbol a specific number between <code>0</code> and <code>127</code>:</p>
+  <ul>
+    <li>The capital letter <code>'A'</code> is assigned the number <b>65</b> (<code>0x41</code> in Hex).</li>
+    <li>The capital letter <code>'B'</code> is assigned the number <b>66</b> (<code>0x42</code> in Hex).</li>
+    <li>The capital letter <code>'H'</code> is assigned the number <b>72</b> (<code>0x48</code> in Hex).</li>
+    <li>The number <b>0</b> (<code>0x00</code> in Hex) is reserved as a special stop sign called a <b>Null Byte</b>. Whenever a program reads text from RAM, it reads one box after another until it hits a box containing <code>0x00</code>, which tells the CPU: <em>"The text ends right here."</em></li>
+  </ul>
+  <p>Because every letter on your keyboard is represented by a small number under 255, <b>one single letter fits inside one single RAM box (1 Byte)</b>.</p>
+  <p>Here is how the word <code>"HACK"</code> actually sits inside 5 consecutive boxes of RAM starting at address <code>0x1000</code>:</p>
+  <div class="table-wrap">
+    <table class="ram">
+      <thead>
+        <tr><th>Memory Address (The Box Location)</th><th>Value Inside (What the CPU Actually Sees)</th><th>What It Means When Displayed as Text</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>0x1000</code></td><td><code>0x48</code> <em>(72 in decimal)</em></td><td><code>'H'</code></td></tr>
+        <tr><td><code>0x1001</code></td><td><code>0x41</code> <em>(65 in decimal)</em></td><td><code>'A'</code></td></tr>
+        <tr><td><code>0x1002</code></td><td><code>0x43</code> <em>(67 in decimal)</em></td><td><code>'C'</code></td></tr>
+        <tr><td><code>0x1003</code></td><td><code>0x4B</code> <em>(75 in decimal)</em></td><td><code>'K'</code></td></tr>
+        <tr><td><code>0x1004</code></td><td><code>0x00</code> <em>(0 in decimal)</em></td><td><b>Null Byte</b> (Stop sign: end of word)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<aside class="callout">
+  <span class="icon fill">lightbulb</span>
+  <div><b>The Hacker Takeaway:</b> Inside RAM, there is no difference between the number <code>65</code> (<code>0x41</code>) and the letter <code>'A'</code>. They are the exact same bits (<code>01000001</code>). Whether it shows up on screen as <code>65</code> or <code>'A'</code> depends entirely on how the program chooses to read that box.</div>
+</aside>
+
+<section class="card">
+  <h2>How Does RAM Store Numbers Larger Than 255?</h2>
+  <p>If a single box in RAM maxes out at <code>255</code> (<code>0xFF</code>), how does your computer store a larger number, like <code>50,000</code> or the 8-digit hex number <code>0xDEADBEEF</code>?</p>
+  <p>It cannot fit a large number into a single box. Instead, the computer <b>chains neighboring boxes together</b> and treats them as one big container:</p>
+  <ul>
+    <li><b>1 Box (1 Byte / 8 bits):</b> Holds a number up to <b>255</b> (<code>0xFF</code>).</li>
+    <li><b>2 Neighboring Boxes (2 Bytes / 16 bits):</b> Holds a number up to <b>65,535</b> (<code>0xFFFF</code>).</li>
+    <li><b>4 Neighboring Boxes (4 Bytes / 32 bits):</b> Holds a number up to <b>4,294,967,295</b> (<code>0xFFFFFFFF</code>).</li>
+    <li><b>8 Neighboring Boxes (8 Bytes / 64 bits):</b> Holds a massive number up to <b>18 quintillion</b> (<code>0xFFFFFFFFFFFFFFFF</code>).</li>
+  </ul>
+  <p><em>(In Topic 3, when we begin writing C code, you will learn the exact C keywords used to reserve 1 box, 2 boxes, 4 boxes, or 8 boxes in RAM).</em></p>
+</section>
+
+<section class="card">
+  <h2>The "Starting Address" Rule</h2>
+  <p>When a large 4-byte number like <code>0xDEADBEEF</code> is stored in RAM across 4 neighboring boxes—say, boxes <code>0x1000</code>, <code>0x1001</code>, <code>0x1002</code>, and <code>0x1003</code>—how does the CPU talk about where that number lives? Does it list all four addresses every time?</p>
+  <p>No. The CPU always refers to a multi-byte value by its <b>first (lowest) memory address</b> (<code>0x1000</code>).</p>
+  <ul>
+    <li>It knows the value <b>starts</b> at <code>0x1000</code>.</li>
+    <li>It knows the value is <b>4 bytes long</b>, so it automatically grabs <code>0x1000</code> plus the next three boxes (<code>0x1001</code>, <code>0x1002</code>, and <code>0x1003</code>).</li>
+  </ul>
+  <p>And because that 4-byte number has to be chopped up into 4 individual 1-byte pieces (<code>DE</code>, <code>AD</code>, <code>BE</code>, and <code>EF</code>) to fit into those 4 separate boxes, the CPU has to decide <em>which piece goes into box <code>0x1000</code> first</em>—which is the exact reason <b>Endianness</b> (Section 4) exists.</p>
+</section>
