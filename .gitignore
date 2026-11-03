@@ -4,6 +4,7 @@ node_modules/
 
 # Built by `npm run build`
 web/lessons/
+web/learn/
 web/sitemap.xml
 
 .DS_store

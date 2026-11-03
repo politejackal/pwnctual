@@ -107,7 +107,9 @@ function chapterBlock(c, solved) {
 async function lessonPage(id) {
   const p = { name: SITE.name, url: "/" };
   setTitle("");
-  app.innerHTML = loading("Loading lesson");
+  // A ready-made topic page already shows the lesson, so keep it on screen while loading
+  if ("prerendered" in app.dataset) delete app.dataset.prerendered;
+  else app.innerHTML = loading("Loading lesson");
   let chapters;
   try { chapters = await getChapters(); } catch (err) {
     app.innerHTML = page(header({ title: "Something went wrong" }), errorBox(err));
