@@ -148,12 +148,14 @@ async function lessonPage(id) {
     `${body.split(CHALLENGE_SLOT).map(part => `<article class="lesson">${part}</article>`)
       .join(topic.challenge ? CHALLENGE_CARD : "")}
     ${topic.challenge && !body.includes(CHALLENGE_SLOT) ? CHALLENGE_CARD : ""}
+    ${topic.challenge ? "" : MARK_CARD}
     <nav class="lesson-navs" aria-label="Topics">
       ${prev ? navLink(prev, "prev") : "<span></span>"}
       ${next ? navLink(next, "next") : `<a class="card lesson-nav next" href="${p.url}" data-link><span class="meta">Next</span><span class="title">More topics are on the way</span></a>`}
     </nav>`
   );
   if (topic.challenge) startChallenge(app.querySelector(".challenge"), CHALLENGES[topic.challenge], topicKey(topic.id));
+  else startMark(app.querySelector(".mark"), topicKey(topic.id));
 }
 
 // ---- end-of-topic challenges ----
@@ -280,6 +282,30 @@ function startChallenge(card, c, key) {
 
   restart();
   if (solvedSet().has(key)) complete(false);
+}
+
+// A topic without a challenge is completed with a button instead
+const MARK_CARD = `<section class="card challenge mark" aria-label="Progress">
+  <span class="eyebrow"><span class="icon fill">flag</span>Done reading?</span>
+  <p class="challenge-msg" aria-live="polite"></p>
+  <div class="actions"><button class="btn btn-filled" type="button"></button></div>
+</section>`;
+
+function startMark(card, key) {
+  const msg = card.querySelector(".challenge-msg");
+  const btn = card.querySelector("button");
+  const show = (done) => {
+    card.classList.toggle("completed", done);
+    btn.className = `btn ${done ? "btn-tonal" : "btn-filled"}`;
+    btn.innerHTML = done ? '<span class="icon">undo</span>Mark not completed' : '<span class="icon">check</span>Mark completed';
+    msg.innerHTML = done ? '<span class="icon fill">check_circle</span><span>Topic completed. Saved in this browser.</span>' : "";
+  };
+  btn.addEventListener("click", () => {
+    const done = !solvedSet().has(key);
+    if (!setSolved(key, done)) { msg.textContent = "Your browser is blocking local storage, so this can't be saved."; return; }
+    show(done);
+  });
+  show(solvedSet().has(key));
 }
 
 // ---- router ----
