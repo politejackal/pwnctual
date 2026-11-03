@@ -47,6 +47,6 @@
   <div>
     <b>Why does a hacker care?</b>
     <p>What happens if a byte is holding <code>255</code> (<code>11111111</code>) and the program adds <code>1</code> to it? It tries to become <code>256</code> (<code>100000000</code>), which takes 9 bits. Since a single byte only has 8 bits, the <code>1</code> falls off the left edge, wrapping the byte all the way back around to <code>00000000</code> (<code>0</code>).</p>
-    <p>You just discovered your first vulnerability class: an <b>Integer Overflow</b>.</p>
+    <p>You just discovered your first vulnerability class: an <b>Integer Overflow</b>. We will come back to this later.</p>
   </div>
 </aside>
