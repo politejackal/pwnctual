@@ -38,7 +38,7 @@
   :root:not([data-theme="light"]) {
     --primary: #6dd58c;
     --on-primary: #0a3818;
-    --primary-container: #0f5223;
+    --primary-container: #0a3818;
     --on-primary-container: #c4eed0;
     --surface: #131314;
     --surface-container-lowest: #0e0e0e;
@@ -60,7 +60,7 @@
 :root[data-theme="dark"] {
   --primary: #6dd58c;
   --on-primary: #0a3818;
-  --primary-container: #0f5223;
+  --primary-container: #0a3818;
   --on-primary-container: #c4eed0;
   --surface: #131314;
   --surface-container-lowest: #0e0e0e;
