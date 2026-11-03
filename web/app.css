@@ -31,9 +31,11 @@
   --column: 880px;
   --gap: 16px;
   --card-radius: 28px;
+  color-scheme: light;
 }
+/* Dark follows the system unless the toggle in the top bar picked a theme */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --primary: #a8c7fa;
     --on-primary: #062e6f;
     --primary-container: #0842a0;
@@ -52,7 +54,29 @@
     --red-c: #8c1d18;    --on-red-c: #ffdad6;
     --green: #6dd58c;
     --red: #f2b8b5;
+    color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --primary: #a8c7fa;
+  --on-primary: #062e6f;
+  --primary-container: #0842a0;
+  --on-primary-container: #d3e3fd;
+  --surface: #131314;
+  --surface-container-lowest: #0e0e0e;
+  --surface-container-low: #1b1b1b;
+  --surface-container: #1e1f20;
+  --surface-container-high: #282a2c;
+  --on-surface: #e3e3e3;
+  --on-surface-variant: #c4c7c5;
+  --outline-variant: #444746;
+  --blue-c: #0842a0;   --on-blue-c: #d3e3fd;
+  --yellow-c: #5c4300; --on-yellow-c: #ffdf99;
+  --green-c: #0f5223;  --on-green-c: #c4eed0;
+  --red-c: #8c1d18;    --on-red-c: #ffdad6;
+  --green: #6dd58c;
+  --red: #f2b8b5;
+  color-scheme: dark;
 }
 
 /* ---- base ---- */
@@ -97,6 +121,8 @@ main { flex: 1; outline: none; }
   color: var(--on-surface-variant); transition: background .15s var(--ease);
 }
 .icon-btn:hover { background: var(--surface-container); }
+.icon-btn.theme { border: 0; background: none; cursor: pointer; font: inherit; }
+.icon-btn.theme .icon { font-size: 24px; }
 
 /* ---- page header: the same on every page ---- */
 .page-header { text-align: center; padding: 56px 0 24px; display: grid; justify-items: center; gap: 14px; }

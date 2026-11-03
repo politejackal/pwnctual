@@ -308,6 +308,29 @@ function startMark(card, key) {
   show(solvedSet().has(key));
 }
 
+// ---- theme: follows the system until the top bar button picks one ----
+const THEME_KEY = "pwnctual:theme";
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+const isDark = () => (document.documentElement.dataset.theme ?? (darkQuery.matches ? "dark" : "light")) === "dark";
+const themeBtn = document.querySelector(".theme");
+function showTheme() {
+  const label = `Switch to ${isDark() ? "light" : "dark"} theme`;
+  themeBtn.innerHTML = `<span class="icon">${isDark() ? "light_mode" : "dark_mode"}</span>`;
+  themeBtn.setAttribute("aria-label", label);
+  themeBtn.title = label;
+  // The browser bar color follows the page
+  const color = getComputedStyle(document.documentElement).getPropertyValue("--surface").trim();
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.content = color);
+}
+themeBtn.addEventListener("click", () => {
+  const t = isDark() ? "light" : "dark";
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem(THEME_KEY, t); } catch {}
+  showTheme();
+});
+darkQuery.addEventListener("change", showTheme);
+showTheme();
+
 // ---- router ----
 function render() {
   let p = location.pathname.replace(/\/+$/, "") || "/";
