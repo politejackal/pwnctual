@@ -3,10 +3,10 @@
    then cards with left-aligned content. Primary actions and the footer are centered. */
 
 :root {
-  --primary: #0b57d0;
+  --primary: #146c2e;
   --on-primary: #ffffff;
-  --primary-container: #d3e3fd;
-  --on-primary-container: #041e49;
+  --primary-container: #c4eed0;
+  --on-primary-container: #072711;
   --surface: #f8fafd;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f0f4f9;
@@ -36,10 +36,10 @@
 /* Dark follows the system unless the toggle in the top bar picked a theme */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --primary: #a8c7fa;
-    --on-primary: #062e6f;
-    --primary-container: #0842a0;
-    --on-primary-container: #d3e3fd;
+    --primary: #6dd58c;
+    --on-primary: #0a3818;
+    --primary-container: #0f5223;
+    --on-primary-container: #c4eed0;
     --surface: #131314;
     --surface-container-lowest: #0e0e0e;
     --surface-container-low: #1b1b1b;
@@ -58,10 +58,10 @@
   }
 }
 :root[data-theme="dark"] {
-  --primary: #a8c7fa;
-  --on-primary: #062e6f;
-  --primary-container: #0842a0;
-  --on-primary-container: #d3e3fd;
+  --primary: #6dd58c;
+  --on-primary: #0a3818;
+  --primary-container: #0f5223;
+  --on-primary-container: #c4eed0;
   --surface: #131314;
   --surface-container-lowest: #0e0e0e;
   --surface-container-low: #1b1b1b;
