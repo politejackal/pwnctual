@@ -24,19 +24,29 @@
 
 <section class="card">
   <h2>How to Read an 8-Bit Byte</h2>
-  <p>In normal everyday math (Decimal, or Base-10), each digit column goes up by a power of 10 (one's place, ten's place, hundred's place). As you might recall from school, we are talking about the 1's place, 10's place, 100's place, and so on. Hence the name Base-10 because each digit's place is multiplied by 10. This is called Decimal, or Base-10. The everyday number system (and perhaps the normal number system) we use.</p>
-  <p>What do you get if you instead multiply each digit's place by 2 instead of 10? Well you get binary or Base-2! In Binary (Base-2), each bit column doubles in value from right to left, as is being multiplied by 2 (128, 64, 32, 16, 8, 4, 2, 1).</p>
+  <p>In normal everyday math (Decimal, or Base-10), each digit column goes up by a power of 10 (ones place, tens place, hundreds place). As you might recall from school, we are talking about the 1s place, 10s place, 100s place, and so on. Hence the name Base-10 because each digit's place is multiplied by 10. This is called Decimal, or Base-10. The everyday number system (and perhaps the normal number system) we use.</p>
+  <p>What do you get if you instead multiply each digit's place by 2 instead of 10? Well you get binary or Base-2! In Binary (Base-2), each bit column doubles in value from right to left (1, 2, 4, 8, 16, 32, 64, 128).</p>
   <p>So to convert a binary byte like <code>01000001</code> into a normal number, just add up the column values where a <code>1</code> is switched ON:</p>
   <div class="bits-wrap">
-    <table class="bits">
+    <table class="bits toggle">
       <tr><th scope="row">Bit Value (Place)</th><td>128</td><td class="on">64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td class="on">1</td></tr>
       <tr><th scope="row">Binary Byte</th><td>0</td><td class="on">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="on">1</td></tr>
     </table>
   </div>
+  <p class="bits-out" aria-live="polite"></p>
   <ul>
     <li>Only the 64 column and the 1 column are turned on (<code>1</code>).</li>
     <li>Now you add the columns which are turned on. 64 + 1 = 65.</li>
-    <li>So <code>01000001</code> in binary equals 65 in decimal (which also happens to be how the capital letter <code>'A'</code> is stored inside a computer, its just that somebody decided that 65 in binary would mean the letter A).</li>
+    <li>So <code>01000001</code> in binary equals 65 in decimal (which also happens to be how the capital letter <code>'A'</code> is stored inside a computer, it's just that a standard called ASCII decided that 65 in binary would mean the letter A).</li>
   </ul>
   <p>If all 8 bits are turned off (<code>00000000</code>), the value is 0. If all 8 bits are turned on (<code>11111111</code>), you add 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1, which equals 255. Therefore, a single byte can hold a value anywhere from 0 to 255.</p>
 </section>
+
+<aside class="callout">
+  <span class="icon fill">bug_report</span>
+  <div>
+    <b>Why does a hacker care?</b>
+    <p>What happens if a byte is holding <code>255</code> (<code>11111111</code>) and the program adds <code>1</code> to it? It tries to become <code>256</code> (<code>100000000</code>), which takes 9 bits. Since a single byte only has 8 bits, the <code>1</code> falls off the left edge, wrapping the byte all the way back around to <code>00000000</code> (<code>0</code>).</p>
+    <p>You just discovered your first vulnerability class: an <b>Integer Overflow</b>.</p>
+  </div>
+</aside>

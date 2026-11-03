@@ -154,6 +154,7 @@ async function lessonPage(id) {
       ${next ? navLink(next, "next") : `<a class="card lesson-nav next" href="${p.url}" data-link><span class="meta">Next</span><span class="title">More topics are on the way</span></a>`}
     </nav>`
   );
+  app.querySelectorAll(".bits.toggle").forEach(startBits);
   if (topic.challenge) startChallenge(app.querySelector(".challenge"), CHALLENGES[topic.challenge], topicKey(topic.id));
   else startMark(app.querySelector(".mark"), topicKey(topic.id));
 }
@@ -282,6 +283,33 @@ function startChallenge(card, c, key) {
 
   restart();
   if (solvedSet().has(key)) complete(false);
+}
+
+// A bit table with class "toggle": click a bit in the byte row to switch it,
+// and the line under the table shows the value it adds up to
+function startBits(table) {
+  const tds = row => [...row.querySelectorAll("td")];
+  const [places, cells] = [...table.rows].map(tds);
+  const out = table.closest(".bits-wrap").nextElementSibling;
+  cells.forEach((td, i) => {
+    td.innerHTML = `<button type="button" aria-label="Bit worth ${places[i].textContent}">${td.textContent.trim()}</button>`;
+    td.firstChild.addEventListener("click", () => {
+      const on = td.firstChild.textContent === "0";
+      td.firstChild.textContent = on ? "1" : "0";
+      td.classList.toggle("on", on);
+      places[i].classList.toggle("on", on);
+      show();
+    });
+  });
+  const show = () => {
+    const byte = cells.map(td => td.textContent).join("");
+    const n = parseInt(byte, 2);
+    const sum = cells.map((td, i) => td.textContent === "1" ? places[i].textContent : null).filter(Boolean);
+    const ch = n === 32 ? "a space" : n > 32 && n < 127 ? `<code>'${esc(String.fromCharCode(n))}'</code>` : "";
+    out.innerHTML = `<code>${byte}</code> = ${sum.length > 1 ? `${sum.join(" + ")} = ` : ""}<b>${n}</b>`
+      + (ch ? `, which is ${ch} in ASCII.` : ".") + ` <span class="hint">Click the bits to switch them on and off.</span>`;
+  };
+  show();
 }
 
 // A topic without a challenge is completed with a button instead

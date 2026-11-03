@@ -111,8 +111,7 @@ main { flex: 1; outline: none; }
 /* ---- top bar ---- */
 .topbar {
   position: sticky; top: 0; z-index: 10;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: var(--surface);
 }
 .topbar-inner { display: flex; align-items: center; gap: 8px; height: 68px; }
 .brand { font-size: 22px; font-weight: 600; letter-spacing: -.4px; color: var(--on-surface); text-decoration: none; margin-right: auto; }
@@ -215,6 +214,15 @@ a.chip:hover { background: var(--surface-container); }
 .bits th { font-family: var(--font); font-weight: 500; font-size: 14px; text-align: left; color: var(--on-surface-variant); padding-right: 8px; white-space: nowrap; }
 .bits td { background: var(--surface-container-lowest); border-radius: 10px; padding: 8px 4px; min-width: 38px; }
 .bits td.on { background: var(--primary); color: var(--on-primary); font-weight: 600; }
+.bits.toggle tr:last-child td { padding: 0; }
+.bits.toggle button {
+  all: unset; box-sizing: border-box; display: block; width: 100%; padding: 8px 4px; border-radius: 10px;
+  cursor: pointer; transition: background .15s var(--ease);
+}
+.bits.toggle button:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+.bits.toggle button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.bits-out { margin-top: 10px; }
+.bits-out .hint { display: block; font-size: 14px; color: var(--on-surface-variant); margin-top: 2px; }
 .lesson h3 { font-size: 18px; font-weight: 600; margin-top: 22px; }
 .lesson ol.units ul { margin-top: 6px; gap: 4px; padding-left: 20px; list-style: disc; }
 .split { border-collapse: separate; border-spacing: 4px; font-family: var(--font-code); text-align: center; table-layout: fixed; width: 100%; max-width: 460px; }
