@@ -221,6 +221,7 @@ a.chip:hover { background: var(--surface-container); }
 }
 .bits.toggle button:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
 .bits.toggle button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.bits-hint { font-size: 14px; color: var(--on-surface-variant); }
 .bits-out { margin-top: 14px; padding: 16px 18px; border-radius: 16px; background: var(--surface-container-lowest); }
 .bits-out .calc { font-family: var(--font-code); font-weight: 600; }
 .lesson h3 { font-size: 18px; font-weight: 600; margin-top: 22px; }
