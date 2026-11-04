@@ -7,7 +7,8 @@
         "id": "1-1",
         "title": "Binary",
         "file": "1-1-binary.html",
-        "summary": "Bits, nibbles and bytes, and how to read an 8-bit byte."
+        "summary": "Bits, nibbles and bytes, how to read an 8-bit byte, and integer overflow.",
+        "challenge": "binary-to-decimal"
       }
     ]
   }
