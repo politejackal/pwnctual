@@ -6,5 +6,6 @@ node_modules/
 web/lessons/
 web/learn/
 web/sitemap.xml
+web/llms.txt
 
 .DS_store
