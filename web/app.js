@@ -302,11 +302,13 @@ function startChallenge(card, c, key) {
 }
 
 // A bit table with class "toggle": click a bit in the byte row to switch it,
-// and the line under the table shows the value it adds up to
+// and the example above the table and the explanation under it follow
 function startBits(table) {
   const tds = row => [...row.querySelectorAll("td")];
   const [places, cells] = [...table.rows].map(tds);
-  const out = table.closest(".bits-wrap").nextElementSibling;
+  const card = table.closest(".card");
+  const example = card.querySelector(".bits-example");
+  const out = card.querySelector(".bits-out");
   cells.forEach((td, i) => {
     td.innerHTML = `<button type="button" aria-label="Bit worth ${places[i].textContent}">${td.textContent.trim()}</button>`;
     td.firstChild.addEventListener("click", () => {
@@ -320,10 +322,14 @@ function startBits(table) {
   const show = () => {
     const byte = cells.map(td => td.textContent).join("");
     const n = parseInt(byte, 2);
-    const sum = cells.map((td, i) => td.textContent === "1" ? places[i].textContent : null).filter(Boolean);
-    const ch = n === 32 ? "a space" : n > 32 && n < 127 ? `<code>'${esc(String.fromCharCode(n))}'</code>` : "";
-    out.innerHTML = `<code>${byte}</code> = ${sum.length > 1 ? `${sum.join(" + ")} = ` : ""}<b>${n}</b>`
-      + (ch ? `, which is ${ch} in ASCII.` : ".") + ` <span class="hint">Click the bits to switch them on and off.</span>`;
+    const onValues = cells.map((td, i) => td.textContent === "1" ? places[i].textContent : null).filter(Boolean);
+    const columns = onValues.length > 1 ? `${onValues.slice(0, -1).join(", ")} and ${onValues.at(-1)}` : onValues[0];
+    example.textContent = byte;
+    out.innerHTML = (
+      onValues.length === 0 ? "<p>No bits are ON, so there is nothing to add.</p>"
+      : onValues.length === 1 ? `<p>Only the ${columns} column is ON, so there is nothing else to add.</p>`
+      : `<p>The ${columns} columns are ON.</p><p class="calc">${onValues.join(" + ")} = ${n}</p>`
+    ) + `<p>So <code>${byte}</code> in binary is <b>${n}</b> in decimal.</p>`;
   };
   show();
 }

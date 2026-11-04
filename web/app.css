@@ -221,8 +221,8 @@ a.chip:hover { background: var(--surface-container); }
 }
 .bits.toggle button:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
 .bits.toggle button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-.bits-out { margin-top: 10px; }
-.bits-out .hint { display: block; font-size: 14px; color: var(--on-surface-variant); margin-top: 2px; }
+.bits-out { margin-top: 14px; padding: 16px 18px; border-radius: 16px; background: var(--surface-container-lowest); }
+.bits-out .calc { font-family: var(--font-code); font-weight: 600; }
 .lesson h3 { font-size: 18px; font-weight: 600; margin-top: 22px; }
 .lesson ol.units ul { margin-top: 6px; gap: 4px; padding-left: 20px; list-style: disc; }
 .split { border-collapse: separate; border-spacing: 4px; font-family: var(--font-code); text-align: center; table-layout: fixed; width: 100%; max-width: 460px; }
@@ -263,7 +263,7 @@ a.chip:hover { background: var(--surface-container); }
 .ram td { padding: 14px 24px 14px 0; border-bottom: 1px solid var(--outline-variant); white-space: nowrap; }
 .ram tr:last-child td { border-bottom: 0; }
 .ram td em { color: var(--on-surface-variant); }
-.places tr:last-child th { border-bottom: 0; }
+.places tbody tr:last-child th { border-bottom: 0; }
 .lesson-navs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 .lesson-nav {
   display: grid; gap: 2px; padding: 20px 24px; text-decoration: none; color: inherit;
