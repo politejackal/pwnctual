@@ -22,7 +22,7 @@
       },
       {
         "id": "1-4",
-        "title": "Endianness: Why memory looks backwards",
+        "title": "Endianness",
         "file": "1-4-endianness.html",
         "challenge": "endian-mix"
       }
