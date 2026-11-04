@@ -168,7 +168,6 @@ a.chip:hover { background: var(--surface-container); }
 .chapter-head { border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
 .chapter-head h2 { margin-bottom: 0; }
 .chapter .list-item:first-child { border-top-left-radius: 6px; border-top-right-radius: 6px; }
-.chapter .list-item:last-child { border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
 .chapter .num { width: auto; min-width: 44px; padding: 0 10px; border-radius: 22px; font-family: var(--font-code); font-size: 15px; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 6px; margin-bottom: 6px;
