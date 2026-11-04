@@ -19,6 +19,11 @@
         "id": "1-3",
         "title": "Memory",
         "file": "1-3-memory.html"
+      },
+      {
+        "id": "1-4",
+        "title": "Endianness: Why memory looks backwards",
+        "file": "1-4-endianness.html"
       }
     ]
   }
