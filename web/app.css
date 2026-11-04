@@ -322,7 +322,7 @@ a.chip:hover { background: var(--surface-container); }
 }
 .list-item:first-child { border-top-left-radius: var(--card-radius); border-top-right-radius: var(--card-radius); }
 .list-item:last-child { border-bottom-left-radius: var(--card-radius); border-bottom-right-radius: var(--card-radius); }
-@media (hover: hover) { .list-item:hover { background: var(--surface-container); border-radius: var(--card-radius); } }
+@media (hover: hover) { .list-item:hover, .chapter .list-item:first-child:hover { background: var(--surface-container); border-radius: var(--card-radius); } }
 .list-item .num {
   width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center;
   background: var(--surface-container-high); font-weight: 600;
