@@ -134,8 +134,8 @@ main { flex: 1; outline: none; }
 
 .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .chip {
-  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px;
-  font-size: 14px; font-weight: 500; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 14px;
+  font-size: 14px; font-weight: 500; line-height: 20px; text-align: center; border-radius: 16px;
   background: var(--surface-container-high); color: var(--on-surface); text-decoration: none;
 }
 .chip .icon { font-size: 18px; }
