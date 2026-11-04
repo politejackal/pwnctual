@@ -20,14 +20,14 @@
 
 <aside class="callout">
   <span class="icon fill">shield</span>
-  <div><b>The hacker's first law of memory:</b> In C and modern computer architecture, 1 byte is the smallest addressable unit. You cannot point to a single bit in memory and change it, though there are workarounds which we will learn later in this course.</div>
+  <div><b>The hacker's first law of memory:</b> In C and modern computer architecture, 1 byte is the smallest addressable unit. You cannot point to a single bit in memory and change it directly, though there are workarounds which we will learn later in this course.</div>
 </aside>
 
 <section class="card">
   <h2>How to read an 8-bit byte</h2>
-  <p>So far we have discussed what binary is and how you write it. Now let's learn to read it. However, before learning to read a computer's number system, let's recall our normal everyday number system from grade school. In normal everyday life, we use <b>decimal</b> or base-10. Base-10 sounds cryptic but all it means is that in each column, like for the number 123, a hundred and twenty-three, each digit from right to left increases in value by 10. Like the 3 is in the ones place and the 2 is in the tens place and the 1 is in the hundreds place. Each digit's column from right to left is multiplied by 10.</p>
-  <p>Okay, that was simple. Now what would happen if instead of multiplying each digit from right to left with 10, we multiplied by 2? Well, you would get base-2! I know you didn't understand shit, so let's slow down and look at what's going on!</p>
-  <p>So imagine you have the binary number <code>1011</code>. You would start by multiplying the rightmost number, the 1, with 1, because recall from grade school and in fact in your mind, that's what you are actually doing under the hood, in decimal.</p>
+  <p>So far we have discussed what binary is and how you write it. Now let's learn to read it. However, before learning to read the computer's number system, let's recall our normal everyday number system from grade school. In normal everyday life, we use <b>decimal</b>, or base-10. Base-10 sounds cryptic, but all it means is that each column is worth 10 times the column to its right. Take the number 123, a hundred and twenty-three. The 3 is in the ones place, the 2 is in the tens place, and the 1 is in the hundreds place. Each column's place value, going from right to left, is multiplied by 10.</p>
+  <p>Okay, that was simple. Now what would happen if, instead of each column being worth 10 times the one to its right, it were worth 2 times? Well, you would get base-2! I know you didn't understand shit, so let's slow down and look at what's going on!</p>
+  <p>So imagine you have the binary number <code>1011</code>. You would start by multiplying the rightmost digit, the 1, by 1. Recall from grade school that, in fact, that's what you are actually doing in your mind under the hood in decimal.</p>
   <p>You do the following in your brain:</p>
   <div class="table-wrap">
     <table class="ram places">
@@ -41,7 +41,7 @@
       </tbody>
     </table>
   </div>
-  <p>Now the same idea, but instead of multiplying with 10, multiply with 2.</p>
+  <p>Now the same idea, but instead of multiplying by 10, multiply by 2.</p>
   <div class="table-wrap">
     <table class="ram places">
       <thead>
@@ -54,28 +54,4 @@
       </tbody>
     </table>
   </div>
-  <p>So to convert a binary byte like <code>01000001</code> into a normal number, just add up the column values where a <code>1</code> is switched ON:</p>
-  <div class="bits-wrap">
-    <table class="bits toggle">
-      <tr><th scope="row">Bit Value (Place)</th><td>128</td><td class="on">64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td class="on">1</td></tr>
-      <tr><th scope="row">Binary Byte</th><td>0</td><td class="on">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="on">1</td></tr>
-    </table>
-  </div>
-  <p class="bits-out" aria-live="polite"></p>
-  <p>In the starting example, <code>01000001</code>:</p>
-  <ul>
-    <li>Only the 64 column and the 1 column are turned on (<code>1</code>).</li>
-    <li>Now you add the columns which are turned on. 64 + 1 = 65.</li>
-    <li>So <code>01000001</code> in binary equals 65 in decimal (which also happens to be how the capital letter <code>'A'</code> is stored inside a computer, it's just that a standard called ASCII decided that 65 in binary would mean the letter A).</li>
-  </ul>
-  <p>If all 8 bits are turned off (<code>00000000</code>), the value is 0. If all 8 bits are turned on (<code>11111111</code>), you add 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1, which equals 255. Therefore, a single byte can hold a value anywhere from 0 to 255.</p>
 </section>
-
-<aside class="callout">
-  <span class="icon fill">bug_report</span>
-  <div>
-    <b>Why does a hacker care?</b>
-    <p>What happens if a byte is holding <code>255</code> (<code>11111111</code>) and the program adds <code>1</code> to it? It tries to become <code>256</code> (<code>100000000</code>), which takes 9 bits. Since a single byte only has 8 bits, the <code>1</code> falls off the left edge, wrapping the byte all the way back around to <code>00000000</code> (<code>0</code>).</p>
-    <p>You just discovered your first vulnerability class: an <b>Integer Overflow</b>. We will come back to this later.</p>
-  </div>
-</aside>
