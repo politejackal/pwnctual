@@ -66,13 +66,13 @@
     <p class="calc">64 + 1 = 65</p>
     <p>So <code>01000001</code> in binary is <b>65</b> in decimal.</p>
   </div>
-  <p>If all 8 bits are turned ON, we get the value 255. If all bits are turned OFF, we get the value 0. So 8 bits or 1 byte can store a value anywhere between 0 - 255, 256 in total including 0.</p>
+  <p>If all 8 bits are turned ON, we get 255. If all bits are turned OFF, we get the value 0. So 8 bits, or 1 byte, can store a value anywhere from 0 to 255, which is 256 values in total, including 0.</p>
 </section>
 
 <aside class="callout">
   <span class="icon fill">bug_report</span>
   <div>
     <b>Why does a hacker care?</b>
-    <p>What happens when a byte is holding <code>255</code> (<code>11111111</code>) and a program adds <code>1</code> to it? Recall that a byte can store only 8 bits. And the carry over digit falls off the edge and it is now <code>0</code> (<code>00000000</code>) instead of <code>256</code>. You have just discovered something critical, an <b>Integer Overflow</b>. We will come back to this later.</p>
+    <p>What happens when a byte is holding <code>255</code> (<code>11111111</code>) and a program adds <code>1</code> to it? Recall that a byte can store only 8 bits. The carry-over digit falls off the edge, and the byte is now <code>0</code> (<code>00000000</code>) instead of <code>256</code>. You have just discovered something critical: an <b>integer overflow</b>. We will come back to this later.</p>
   </div>
 </aside>
