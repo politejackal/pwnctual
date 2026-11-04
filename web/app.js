@@ -218,11 +218,9 @@ const CHALLENGES = {
     },
   },
   "endian-mix": {
-    title: "Store 4 numbers in a row",
+    title: "Store 3 numbers in a row",
     intro: "Write each 4-byte number the way it sits in memory, in Little Endian or Big Endian. Get one wrong and it starts again with new numbers.",
-    make: () => ["Little Endian", "Big Endian", "Little Endian", "Big Endian"]
-      .map(order => [Math.random(), order]).sort(([a], [b]) => a - b)
-      .map(([, order]) => QUESTION.inMemory(randomBytes(4), order)),
+    make: () => ["Little Endian", "Big Endian", "Little Endian"].map(order => QUESTION.inMemory(randomBytes(4), order)),
   },
 };
 
