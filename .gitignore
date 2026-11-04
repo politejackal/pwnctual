@@ -7,5 +7,6 @@ web/lessons/
 web/learn/
 web/sitemap.xml
 web/llms.txt
+web/_headers
 
 .DS_store

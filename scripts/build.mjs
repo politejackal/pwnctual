@@ -5,6 +5,7 @@
 //   web/sitemap.xml   the home page, every lesson topic and every plain-text copy
 //   web/lessons/*.md  a plain-text copy of each topic, for tools that do not run JavaScript
 //   web/llms.txt      a description of the site and a list of those copies
+//   web/_headers      serves those plain-text files as UTF-8
 //
 // lessons/chapters.json lists the chapters and their topics, and each topic is
 // an HTML file in lessons/.
@@ -163,3 +164,7 @@ ${all.map(t => `      <li><a href="/lessons/${t.file.replace(/\.html$/, ".md")}"
 if (!/<noscript id="lesson-copies">[\s\S]*?<\/noscript>/.test(shell)) throw new Error('web/index.html has no <noscript id="lesson-copies"> to fill');
 const home = shell.replace(/<noscript id="lesson-copies">[\s\S]*?<\/noscript>/, () => noscript);
 if (home !== shell) await writeFile(join(root, "web", "index.html"), home);
+
+// Serve the plain-text files as UTF-8 text, so they open in a browser and their punctuation stays intact
+await writeFile(join(root, "web", "_headers"), ["/llms.txt", ...all.map(t => `/lessons/${t.file.replace(/\.html$/, ".md")}`)]
+  .map(path => `${path}\n  Content-Type: text/plain; charset=utf-8\n`).join(""));
