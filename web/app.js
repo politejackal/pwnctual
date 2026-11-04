@@ -191,6 +191,15 @@ const QUESTION = {
     answer: `${n} is <code>0x${hex2(n)}</code>` }),
   hexToDec: n => ({ html: showHex(n), prompt: "What is this byte in decimal?", mode: "numeric",
     check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>0x${hex2(n)}</code> is ${n}` }),
+  // bytes is a 4-byte number, biggest byte first. Answers can be written EF BE AD DE, EFBEADDE, EF | BE | AD | DE or \xEF\xBE\xAD\xDE
+  inMemory: (bytes, order) => {
+    const stored = (order === "Little Endian" ? [...bytes].reverse() : bytes).map(hex2);
+    const number = `0x${bytes.map(hex2).join("")}`;
+    return { html: `<div class="hex-q"><code>${number}</code></div>`,
+      prompt: `How does this number sit in memory in ${order}? Write the 4 bytes, lowest address first.`, mode: "text",
+      check: a => clean(a).replace(/\||,|\\x|0x/g, "") === stored.join("").toLowerCase(),
+      answer: `<code>${number}</code> in ${order} is <code>${stored.join(" ")}</code>` };
+  },
 };
 
 const CHALLENGES = {
@@ -207,6 +216,13 @@ const CHALLENGES = {
       return [QUESTION.binToDec(a), QUESTION.decToBin(b), QUESTION.decToHex(c),
         QUESTION.hexToDec(d), QUESTION.binToHex(e), QUESTION.hexToBin(f)];
     },
+  },
+  "endian-mix": {
+    title: "Store 4 numbers in a row",
+    intro: "Write each 4-byte number the way it sits in memory, in Little Endian or Big Endian. Get one wrong and it starts again with new numbers.",
+    make: () => ["Little Endian", "Big Endian", "Little Endian", "Big Endian"]
+      .map(order => [Math.random(), order]).sort(([a], [b]) => a - b)
+      .map(([, order]) => QUESTION.inMemory(randomBytes(4), order)),
   },
 };
 
