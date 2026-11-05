@@ -14,7 +14,8 @@
         "id": "1-2",
         "title": "Hex",
         "file": "1-2-hex.html",
-        "summary": "What hex is, why it uses A to F, and why 2 hex digits fit exactly into a byte."
+        "summary": "What hex is, why it uses A to F, and why 2 hex digits fit exactly into a byte.",
+        "challenge": "hex-mix"
       }
     ]
   }
