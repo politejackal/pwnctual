@@ -338,6 +338,13 @@ function startPoints(table) {
   word.className = "word";
   word.innerHTML = rows.map(r => `<button type="button">${esc(r.cells[2].textContent)}</button>`).join("");
   table.closest(".table-wrap").before(word);
+  [...table.rows].forEach(r => [2, 1].forEach(i => {
+    const cell = document.createElement(r.parentNode === table.tHead ? "th" : "td");
+    cell.className = "arrow";
+    cell.setAttribute("aria-hidden", "true");
+    if (r.parentNode !== table.tHead) cell.innerHTML = "<span></span>";
+    r.insertBefore(cell, r.cells[i]);
+  }));
   const letters = [...word.children];
   const pick = (i) => {
     rows.forEach((r, j) => r.classList.toggle("on", i === j));

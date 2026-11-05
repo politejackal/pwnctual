@@ -282,17 +282,20 @@ a.chip:hover { background: var(--surface-container); }
 .points tbody tr { cursor: pointer; }
 .points th, .points td { padding-left: 14px; }
 .points td { transition: background .2s var(--ease); }
-.points td:not(:last-child)::after {
-  content: "arrow_forward"; font-family: "Material Symbols Rounded"; font-size: 20px; line-height: 1;
-  font-feature-settings: "liga"; margin-left: 14px; vertical-align: middle; display: inline-block;
-  color: var(--on-surface-variant);
+.points td:not(.arrow), .points th:not(.arrow) { width: 1%; }
+.points .arrow { padding-left: 0; padding-right: 14px; }
+.points .arrow span { display: block; position: relative; height: 2px; min-width: 14px; background: var(--on-surface-variant); }
+.points .arrow span::after {
+  content: ""; position: absolute; right: 0; top: -3px; width: 8px; height: 8px;
+  border: solid var(--on-surface-variant); border-width: 2px 2px 0 0; transform: rotate(45deg);
 }
 .points tr.on td { background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; }
 .points tr.on td code { background: rgba(0,0,0,.1); }
-.points tr.on td::after { color: var(--on-primary-container); animation: nudge .4s var(--spring); }
+.points tr.on .arrow span { background: var(--on-primary-container); transform-origin: left; animation: grow .4s var(--ease); }
+.points tr.on .arrow span::after { border-color: var(--on-primary-container); }
 .points tr.on td:first-child { border-radius: 14px 0 0 14px; }
 .points tr.on td:last-child { border-radius: 0 14px 14px 0; }
-@keyframes nudge { from { transform: translateX(-6px); } }
+@keyframes grow { from { transform: scaleX(.2); } }
 .lesson-navs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 .lesson-nav {
   display: grid; gap: 2px; padding: 20px 24px; text-decoration: none; color: inherit;
@@ -419,7 +422,7 @@ a.chip:hover { background: var(--surface-container); }
   .places th, .places td { padding-right: 8px; }
   .points { font-size: 13px; }
   .points th, .points td { padding-left: 6px; padding-right: 6px; }
-  .points td:not(:last-child)::after { font-size: 16px; margin-left: 4px; }
+  .points .arrow { padding-left: 0; padding-right: 6px; }
   .chapter .list-item:last-child { border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
   .actions .btn { flex: none; }
   .actions { flex-direction: column; justify-self: stretch; }
