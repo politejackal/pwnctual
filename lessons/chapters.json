@@ -16,6 +16,12 @@
         "file": "1-2-hex.html",
         "summary": "What hex is, why it uses A to F, and why 2 hex digits fit exactly into a byte.",
         "challenge": "hex-mix"
+      },
+      {
+        "id": "1-3",
+        "title": "RAM",
+        "file": "1-3-ram.html",
+        "summary": "Why memory can only hold zeroes and ones, and how ASCII maps them to characters."
       }
     ]
   }
