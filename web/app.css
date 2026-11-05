@@ -188,7 +188,7 @@ a.chip:hover { background: var(--surface-container); }
   background: var(--surface-container-lowest); border-radius: 18px;
 }
 .lesson ol.units > li::before {
-  content: counter(unit); position: absolute; left: 14px; top: 12px;
+  content: counter(unit); position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
   width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center;
   background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; font-size: 14px;
 }
@@ -268,6 +268,31 @@ a.chip:hover { background: var(--surface-container); }
 .ram tr:last-child td { border-bottom: 0; }
 .ram td em { color: var(--on-surface-variant); }
 .places tbody tr:last-child th { border-bottom: 0; }
+/* Letters above a table of bytes: pick one to light up its row */
+.word { display: flex; justify-content: center; gap: 6px; }
+.word button {
+  width: 48px; height: 56px; border: 0; border-radius: 14px; cursor: pointer;
+  font-family: var(--font-code); font-size: 24px; font-weight: 600;
+  background: var(--surface-container-lowest); color: var(--on-surface);
+  transition: background .2s var(--ease), color .2s var(--ease), border-radius .4s var(--spring);
+}
+.word button:hover { background: var(--surface-container-high); }
+.word button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-radius: 24px; }
+.word button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.points tbody tr { cursor: pointer; }
+.points th, .points td { padding-left: 14px; }
+.points td { transition: background .2s var(--ease); }
+.points td:not(:last-child)::after {
+  content: "arrow_forward"; font-family: "Material Symbols Rounded"; font-size: 20px; line-height: 1;
+  font-feature-settings: "liga"; margin-left: 14px; vertical-align: middle; display: inline-block;
+  color: var(--on-surface-variant);
+}
+.points tr.on td { background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; }
+.points tr.on td code { background: rgba(0,0,0,.1); }
+.points tr.on td::after { color: var(--on-primary-container); animation: nudge .4s var(--spring); }
+.points tr.on td:first-child { border-radius: 14px 0 0 14px; }
+.points tr.on td:last-child { border-radius: 0 14px 14px 0; }
+@keyframes nudge { from { transform: translateX(-6px); } }
 .lesson-navs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 .lesson-nav {
   display: grid; gap: 2px; padding: 20px 24px; text-decoration: none; color: inherit;
@@ -392,6 +417,9 @@ a.chip:hover { background: var(--surface-container); }
   .card { padding: 22px; border-radius: 24px; }
   .places { font-size: 14px; }
   .places th, .places td { padding-right: 8px; }
+  .points { font-size: 13px; }
+  .points th, .points td { padding-left: 6px; padding-right: 6px; }
+  .points td:not(:last-child)::after { font-size: 16px; margin-left: 4px; }
   .chapter .list-item:last-child { border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
   .actions .btn { flex: none; }
   .actions { flex-direction: column; justify-self: stretch; }
@@ -411,5 +439,5 @@ a.chip:hover { background: var(--surface-container); }
   .flag-row input { flex: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before { animation: none !important; transition: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }

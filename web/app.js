@@ -157,6 +157,7 @@ async function lessonPage(id) {
     </nav>`
   );
   app.querySelectorAll(".bits.toggle").forEach(startBits);
+  app.querySelectorAll(".points").forEach(startPoints);
   if (topic.challenge) startChallenge(app.querySelector(".challenge"), CHALLENGES[topic.challenge], topicKey(topic.id));
   else startMark(app.querySelector(".mark"), topicKey(topic.id));
 }
@@ -328,6 +329,29 @@ function startBits(table) {
     ) + `<p>So <code>${byte}</code> in binary is <b>${n}</b> in decimal.</p>`;
   };
   show();
+}
+
+// Each letter lights up the row of the byte that holds it
+function startPoints(table) {
+  const rows = [...table.tBodies[0].rows];
+  const word = document.createElement("div");
+  word.className = "word";
+  word.innerHTML = rows.map(r => `<button type="button">${esc(r.cells[2].textContent)}</button>`).join("");
+  table.closest(".table-wrap").before(word);
+  const letters = [...word.children];
+  const pick = (i) => {
+    rows.forEach((r, j) => r.classList.toggle("on", i === j));
+    letters.forEach((b, j) => b.setAttribute("aria-pressed", i === j));
+  };
+  rows.forEach((r, i) => {
+    r.addEventListener("click", () => pick(i));
+    letters[i].addEventListener("click", () => pick(i));
+  });
+  const hint = document.createElement("p");
+  hint.className = "bits-hint";
+  hint.textContent = "Click a letter to see which address it lives at.";
+  table.closest(".table-wrap").after(hint);
+  pick(0);
 }
 
 // A topic without a challenge is completed with a button instead
