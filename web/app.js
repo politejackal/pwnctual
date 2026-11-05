@@ -209,13 +209,9 @@ const CHALLENGES = {
     make: () => randomBytes(3).map(QUESTION.binToDec),
   },
   "hex-mix": {
-    title: "Convert 6 bytes in a row",
-    intro: "Binary and decimal, then decimal and hex, then binary and hex, both ways. Get one wrong and it starts again with new bytes.",
-    make() {
-      const [a, b, c, d, e, f] = randomBytes(6);
-      return [QUESTION.binToDec(a), QUESTION.decToBin(b), QUESTION.decToHex(c),
-        QUESTION.hexToDec(d), QUESTION.binToHex(e), QUESTION.hexToBin(f)];
-    },
+    title: "Convert 3 bytes in a row",
+    intro: "Convert each byte to decimal, from hex and from binary. Get one wrong and it starts again with new bytes.",
+    make: () => randomBytes(3).map((n, i) => (i === 1 ? QUESTION.binToDec : QUESTION.hexToDec)(n)),
   },
   "endian-mix": {
     title: "Store 3 numbers in a row",
