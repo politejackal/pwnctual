@@ -223,6 +223,8 @@ a.chip:hover { background: var(--surface-container); }
 .bits.toggle button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 .bits-label { text-align: center; }
 .bits-hint { font-size: 14px; color: var(--on-surface-variant); text-align: center; }
+.card .table-wrap + .bits-hint { margin-top: -10px; margin-bottom: 24px; }
+.card .table-wrap + .bits-hint:last-child { margin-bottom: 0; }
 .bits-out { margin-top: 14px; padding: 16px 18px; border-radius: 16px; background: var(--surface-container-lowest); }
 .bits-out .calc { font-family: var(--font-code); font-weight: 600; }
 .lesson h3 { font-size: 18px; font-weight: 600; margin-top: 22px; }
