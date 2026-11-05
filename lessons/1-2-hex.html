@@ -26,3 +26,37 @@
   </ul>
   <p>Note that <code>0x</code> is not part of the hexadecimal number, it's just like a label.</p>
 </section>
+
+<section class="card">
+  <h2>How to convert between binary, hex, and decimal</h2>
+  <p>This is not something computer scientists do all day. This is just to give you an idea of how the stuff works under the hood, so later on when you see this stuff you don't feel like "wtf is that?".</p>
+  <h3>How to convert hex to decimal</h3>
+  <p>Let's walk through the exact example from earlier: <code>0x41</code>. Let's ignore the <code>0x</code>, because that's just a label. Recall how you read normal numbers: going from right to left, each place is worth 10 times more than the one before it, and you multiply each digit by its place, like this:</p>
+  <div class="table-wrap">
+    <table class="ram places">
+      <thead>
+        <tr><th scope="row">Place</th><th>Tens place</th><th>Ones place</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Digit</th><td><code>4</code></td><td><code>1</code></td></tr>
+        <tr><th scope="row">Multiply</th><td>4 × 10</td><td>1 × 1</td></tr>
+        <tr><th scope="row">Add up</th><td colspan="2">4 × 10 + 1 × 1 = <b>41</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="bits-hint">Of course you can continue to the hundreds place, thousands place and so on.</p>
+  <p>Now the same idea, but instead of 10, each place is worth 16 times more than the one before it.</p>
+  <div class="table-wrap">
+    <table class="ram places">
+      <thead>
+        <tr><th scope="row">Place</th><th>Sixteens place</th><th>Ones place</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Digit</th><td><code>4</code></td><td><code>1</code></td></tr>
+        <tr><th scope="row">Multiply</th><td>4 × 16</td><td>1 × 1</td></tr>
+        <tr><th scope="row">Add up</th><td colspan="2">4 × 16 + 1 × 1 = <b>65</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="bits-hint">Of course you can continue to the 256s place, 4096s place and so on.</p>
+</section>
