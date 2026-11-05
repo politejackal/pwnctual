@@ -1,0 +1,17 @@
+<section class="card">
+  <p>Before looking at computers, think about how you count in everyday life. You use Decimal or Base-10 because you have 10 fingers. In Base-10 you only have 10 single-character symbols available: <code>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</code>.</p>
+  <p>What happens when you are at <code>9</code> and add <code>1</code>? You run out of single-character symbols. So you reset the column and carry over the 1 to a new column on the left, creating a two-digit number <code>10</code>.</p>
+  <p>Now imagine if you had 16 fingers instead of 10. You would have single-digit characters up till 15, including zero, before you run out and will need to carry over to the next digit.</p>
+  <p>Hex (or hexadecimal) is the same idea. For the first 10 values, 0-9, we have the normal and same digits. However, when we need to go 10 to 15, instead of the 2-digit number, we have A to F.</p>
+  <div class="hex-letters">
+    <span><code>A</code> = 10</span><span><code>B</code> = 11</span><span><code>C</code> = 12</span>
+    <span><code>D</code> = 13</span><span><code>E</code> = 14</span><span><code>F</code> = 15</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Why Decimal fails for computers (and why hex is perfect)</h2>
+  <p>Why did computer scientists bother creating a new number system instead of using normal numbers like 10, 11, 12, 13, 14 and 15 like a normal person? Because Decimal does not fit neatly into binary bits, whereas hex fits like a key in the lock.</p>
+  <p>Every byte uses 8 bits. Every 8 bits can be halved into 4 bits. If you turn on all the bits you get 15, and if you close off all the bits you get 0. So a nibble or a 4-bit binary can hold a number anywhere from 0 to 15. Now recall how many numbers a hex can store! Same! So 1 digit of hex can perfectly store any number a nibble can store. Now what about the remaining other half? The same! So 2 hex digits can represent a byte.</p>
+  <p>You might be thinking why 2 hex digits then, why not 1? Well you could actually, but getting that many symbols and remembering them would just be a nightmare LOL.</p>
+</section>
