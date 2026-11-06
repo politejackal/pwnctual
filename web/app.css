@@ -343,7 +343,7 @@ a.chip:hover { background: var(--surface-container); }
   font-family: var(--font-code); font-size: 14px; line-height: 1.7;
   background: var(--surface-container-lowest); border-radius: 16px; padding: 14px 18px; margin-top: 10px; overflow-x: auto;
 }
-.cmd code { background: none; padding: 0; }
+.cmd code { background: none; padding: 0; white-space: pre; }
 
 /* Level list: segmented, like Google's settings lists */
 .list { display: grid; gap: 3px; }
@@ -418,6 +418,7 @@ a.chip:hover { background: var(--surface-container); }
   .page-header { padding: 32px 0 16px; }
   .page-header .lead { font-size: 16px; }
   .card { padding: 22px; border-radius: 24px; }
+  .cmd { font-size: 12px; padding: 12px; }
   .places { font-size: 14px; }
   .places th, .places td { padding-right: 8px; }
   .points { font-size: 13px; }

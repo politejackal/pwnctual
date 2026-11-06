@@ -1,0 +1,15 @@
+<section class="card">
+  <p>Many things inside the memory, like numbers, addresses, etc., are more than one byte long.</p>
+  <p>Recall a byte is something like <code>0x41</code>, and numbers are usually 4 bytes long, so inside the memory they would be stored as something like <code>0x12345678</code> or <code>0x7ffe16292f84</code>. As you can see, these are longer than 2 hex digits, i.e. one byte.</p>
+  <p>Now you see, when a value like <code>0x1234567890ab</code> is stored in memory, in CPUs which follow the little endian mechanism (which is followed by almost all devices in the world):</p>
+  <ol class="units">
+    <li>The CPU takes the last byte, or 2 hex digits, and puts it inside the new memory address like <code>0xab</code>.</li>
+    <li>Then it takes the next last byte from the original value and puts it at the end of this new address, which then becomes <code>0xab90</code>.</li>
+    <li>And so on, until the new memory address becomes <code>0xab9078563412</code>.</li>
+  </ol>
+  <pre class="cmd"><code>Original value:   0x 12 34 56 78 90 ab
+                     ↓  ↓  ↓  ↓  ↓  ↓
+Stored in memory:    ab 90 78 56 34 12</code></pre>
+  <p>Notice how every byte is being stored in a reversed order.</p>
+  <p>This phenomenon is very useful for various reasons that you can google. I’m really not good at convincing people that endianness is very important, but there certainly are people out there who are good at it, so feel free to pause and check it out if you are curious!</p>
+</section>

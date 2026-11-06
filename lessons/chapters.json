@@ -22,6 +22,12 @@
         "title": "RAM",
         "file": "1-3-ram.html",
         "summary": "Why memory can only hold zeroes and ones, and how ASCII maps them to characters."
+      },
+      {
+        "id": "1-4",
+        "title": "Endianness",
+        "file": "1-4-endianness.html",
+        "summary": "How little endian CPUs store a value in memory with its bytes in reversed order."
       }
     ]
   }
