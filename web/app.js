@@ -192,14 +192,14 @@ const QUESTION = {
     answer: `${n} is <code>0x${hex2(n)}</code>` }),
   hexToDec: n => ({ html: showHex(n), prompt: "What is this byte in decimal?", mode: "numeric",
     check: a => /^\d+$/.test(clean(a)) && Number(clean(a)) === n, answer: `<code>0x${hex2(n)}</code> is ${n}` }),
-  // bytes is a 4-byte number, biggest byte first. Answers can be written EF BE AD DE, EFBEADDE, EF | BE | AD | DE or \xEF\xBE\xAD\xDE
-  inMemory: (bytes, order) => {
-    const stored = (order === "Little Endian" ? [...bytes].reverse() : bytes).map(hex2);
-    const number = `0x${bytes.map(hex2).join("")}`;
-    return { html: `<div class="hex-q"><code>${number}</code></div>`,
-      prompt: `How does this number sit in memory in ${order}? Write the 4 bytes, lowest address first.`, mode: "text",
-      check: a => clean(a).replace(/\||,|\\x|0x/g, "") === stored.join("").toLowerCase(),
-      answer: `<code>${number}</code> in ${order} is <code>${stored.join(" ")}</code>` };
+  // bytes is a value, most significant byte first. Answers can be written ef be ad de, efbeadde, 0xefbeadde, ef | be | ad | de or \xef\xbe\xad\xde
+  littleEndian: bytes => {
+    const stored = [...bytes].reverse().map(hex2).join(" ").toLowerCase();
+    const value = `0x${bytes.map(hex2).join("").toLowerCase()}`;
+    return { html: `<div class="hex-q wide"><code>${value}</code></div>`,
+      prompt: `How is this value stored in memory on a little endian CPU? Write all ${bytes.length} bytes.`, mode: "text",
+      check: a => clean(a).replace(/\||,|\\x|0x/g, "") === stored.replace(/ /g, ""),
+      answer: `<code>${value}</code> is stored as <code>${stored}</code>` };
   },
 };
 
@@ -214,10 +214,10 @@ const CHALLENGES = {
     intro: "Convert each byte from hex to decimal. Get one wrong and it starts again with new bytes.",
     make: () => randomBytes(2).map(QUESTION.hexToDec),
   },
-  "endian-mix": {
-    title: "Store 3 numbers in a row",
-    intro: "Write each 4-byte number the way it sits in memory, in Little Endian or Big Endian. Get one wrong and it starts again with new numbers.",
-    make: () => ["Little Endian", "Big Endian", "Little Endian"].map(order => QUESTION.inMemory(randomBytes(4), order)),
+  "little-endian": {
+    title: "Convert 2 values in a row",
+    intro: "Write each 8-byte value the way a little endian CPU stores it in memory. Get one wrong and it starts again with new values.",
+    make: () => [0, 1].map(() => QUESTION.littleEndian(randomBytes(8))),
   },
 };
 

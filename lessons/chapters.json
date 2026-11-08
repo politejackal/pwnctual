@@ -27,7 +27,8 @@
         "id": "1-4",
         "title": "Endianness",
         "file": "1-4-endianness.html",
-        "summary": "How little endian CPUs store a value in memory with its bytes in reversed order."
+        "summary": "How little endian CPUs store a value in memory with its bytes in reversed order.",
+        "challenge": "little-endian"
       }
     ]
   }

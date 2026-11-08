@@ -325,6 +325,7 @@ a.chip:hover { background: var(--surface-container); }
   font-size: 32px; font-weight: 700; color: var(--primary); animation: pop .45s var(--spring);
 }
 .hex-q.dec code { color: var(--on-surface); }
+.hex-q.wide code { font-size: 24px; padding: 10px 16px; }
 .challenge .prompt { display: block; font-weight: 500; margin-bottom: 8px; }
 .challenge-msg { font-size: 14px; margin-top: 10px; min-height: 1.4em; display: flex; align-items: flex-start; gap: 6px; }
 .challenge-msg .icon { font-size: 20px; }
@@ -419,6 +420,7 @@ a.chip:hover { background: var(--surface-container); }
   .page-header .lead { font-size: 16px; }
   .card { padding: 22px; border-radius: 24px; }
   .cmd { font-size: 12px; padding: 12px; }
+  .hex-q.wide code { font-size: 18px; padding: 8px 12px; }
   .places { font-size: 14px; }
   .places th, .places td { padding-right: 8px; }
   .points { font-size: 13px; }
