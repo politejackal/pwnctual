@@ -17,3 +17,8 @@ Stored in memory:    ab 90 78 56 34 12</code></pre>
   <p>Now also do notice that every 2 hex digits are being replaced, not every single character though. This is important and many people confuse this!</p>
   <p>However, saving it in reverse order happens only in the CPUs which follow little-endianness. Though most devices follow this, some, and I mean really some small amount of devices follow something called big-endian, which saves the value as is. Though this creates many problems, it exists, just so you know.</p>
 </section>
+
+<section class="card">
+  <h2>Does endianness affect strings?</h2>
+  <p>No. A string in C is not a single multi-byte number. It is a sequence of individual 1-byte characters. If you store <code>HACK</code> in memory at <code>0x1337</code>, the H is stored at <code>0x1337</code>, the A at <code>0x1338</code> and so on, on both the little-endian systems as well as the CPUs which follow big-endian. So it doesn't affect strings, alright!</p>
+</section>
