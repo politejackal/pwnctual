@@ -40,6 +40,7 @@
         "id": "1-6",
         "title": "Registers",
         "file": "1-6-registers.html",
+        "challenge": "register-anatomy",
         "summary": "Why the CPU keeps a small, fast storage place inside itself instead of going out to the RAM every time."
       }
     ]

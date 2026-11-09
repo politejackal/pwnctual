@@ -202,6 +202,17 @@ const QUESTION = {
       check: a => clean(a).replace(/\||,|\\x|0x/g, "") === stored.replace(/ /g, ""),
       answer: `<code>${value}</code> is stored as <code>${stored}</code>` };
   },
+  // bytes is RAX, most significant byte first. One answer box each for EAX, AX and AL
+  subRegisters: bytes => {
+    const hex = bs => `0x${bs.map(hex2).join("").toLowerCase()}`;
+    const parts = [["EAX", bytes.slice(4)], ["AX", bytes.slice(6)], ["AL", bytes.slice(7)]];
+    const same = (a, bs) => /^(0x)?[0-9a-f]+$/.test(clean(a)) && parseInt(clean(a).replace(/^0x/, ""), 16) === parseInt(hex(bs), 16);
+    return { html: `<div class="hex-q wide"><code>${hex(bytes)}</code></div>`,
+      prompt: "If RAX holds this value, what exact value is inside EAX (32-bit), AX (16-bit), and AL (8-bit)?", mode: "text",
+      fields: parts.map(([name]) => name),
+      check: answers => parts.every(([, bs], i) => same(answers[i], bs)),
+      answer: `RAX <code>${hex(bytes)}</code> has ${parts.map(([name, bs]) => `${name} <code>${hex(bs)}</code>`).join(", ")}` };
+  },
 };
 
 const CHALLENGES = {
@@ -220,6 +231,11 @@ const CHALLENGES = {
     intro: "Write each 8-byte value the way a little endian CPU stores it in memory. Get one wrong and it starts again with new values.",
     make: () => [0, 1].map(() => QUESTION.littleEndian(randomBytes(8))),
   },
+  "register-anatomy": {
+    title: "Register anatomy",
+    intro: "Find what is inside EAX, AX and AL for 2 values of RAX in a row. Get one wrong and it starts again with new values.",
+    make: () => [0, 1].map(() => QUESTION.subRegisters([0x00, 0x00, 0x7f, 0xff, ...randomBytes(4)])),
+  },
 };
 
 const CHALLENGE_SLOT = '<div class="challenge-slot"></div>';
@@ -231,6 +247,7 @@ const CHALLENGE_CARD = `<section class="card challenge" aria-label="Challenge">
   <form class="challenge-form" autocomplete="off">
     <div class="question"></div>
     <label class="prompt" for="challenge-answer"></label>
+    <div class="fields" hidden></div>
     <div class="flag-row">
       <input id="challenge-answer" type="text" spellcheck="false" autocapitalize="off" required>
       <button class="btn btn-filled" type="submit"><span class="icon">check</span>Check</button>
@@ -243,6 +260,7 @@ const CHALLENGE_CARD = `<section class="card challenge" aria-label="Challenge">
 function startChallenge(card, c, key) {
   const form = card.querySelector("form");
   const input = card.querySelector("input");
+  const fields = card.querySelector(".fields");
   const msg = card.querySelector(".challenge-msg");
   const again = card.querySelector(".again");
   card.querySelector("h2").textContent = c.title;
@@ -257,7 +275,14 @@ function startChallenge(card, c, key) {
     card.querySelector(".prompt").textContent = q.prompt;
     input.inputMode = q.mode;
     input.value = "";
+    // A question with several answers gets a labeled box for each, in place of the single box
+    fields.innerHTML = (q.fields || []).map(name =>
+      `<label><code>${name}</code><input type="text" spellcheck="false" autocapitalize="off" required aria-label="${name}"></label>`).join("");
+    fields.hidden = !q.fields;
+    input.hidden = input.disabled = !!q.fields;
   };
+  const focus = () => (fields.querySelector("input") || input).focus();
+  const answer = () => questions[round].fields ? [...fields.querySelectorAll("input")].map(i => i.value) : input.value;
   const restart = () => { questions = c.make(); round = 0; showRound(); };
   const complete = (fresh) => {
     card.classList.add("completed");
@@ -270,7 +295,7 @@ function startChallenge(card, c, key) {
   form.addEventListener("submit", e => {
     e.preventDefault();
     const q = questions[round];
-    if (q.check(input.value)) {
+    if (q.check(answer())) {
       msg.textContent = "";
       card.classList.remove("wrong");
       if (++round < questions.length) return showRound();
@@ -284,7 +309,7 @@ function startChallenge(card, c, key) {
     card.classList.add("wrong");
     msg.innerHTML = `Not quite: ${q.answer}. Starting again with new bytes.`;
     restart();
-    input.focus();
+    focus();
   });
   again.querySelector("button").addEventListener("click", () => {
     card.classList.remove("completed", "wrong");
@@ -292,7 +317,7 @@ function startChallenge(card, c, key) {
     again.hidden = true;
     msg.textContent = "";
     restart();
-    input.focus();
+    focus();
   });
 
   restart();
