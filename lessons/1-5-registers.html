@@ -2,3 +2,10 @@
   <p>Even though RAM is fast compared to a hard drive, going to the RAM takes hundreds of clock cycles for the CPU. This is good, but to do calculations at billions of calculations per <em>second</em>, this is not cool, I mean not fast enough. To actually perform the math at the super fast speed, the CPU has some things built inside itself, as temporary storage places, to be fast and not having to go out to the RAM every time. These storage places are known as <b>registers</b>.</p>
   <p>Think of RAM as the warehouse down the street, and registers like the table on which you are sitting and doing your work. Yes, the difference is that big, approximately. The CPU takes bytes from the RAM, works on them using registers, and then sends them back to the RAM.</p>
 </section>
+
+<section class="card">
+  <h2>Register naming and sub-registers (x86_64)</h2>
+  <p>The storage places, or the registers, only have some finite amount of space inside them. In a 64-bit register, you can imagine there can be a 64-bit value. On the other hand, in an 8-bit register there would be 8 ones or zeroes.</p>
+  <p>However, since modern CPUs evolved from 8-bit or 16-bit CPUs, at that time you could access only the 8 bits or the 16 bits. Then scientists invented the 32-bit and the 64-bit CPUs. (By the way, 64 bits is the standard number of bits on a PC nowadays.) So the programs or the applications which were built on these 8-bit or 16-bit CPUs wouldn’t work on the new model. This meant trouble.</p>
+  <p>So humans before us decided to allow CPUs to access 8-bit, 16-bit and 32-bit registers too. So we can access the last 32 bits of a 64-bit register, or the last 8 bits of a 32-bit register, and so on.</p>
+</section>
