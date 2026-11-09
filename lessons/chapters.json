@@ -32,8 +32,14 @@
       },
       {
         "id": "1-5",
+        "title": "The Stack",
+        "file": "1-5-stack.html",
+        "summary": "What a stack is and the LIFO rule: the last thing put on is the first thing taken off."
+      },
+      {
+        "id": "1-6",
         "title": "Registers",
-        "file": "1-5-registers.html",
+        "file": "1-6-registers.html",
         "summary": "Why the CPU keeps a small, fast storage place inside itself instead of going out to the RAM every time."
       }
     ]
