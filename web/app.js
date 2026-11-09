@@ -370,7 +370,7 @@ function startStackPlay(el) {
     <p class="stack-msg" aria-live="polite"></p>
     <div class="actions">
       <button class="btn btn-filled" type="button"><span class="icon">add</span>Add a book</button>
-      <button class="btn btn-tonal" type="button"><span class="icon">remove</span>Remove the top book</button>
+      <button class="btn btn-tonal" type="button"><span class="icon">remove</span>Remove a book</button>
     </div>`;
   const box = el.querySelector(".box");
   const msg = el.querySelector(".stack-msg");
