@@ -35,3 +35,23 @@
   </div>
   <p class="bits-hint">Each box is 1 byte. RAX holds <code>0xdeadbeefcafebabe</code>, so EAX is <code>0xcafebabe</code>, AX is <code>0xbabe</code> and AL is <code>0xbe</code>.</p>
 </section>
+
+<section class="card">
+  <h2>3 registers every hacker must know</h2>
+  <p>While general purpose registers are used for storing normal values, three registers control the execution and memory state of the entire program.</p>
+  <div class="table-wrap">
+    <table class="ram stack">
+      <thead>
+        <tr><th>Register (64-bit / 32-bit)</th><th>Full name</th><th>What it actually does</th><th>The exploitation angle</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Register (64-bit / 32-bit)"><code>RIP</code> / <code>EIP</code></td>
+          <td data-label="Full name"><b>I</b>nstruction <b>P</b>ointer</td>
+          <td data-label="What it actually does">Holds the memory address of the very next instruction the machine will execute. The CPU fetches whatever instruction lives in <code>RIP</code>, runs it, and automatically updates <code>RIP</code> to the next instruction.</td>
+          <td data-label="The exploitation angle">The ultimate target. You cannot directly write <code>RIP = 0x1337</code> in C, unlike other variables. Binary exploitation is the art of corrupting memory so the CPU accidentally loads your malicious address into <code>RIP</code>, hijacking the machine.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

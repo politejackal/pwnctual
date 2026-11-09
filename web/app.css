@@ -268,6 +268,9 @@ a.chip:hover { background: var(--surface-container); }
 .ram tr:last-child td { border-bottom: 0; }
 .ram td em { color: var(--on-surface-variant); }
 .places tbody tr:last-child th { border-bottom: 0; }
+/* A table of long text: cells wrap, and on phones each row becomes a block with labels */
+.stack th, .stack td { white-space: normal; vertical-align: top; line-height: 1.5; }
+.stack td:first-child { white-space: nowrap; }
 /* One register and its smaller slices: a row per name, a box per byte */
 .reg { border-collapse: separate; border-spacing: 4px 6px; margin: 0 auto; }
 .reg th { font-family: var(--font-code); font-weight: 600; text-align: left; padding-right: 10px; color: var(--on-surface-variant); }
@@ -430,6 +433,15 @@ a.chip:hover { background: var(--surface-container); }
   .card { padding: 22px; border-radius: 24px; }
   .cmd { font-size: 12px; padding: 12px; }
   .hex-q.wide code { font-size: 18px; padding: 8px 12px; }
+  .stack thead { display: none; }
+  .stack, .stack tbody, .stack tr, .stack td { display: block; }
+  .stack tr { padding: 4px 0; border-bottom: 1px solid var(--outline-variant); }
+  .stack tr:last-child { border-bottom: 0; }
+  .stack td { border-bottom: 0; padding: 8px 0; }
+  .stack td::before {
+    content: attr(data-label); display: block; margin-bottom: 2px;
+    font-size: 13px; font-weight: 500; color: var(--on-surface-variant);
+  }
   .names { font-size: 14px; }
   .names th, .names td { padding-right: 12px; white-space: normal; }
   .reg { border-spacing: 3px 5px; }
