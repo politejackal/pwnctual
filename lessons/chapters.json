@@ -29,6 +29,12 @@
         "file": "1-4-endianness.html",
         "summary": "How little endian CPUs store a value in memory with its bytes in reversed order.",
         "challenge": "little-endian"
+      },
+      {
+        "id": "1-5",
+        "title": "Registers",
+        "file": "1-5-registers.html",
+        "summary": "Why the CPU keeps a small, fast storage place inside itself instead of going out to the RAM every time."
       }
     ]
   }
