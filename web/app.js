@@ -405,7 +405,9 @@ function startStackPlay(el) {
     book.el.classList.add("out");
     setTimeout(() => book.el.remove(), 250);
     markTop();
-    msg.textContent = `${book.name} came off the top. It was the last one in, so it's the first one out.`;
+    msg.textContent = books.length
+      ? `${book.name} came off the top. It went in after ${books.at(-1).name}, so it comes out first.`
+      : `${book.name} went in first, so it came out last. The box is empty now.`;
   });
   add(); add(); add();
   msg.textContent = "Book 3 went in last, so it's at the top.";
