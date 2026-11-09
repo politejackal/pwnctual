@@ -158,6 +158,7 @@ async function lessonPage(id) {
   );
   app.querySelectorAll(".bits.toggle").forEach(startBits);
   app.querySelectorAll(".points").forEach(startPoints);
+  app.querySelectorAll(".stack-play").forEach(startStackPlay);
   if (topic.challenge) startChallenge(app.querySelector(".challenge"), CHALLENGES[topic.challenge], topicKey(topic.id));
   else startMark(app.querySelector(".mark"), topicKey(topic.id));
 }
@@ -359,6 +360,55 @@ function startPoints(table) {
   hint.textContent = "Click a letter to see which address it lives at.";
   table.closest(".table-wrap").after(hint);
   pick(0);
+}
+
+// A box of books to put on and take off the top, one at a time
+function startStackPlay(el) {
+  const MAX = 6;
+  const colors = ["blue", "yellow", "green", "red"];
+  el.innerHTML = `<div class="box"></div>
+    <p class="stack-msg" aria-live="polite"></p>
+    <div class="actions">
+      <button class="btn btn-filled" type="button"><span class="icon">add</span>Add a book</button>
+      <button class="btn btn-tonal" type="button"><span class="icon">remove</span>Remove the top book</button>
+    </div>`;
+  const box = el.querySelector(".box");
+  const msg = el.querySelector(".stack-msg");
+  const [addBtn, removeBtn] = el.querySelectorAll("button");
+  const books = [];
+  let count = 0;
+  const markTop = () => books.forEach((b, i) => {
+    const top = i === books.length - 1;
+    b.el.classList.toggle("top", top);
+    b.el.querySelector(".tag").textContent = top ? "Top" : "";
+  });
+  const add = () => {
+    if (!books.length) count = 0;
+    const name = `Book ${++count}`;
+    const book = document.createElement("div");
+    book.className = `book ${colors[(count - 1) % colors.length]}${count % 2 ? "" : " shift"}`;
+    book.innerHTML = `<span>${name}</span><span class="tag"></span>`;
+    box.append(book);
+    books.push({ name, el: book });
+    markTop();
+    return name;
+  };
+  addBtn.addEventListener("click", () => {
+    if (books.length === MAX) { msg.textContent = "The box is full! Remove a book first."; return; }
+    msg.textContent = `${add()} is now at the top of the stack.`;
+  });
+  removeBtn.addEventListener("click", () => {
+    const book = books.pop();
+    if (!book) { msg.textContent = "The stack is empty. There is nothing to remove."; return; }
+    book.el.classList.remove("top");
+    book.el.querySelector(".tag").textContent = "";
+    book.el.classList.add("out");
+    setTimeout(() => book.el.remove(), 250);
+    markTop();
+    msg.textContent = `${book.name} came off the top. It was the last one in, so it's the first one out.`;
+  });
+  add(); add(); add();
+  msg.textContent = "Book 3 went in last, so it's at the top.";
 }
 
 // A topic without a challenge is completed with a button instead

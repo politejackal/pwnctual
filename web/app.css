@@ -271,6 +271,28 @@ a.chip:hover { background: var(--surface-container); }
 /* A table of long text: cells wrap, and on phones each row becomes a block with labels */
 .stack th, .stack td { white-space: normal; vertical-align: top; line-height: 1.5; }
 .stack td:first-child { white-space: nowrap; }
+/* The stack of books: the box fills from the bottom, the last book in sits on top */
+.stack-play { display: grid; gap: 14px; justify-items: center; }
+.stack-play .box {
+  display: flex; flex-direction: column-reverse; gap: 4px; width: min(100%, 300px); height: 274px; padding: 8px;
+  border: 3px solid var(--outline-variant); border-top: 0; border-radius: 0 0 18px 18px;
+}
+.book {
+  display: flex; align-items: center; justify-content: space-between; height: 38px; padding: 0 16px; border-radius: 10px;
+  font-weight: 600; animation: drop .35s var(--spring);
+}
+.book { margin-right: 14px; }
+.book.shift { margin: 0 0 0 14px; }
+.book.blue { background: var(--blue-c); color: var(--on-blue-c); }
+.book.yellow { background: var(--yellow-c); color: var(--on-yellow-c); }
+.book.green { background: var(--green-c); color: var(--on-green-c); }
+.book.red { background: var(--red-c); color: var(--on-red-c); }
+.book .tag { font-size: 12px; text-transform: uppercase; letter-spacing: .4px; }
+.book.out { animation: lift .25s var(--ease) forwards; }
+@keyframes drop { from { opacity: 0; transform: translateY(-40px); } }
+@keyframes lift { to { opacity: 0; transform: translateY(-40px); } }
+.stack-msg { min-height: 1.5em; text-align: center; color: var(--on-surface-variant); }
+.stack-play .actions { justify-content: center; flex-wrap: wrap; }
 /* One register and its smaller slices: a row per name, a box per byte */
 .reg { border-collapse: separate; border-spacing: 4px 6px; margin: 0 auto; }
 .reg th { font-family: var(--font-code); font-weight: 600; text-align: left; padding-right: 10px; color: var(--on-surface-variant); }
