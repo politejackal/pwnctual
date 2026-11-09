@@ -60,7 +60,7 @@
         <tr>
           <td data-label="Register (64-bit / 32-bit)"><code>RBP</code> / <code>EBP</code></td>
           <td data-label="Full name"><b>B</b>ase <b>P</b>ointer</td>
-          <td data-label="What it actually does">Holds the memory address of the base of the current function's stack. While <code>RSP</code> changes constantly, <code>RBP</code> remains the same during a function so the CPU can find local variables at fixed offsets (like <code>rbp - 8</code>).</td>
+          <td data-label="What it actually does">Holds the memory address of the base of the current function's stack frame. While <code>RSP</code> changes constantly, <code>RBP</code> remains the same during a function so the CPU can find local variables at fixed offsets (like <code>rbp - 8</code>).</td>
           <td data-label="The exploitation angle">We will come back to this later!</td>
         </tr>
       </tbody>
