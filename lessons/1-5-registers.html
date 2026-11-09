@@ -8,4 +8,30 @@
   <p>The storage places, or the registers, only have some finite amount of space inside them. In a 64-bit register, you can imagine there can be a 64-bit value. On the other hand, in an 8-bit register there would be 8 ones or zeroes.</p>
   <p>However, since modern CPUs evolved from 8-bit or 16-bit CPUs, at that time you could access only the 8 bits or the 16 bits. Then scientists invented the 32-bit and the 64-bit CPUs. (By the way, 64 bits is the standard number of bits on a PC nowadays.) So the programs or the applications which were built on these 8-bit or 16-bit CPUs wouldn’t work on the new model. This meant trouble.</p>
   <p>So humans before us decided to allow CPUs to access 8-bit, 16-bit and 32-bit registers too. So we can access the last 32 bits of a 64-bit register, or the last 8 bits of a 32-bit register, and so on.</p>
+  <p>Since modern registers evolved from smaller bit registers, you can access the full 64 bit register or the smaller slices of that same register, using different prefixes or suffixes:</p>
+  <div class="table-wrap">
+    <table class="ram names">
+      <thead>
+        <tr><th>Name</th><th>Size</th><th>Examples</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>R</code> prefix</td><td>64 bits / 8 bytes</td><td>RAX, RBX, RSP, RBP, RIP</td></tr>
+        <tr><td><code>E</code> prefix</td><td>Lower 32 bits / 4 bytes</td><td>EAX, EBX, ESP, EBP, EIP</td></tr>
+        <tr><td>No prefix</td><td>Lower 16 bits / 2 bytes</td><td>AX, BX, SP, BP</td></tr>
+        <tr><td><code>L</code> suffix</td><td>Lower 8 bits / 1 byte</td><td>AL, BL, SPL, BPL</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Here is an example register of what might be inside a 64 bit register and how other registers mean with respect to it.</p>
+  <div class="table-wrap">
+    <table class="reg">
+      <tbody>
+        <tr><th scope="row">RAX</th><td>de</td><td>ad</td><td>be</td><td>ef</td><td>ca</td><td>fe</td><td>ba</td><td>be</td></tr>
+        <tr><th scope="row">EAX</th><td></td><td></td><td></td><td></td><td>ca</td><td>fe</td><td>ba</td><td>be</td></tr>
+        <tr><th scope="row">AX</th><td></td><td></td><td></td><td></td><td></td><td></td><td>ba</td><td>be</td></tr>
+        <tr><th scope="row">AL</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>be</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="bits-hint">Each box is 1 byte. RAX holds <code>0xdeadbeefcafebabe</code>, so EAX is <code>0xcafebabe</code>, AX is <code>0xbabe</code> and AL is <code>0xbe</code>.</p>
 </section>
