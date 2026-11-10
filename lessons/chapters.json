@@ -44,5 +44,17 @@
         "summary": "Why the CPU keeps a small, fast storage place inside itself instead of going out to the RAM every time."
       }
     ]
+  },
+  {
+    "number": 2,
+    "title": "First contact with C",
+    "topics": [
+      {
+        "id": "2-1",
+        "title": "The Toolchain",
+        "file": "2-1-toolchain.html",
+        "summary": "How your C file gets turned into the ones and zeroes the CPU understands."
+      }
+    ]
   }
 ]
