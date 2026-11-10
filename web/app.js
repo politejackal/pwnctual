@@ -80,24 +80,25 @@ async function homePage() {
     const chapters = await getChapters();
     const solved = solvedSet();
     app.innerHTML = page(head(topicsChip(topicsDone(chapters, solved), topicCount(chapters))),
-      chapters.map(c => chapterBlock(c, solved)).join(""));
+      chapters.map((c, i) => chapterBlock(c, solved, chapters.slice(0, i).reduce((n, p) => n + p.topics.length, 0))).join(""));
   } catch (err) {
     app.innerHTML = page(head(""), errorBox(err));
   }
 }
 
-// A chapter of the C for hackers path: a header card joined to its topics
-function chapterBlock(c, solved) {
+// A chapter of the C for hackers path: a header card joined to its topics.
+// Topic numbers run on across chapters, so before is the count of topics in earlier chapters
+function chapterBlock(c, solved, before) {
   return `<section class="chapter" aria-label="Chapter ${c.number}">
     <div class="card chapter-head">
       <span class="eyebrow">Chapter ${c.number}</span>
       <h2>${esc(c.title)}</h2>
     </div>
-    <nav class="list">${c.topics.map(t => {
+    <nav class="list">${c.topics.map((t, j) => {
       const isDone = solved.has(topicKey(t.id));
       return `<a class="list-item ${isDone ? "solved" : ""}" href="/learn/${esc(t.id)}" data-link>
       <span class="num">${isDone ? '<span class="icon">check</span>' : esc(t.id.replace("-", "."))}</span>
-      <span><span class="title">${esc(t.title)}</span><span class="meta">Topic ${esc(t.id.split("-")[1])}${isDone ? " · Completed" : ""}</span></span>
+      <span><span class="title">${esc(t.title)}</span><span class="meta">Topic ${before + j + 1}${isDone ? " · Completed" : ""}</span></span>
       <span class="icon go">chevron_right</span>
     </a>`;
     }).join("")}</nav>
