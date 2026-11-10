@@ -1,6 +1,39 @@
 <section class="card">
-  <p>In Chapter 1, I said that computers are all ones and zeroes. That’s freaking true! They don’t know what the hell <code>abc</code> is. They just know what electricity flowing and not flowing means.</p>
+  <p>In Chapter 1, I said that computers are all ones and zeroes. That’s freaking true! They don’t know what the hell <code>abc</code> is. They just know whether electricity is flowing or not.</p>
   <p>But in C, we aren’t typing zeroes and ones, so how the hell will the CPU know what we mean? This is where things get interesting, for me at least.</p>
-  <p>Your C file undergoes lots and lots of modifications until it’s a bunch of zeroes and ones. Yes, that’s the final file, known as the program, and it is a bunch of ones and zeroes.</p>
-  <p>In this topic, we will be discussing the various processes our C file goes through to give us the ones and zeroes we want.</p>
+  <p>It turns out that your C file undergoes lots and lots of modifications until it’s a bunch of zeroes and ones. Yes, that’s the final file, known as the program, and it is a bunch of ones and zeroes. And that’s what the CPU runs.</p>
+  <p>Here is an analogy: think of the different things the C program undergoes as stations. In this topic, we will be discussing the various stations our C file goes through to give us the ones and zeroes we want. The good thing is that we can stop at any station and get the code at that stage and inspect it. Simple as that.</p>
+  <div class="table-wrap">
+    <table class="ram stack">
+      <thead>
+        <tr><th>Stage</th><th>Takes in</th><th>Gives out</th><th>Its one job in life</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Stage">Preprocessor</td>
+          <td data-label="Takes in">Your C file (<code>.c</code>)</td>
+          <td data-label="Gives out">Expanded C file (<code>.i</code>)</td>
+          <td data-label="Its one job in life">Pastes in the <code>#include</code> files, swaps in the <code>#define</code> values and removes comments.</td>
+        </tr>
+        <tr>
+          <td data-label="Stage">Compiler</td>
+          <td data-label="Takes in">Expanded C file (<code>.i</code>)</td>
+          <td data-label="Gives out">Assembly (<code>.s</code>)</td>
+          <td data-label="Its one job in life">Turns C into assembly instructions for your CPU.</td>
+        </tr>
+        <tr>
+          <td data-label="Stage">Assembler</td>
+          <td data-label="Takes in">Assembly (<code>.s</code>)</td>
+          <td data-label="Gives out">Object file (<code>.o</code>)</td>
+          <td data-label="Its one job in life">Turns assembly into machine code, the ones and zeroes.</td>
+        </tr>
+        <tr>
+          <td data-label="Stage">Linker</td>
+          <td data-label="Takes in">Object files (<code>.o</code>)</td>
+          <td data-label="Gives out">The program</td>
+          <td data-label="Its one job in life">Joins your object files with library code, like <code>printf</code>, into one program you can run.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
