@@ -444,3 +444,7 @@ main p code, main li code, main td code { border: 1px solid var(--border); backg
 .home .site-head-in { justify-content: center; }
 .switches { margin: 32px 0; }
 .place tr.plain td:not(.x):not(:empty) { background: var(--card); color: var(--text); }
+
+/* Homepage video */
+.video { max-width: 800px; margin: 0 auto 32px; aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--card); }
+.video iframe { display: block; width: 100%; height: 100%; border: 0; }
