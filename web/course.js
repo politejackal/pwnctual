@@ -84,24 +84,42 @@ function head(eyebrow, title) {
     h("h1", null, title));
 }
 
-function card(href, num, title, description, pct) {
-  return h("li", null,
-    h("a", { class: "card", href },
-      h("span", { class: "num" }, num),
-      h("div", { class: "card-body" },
-        h("h2", null, title),
-        description && h("p", null, description),
-        bar(pct, "small"))));
+const count = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+// Chapter: the big banner. A link on /learn, the page header on its own page.
+function chapterBanner(c, i, asLink) {
+  const lessons = chapterLessons(c);
+  return h(asLink ? "a" : "div", { class: "chapter", href: asLink ? chapterUrl(c) : null },
+    h("span", { class: "chapter-no", "aria-hidden": "true" }, String(i + 1).padStart(2, "0")),
+    h("div", { class: "chapter-body" },
+      h("p", { class: "eyebrow" }, `Chapter ${i + 1}`),
+      h(asLink ? "h2" : "h1", null, c.title),
+      c.description && h("p", { class: "chapter-desc" }, c.description),
+      h("p", { class: "meta" }, `${count(c.modules.length, "module")} · ${count(lessons.length, "lesson")}`),
+      bar(percent(lessons))));
 }
 
-function lessonCard(c, m, l, i) {
+// Module: a panel that holds its lessons
+function modulePanel(c, m, i, asLink, eyebrow = `Module ${i + 1}`) {
+  return h("section", { class: "module" },
+    h("header", { class: "module-head" },
+      h("div", { class: "module-title" },
+        h("p", { class: "eyebrow" }, eyebrow),
+        h(asLink ? "h2" : "h1", null, asLink ? h("a", { href: moduleUrl(c, m) }, m.title) : m.title)),
+      bar(percent(moduleLessons(c, m)), "small")),
+    h("ol", { class: "lessons" }, m.lessons.map((l, j) => lessonRow(c, m, l, i, j))));
+}
+
+// Lesson: a slim row
+function lessonRow(c, m, l, i, j) {
   const isDone = done.has(lessonKey(c, m, l));
   return h("li", null,
-    h("a", { class: "card", href: lessonUrl(c, m, l) },
-      h("span", { class: "num" }, i + 1),
-      h("div", { class: "card-body" }, h("h2", null, l.title)),
+    h("a", { class: "lesson-row", href: lessonUrl(c, m, l) },
       h("span", { class: `status${isDone ? " done" : ""}`, role: "img", "aria-label": isDone ? "Completed" : "Not completed" },
-        isDone ? "✓" : "")));
+        isDone ? "✓" : ""),
+      h("span", { class: "lesson-no" }, `${i + 1}.${j + 1}`),
+      h("span", { class: "lesson-name" }, l.title),
+      h("span", { class: "go", "aria-hidden": "true" }, "→")));
 }
 
 function commandBox(command) {
@@ -134,20 +152,18 @@ function render() {
     headEl.replaceChildren(
       head(null, "Chapters"),
       h("div", { class: "overall" }, h("span", { class: "overall-label" }, "Overall"), bar(percent(allLessons))));
-    list.replaceChildren(h("ol", { class: "cards" },
-      COURSE.map((c, i) => card(chapterUrl(c), i + 1, c.title, c.description, percent(chapterLessons(c))))));
+    list.replaceChildren(h("div", { class: "chapters" }, COURSE.map((c, i) => chapterBanner(c, i, true))));
   } else if (d.page === "chapter") {
     top.replaceChildren(topbar("/learn", [["Home", "/"], ["Learn", "/learn"], [chapter.title]]));
-    headEl.replaceChildren(head(`Chapter ${ci + 1}`, chapter.title), bar(percent(chapterLessons(chapter)), "head-bar"));
-    list.replaceChildren(h("ol", { class: "cards" },
-      chapter.modules.map((m, i) => card(moduleUrl(chapter, m), i + 1, m.title, null, percent(moduleLessons(chapter, m))))));
+    headEl.replaceChildren(chapterBanner(chapter, ci, false));
+    list.replaceChildren(h("div", { class: "modules" }, chapter.modules.map((m, i) => modulePanel(chapter, m, i, true))));
   } else if (d.page === "module") {
     top.replaceChildren(topbar(chapterUrl(chapter), [["Home", "/"], ["Learn", "/learn"], [chapter.title, chapterUrl(chapter)], [mod.title]]));
-    headEl.replaceChildren(head(`Module ${mi + 1}`, mod.title), bar(percent(moduleLessons(chapter, mod)), "head-bar"));
-    list.replaceChildren(h("ol", { class: "cards" }, mod.lessons.map((l, i) => lessonCard(chapter, mod, l, i))));
+    headEl.replaceChildren();
+    list.replaceChildren(h("div", { class: "modules" }, modulePanel(chapter, mod, mi, false, `Chapter ${ci + 1} · Module ${mi + 1}`)));
   } else if (d.page === "lesson") {
     top.replaceChildren(topbar(moduleUrl(chapter, mod), [["Home", "/"], ["Learn", "/learn"], [chapter.title, chapterUrl(chapter)], [mod.title, moduleUrl(chapter, mod)], [lesson.title]]));
-    headEl.replaceChildren(head(`Lesson ${li + 1}`, lesson.title));
+    headEl.replaceChildren(head(`Chapter ${ci + 1} · Module ${mi + 1} · Lesson ${li + 1}`, lesson.title));
 
     const key = lessonKey(chapter, mod, lesson);
     const toggle = h("button", { class: "complete", type: "button" });
