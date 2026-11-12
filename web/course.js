@@ -1,5 +1,5 @@
 // The course structure and the reader's progress. Every page under /learn is built from this.
-// To add a chapter, module or writeup, add it here (a writeup also needs its page).
+// To add a chapter, module or lesson, add it here (a lesson also needs its page).
 const COURSE = [
   {
     id: "chapter-1",
@@ -147,7 +147,7 @@ function render() {
     list.replaceChildren(h("ol", { class: "cards" }, mod.lessons.map((l, i) => lessonCard(chapter, mod, l, i))));
   } else if (d.page === "lesson") {
     top.replaceChildren(topbar(moduleUrl(chapter, mod), [["Home", "/"], ["Learn", "/learn"], [chapter.title, chapterUrl(chapter)], [mod.title, moduleUrl(chapter, mod)], [lesson.title]]));
-    headEl.replaceChildren(head(`Writeup ${li + 1}`, lesson.title));
+    headEl.replaceChildren(head(`Lesson ${li + 1}`, lesson.title));
 
     const key = lessonKey(chapter, mod, lesson);
     const toggle = h("button", { class: "complete", type: "button" });
@@ -204,7 +204,7 @@ function render() {
       : h("span", { class: `lesson-nav-btn ${cls}`, "aria-disabled": "true" }, h("span", { class: "dir" }, label));
     list.replaceChildren(
       action,
-      h("nav", { class: "lesson-nav", "aria-label": "Writeups" },
+      h("nav", { class: "lesson-nav", "aria-label": "Lessons" },
         side(allLessons[at - 1], "Previous", "prev"),
         side(allLessons[at + 1], "Next", "next")));
   }
