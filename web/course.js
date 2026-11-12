@@ -12,7 +12,7 @@ const COURSE = [
         lessons: [
           {
             id: "the-computers-language",
-            title: "The Computer's Language",
+            title: "Reading the computer's language",
             challenge: {
               command: "docker run --rm -it ghcr.io/pwnctual/the-computers-language",
               leave: "exit",
@@ -22,7 +22,7 @@ const COURSE = [
           },
           {
             id: "the-computers-language-part-2",
-            title: "The Computer's Language Part 2",
+            title: "Writing the computer's language",
             challenge: {
               command: "docker run --rm -it ghcr.io/pwnctual/the-computers-language-part-2",
               leave: "exit",
