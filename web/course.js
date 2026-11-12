@@ -11,22 +11,22 @@ const COURSE = [
         title: "Computational thinking",
         lessons: [
           {
-            id: "the-computers-language",
+            id: "reading-the-computers-language",
             title: "Reading the computer's language",
             challenge: {
-              command: "docker run --rm -it ghcr.io/pwnctual/the-computers-language",
+              command: "docker run --rm -it ghcr.io/pwnctual/reading-the-computers-language",
               leave: "exit",
-              cleanup: "docker rmi ghcr.io/pwnctual/the-computers-language",
+              cleanup: "docker rmi ghcr.io/pwnctual/reading-the-computers-language",
               flagHash: "fcb17f702f3271783e441b2d6f67bdec42b7cbbd4657abb981f39bb41878e009", // SHA-256 of the flag
             },
           },
           {
-            id: "the-computers-language-part-2",
+            id: "writing-the-computers-language",
             title: "Writing the computer's language",
             challenge: {
-              command: "docker run --rm -it ghcr.io/pwnctual/the-computers-language-part-2",
+              command: "docker run --rm -it ghcr.io/pwnctual/writing-the-computers-language",
               leave: "exit",
-              cleanup: "docker rmi ghcr.io/pwnctual/the-computers-language-part-2",
+              cleanup: "docker rmi ghcr.io/pwnctual/writing-the-computers-language",
               flagHash: "3270c971f083d1775a3167dcd7b04ff711c4e299e780ce5af00e871bdaa2a5eb", // SHA-256 of the flag
             },
           },
@@ -44,6 +44,15 @@ const saveDone = (set) => {
   try { localStorage.setItem(KEY, JSON.stringify([...set])); } catch {}
 };
 let done = loadDone();
+
+// Lessons that were renamed: carry saved progress over to the new id
+const RENAMED = {
+  "chapter-1/computational-thinking/the-computers-language": "chapter-1/computational-thinking/reading-the-computers-language",
+  "chapter-1/computational-thinking/the-computers-language-part-2": "chapter-1/computational-thinking/writing-the-computers-language",
+};
+for (const [from, to] of Object.entries(RENAMED)) {
+  if (done.has(from)) { done.delete(from); done.add(to); saveDone(done); }
+}
 
 const chapterUrl = (c) => `/learn/${c.id}`;
 const moduleUrl = (c, m) => `/learn/${c.id}/${m.id}`;
