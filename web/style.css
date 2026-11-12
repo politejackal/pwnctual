@@ -106,10 +106,33 @@ main {
 main p { margin: 0 0 1.2em; }
 main p:last-child { margin-bottom: 0; }
 footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 20px;
   margin-top: 40px;
-  text-align: center;
   font-size: 14px;
   color: var(--muted);
+}
+footer .discord {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .15s ease, border-color .15s ease;
+}
+footer .discord:hover { color: var(--accent); border-color: var(--accent); }
+footer .discord i {
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask: url(/discord.svg) center / contain no-repeat;
+  mask: url(/discord.svg) center / contain no-repeat;
 }
 @media (max-width: 560px) {
   body { font-size: 17px; }
