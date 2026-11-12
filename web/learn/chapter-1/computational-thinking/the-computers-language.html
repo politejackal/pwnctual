@@ -16,7 +16,13 @@
   <div id="top"></div>
   <div id="head"></div>
   <main>
-    <p>Computers are all about ones and zeroes. But what are these ones and zeroes? Well, you see, deep inside your device, all there is, are a bunch of tiny switches called transistors. And by a bunch I mean billions of them. So a switch can have only 2 states. A switch can either be on or off. Nothing else. It turns out we represent different things by some patterns, which in turn are created with a bunch of these switches. So instead of saying off and on every time, we shorten it and call it 0 for off, and 1 for on. This switch, either on or off, is called a bit in computer science's terms. Cool.</p>
+    <h2>Understanding Binary: Ones and Zeroes</h2>
+
+    <p>Computers are all about ones and zeroes. But what actually <em>are</em> these ones and zeroes?</p>
+
+    <p>Well, you see, deep inside your device, all there is are a bunch of tiny switches called <strong>transistors</strong>. And by a bunch, I mean billions of them. A switch can only have two states: it can either be <strong>on</strong> or <strong>off</strong>. Nothing else.</p>
+
+    <p>It turns out we can represent all kinds of things by creating patterns with these switches. Instead of saying "off" and "on" every time, we shorten it and call it <strong>0</strong> for off, and <strong>1</strong> for on. In computer science terms, a single switch—either on or off—is called a <strong>bit</strong>. Cool.</p>
 
     <figure class="switches" role="img" aria-label="switch on = 1, switch off = 0">
       <svg viewBox="0 0 400 180" aria-hidden="true">
@@ -35,41 +41,75 @@
       </svg>
     </figure>
 
-    <p>Now, these zeroes and ones alone are useless. They make sense when we use a sequence of those switches to represent something, and from something we represent many things, and so on. This is where the magic of computing happens.</p>
+    <table class="states">
+      <thead><tr><th>Switch State</th><th>Bit Value</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ON</strong></td><td><code>1</code></td></tr>
+        <tr><td><strong>OFF</strong></td><td><code>0</code></td></tr>
+      </tbody>
+    </table>
 
-    <p>Now we can represent a bunch of switches as <code>01000100</code>, and here wherever there is a zero, it means a switch that is turned off. And when we see a 1 it represents a switch that is on. Now before we go further, we need to understand the computer's number system, because it's surprising that there is actually a number system made by just ones and zeroes.</p>
+    <p>Now, a single zero or one on its own is pretty useless. They only start making sense when we group a sequence of these switches together to represent something—and from that, we can represent many things, and so on. This is where the magic of computing happens.</p>
 
-    <p>Before we go to understand the computer's number system, recall our normal everyday number system from school. Here we have 10 digits, 0 to 9. In this system, we do the following:</p>
+    <p>For example, we can represent a row of switches like this: <code>01000100</code>. Here, wherever you see a <code>0</code>, it means a switch is turned off. Whenever you see a <code>1</code>, it means a switch is turned on.</p>
 
-    <p>If we have a number like 1234, we multiply the 4 by 1, and add to it, multiplied by 10, 3. Like (10 × 3) + (1 × 4). Then you add 2 multiplied by hundred, like (100 × 2) + (10 × 3) + (1 × 4), and so on. This is just so you get the idea. Here is another example: 101</p>
+    <p>Before we go any further, we need to understand the computer's number system, because it is pretty surprising that you can build an entire number system using just ones and zeroes.</p>
+
+    <h3>How Our Normal Number System Works</h3>
+
+    <p>Before we jump into how computers count, let's recall our normal, everyday number system from school (decimal). Here, we have 10 digits: <code>0</code> through <code>9</code>.</p>
+
+    <p>Take a number like <strong>1234</strong>. Starting from the right:</p>
+
+    <ol>
+      <li>We multiply the <strong>4</strong> by 1.</li>
+      <li>Move one spot to the left, multiply the <strong>3</strong> by 10, and add them together: <code>(10 × 3) + (1 × 4)</code>.</li>
+      <li>Move left again and add the <strong>2</strong> multiplied by 100: <code>(100 × 2) + (10 × 3) + (1 × 4)</code>, and so on.</li>
+    </ol>
+
+    <p>That is just so you get the idea: every time you move one place to the left, the place value gets multiplied by <strong>10</strong>. Here is another example using the number <strong>101</strong>:</p>
 
     <figure class="place">
       <table>
-        <tr><th scope="row">Place value</th><td>100</td><td class="x">×10</td><td>10</td><td class="x">×10</td><td>1</td></tr>
+        <tr><th scope="row">Place value</th><td>100</td><td class="x">← ×10</td><td>10</td><td class="x">← ×10</td><td>1</td></tr>
         <tr><th scope="row">Digit</th><td>1</td><td></td><td>0</td><td></td><td>1</td></tr>
       </table>
       <p class="sum">(1 × 100) + (0 × 10) + (1 × 1) = 101</p>
     </figure>
 
-    <p>Now in the computer's number system, instead of multiplying each digit place to the left by 10 more than that digit's place, we multiply it by 2. I know you didn't understand shit, so let's slow down and look at what I mean.</p>
+    <h3>How the Computer's Number System (Binary) Works</h3>
+
+    <p>Now, in the computer's number system (called <strong>binary</strong>), instead of multiplying each place value by <strong>10</strong> as we move to the left, we multiply it by <strong>2</strong>.</p>
+
+    <p>If that sounds weird at first, let's slow down and look at what I mean using the binary number <strong>101</strong>:</p>
 
     <figure class="place">
       <table>
-        <tr><th scope="row">Place value</th><td>4</td><td class="x">×2</td><td>2</td><td class="x">×2</td><td>1</td></tr>
+        <tr><th scope="row">Place value</th><td>4</td><td class="x">← ×2</td><td>2</td><td class="x">← ×2</td><td>1</td></tr>
         <tr><th scope="row">Digit</th><td>1</td><td></td><td>0</td><td></td><td>1</td></tr>
       </table>
       <p class="sum">(1 × 4) + (0 × 2) + (1 × 1) = 5</p>
     </figure>
 
-    <p>I used the number 101 for simplification because both number systems have it. But in binary remember you only have zeroes and ones!</p>
+    <p>I used <strong>101</strong> in both examples to keep things simple, since those digits exist in both systems. Just remember that in binary, you <em>only</em> have zeroes and ones!</p>
 
-    <p>If you had a longer number, like <code>1010</code>, the first <code>1</code>'s place would be the 8's place, and so on. It's just as simple as that. And that's how bigger numbers are stored: more bits are used.</p>
+    <p>If you had a longer binary number, like <strong>1010</strong>, the leftmost <code>1</code> would be in the <strong>8's place</strong> (<code>4 × 2</code>), and so on. It is as simple as that. And that is how bigger numbers are stored: by using more bits.</p>
 
-    <p>So now you know how to read a binary number.</p>
+    <p>So now you know how to read a binary number!</p>
 
-    <p>Install Docker. Then run the command below, and in the terminal you get, run the <code>/challenge/run</code> file and answer the questions it asks, and it then gives you the flag. That's the end goal of each challenge. Whenever you complete each challenge successfully, you will get the flag.</p>
+    <hr>
 
-    <p>If you are stuck, ask me on Discord, I will help you, or somebody else who has completed this will. Never go looking for a walkthrough or something!</p>
+    <h2>Your Challenge</h2>
+
+    <ol>
+      <li>Install Docker.</li>
+      <li>Run the command below to launch the challenge container.</li>
+      <li>In the terminal that opens, run <code>/challenge/run</code> and answer the questions it asks.</li>
+    </ol>
+
+    <p>Once you answer everything correctly, it will give you the <strong>flag</strong>. Getting the flag is the end goal of every challenge—whenever you complete a challenge successfully, you get one.</p>
+
+    <blockquote><strong>Stuck?</strong> Ask me on Discord! Either I or someone else who has already completed the challenge will help you out. Never go looking for a walkthrough or spoilers—figuring it out is how you actually learn!</blockquote>
   </main>
 
   <div id="list"></div>
