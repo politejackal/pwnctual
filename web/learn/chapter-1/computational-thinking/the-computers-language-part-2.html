@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Computer's Language Part 2 · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="computational-thinking" data-lesson="the-computers-language-part-2">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Awesome, now you know how to read a bunch of zeroes and ones. This bunch of ones and zeroes is known as binary. Now it's important for hackers like us to be able to convert a normal number (decimal number) to binary!</p>
+
+    <p>Now there is a simple trick to convert a given decimal number to binary. You take the decimal number, for example 21, and check which digit's place is just smaller than it. I see it is the 16's place. So whenever I see a place where my number is bigger than that place's number, I put a 1 over there and subtract the value of that place from my number.</p>
+
+    <figure class="place">
+      <table>
+        <tr><th scope="row">Place value</th><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+        <tr><th scope="row">Digit</th><td>1</td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <p class="sum">21 − 16 = 5</p>
+    </figure>
+
+    <p>So now from 21, I have 5 remaining. Now what next? Well, I go to the next digit's value, which is 8, but it is bigger than my current value. So I put a zero at that digit's place and move on. Next I see is 4, which is lower than my current decimal value, so I subtract 4 and put a 1 over there. Now I have 1 remaining, and I continue the steps till I have a remainder of zero. If you don't get a remainder of zero, you can safely assume that you did something wrong, and just redo the steps.</p>
+
+    <figure class="place">
+      <table>
+        <tr><th scope="row">Place value</th><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+        <tr><th scope="row">Digit</th><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+        <tr class="plain"><th scope="row">Remaining</th><td>5</td><td>5</td><td>1</td><td>1</td><td>0</td></tr>
+      </table>
+      <p class="sum">21 = 10101</p>
+    </figure>
+
+    <p>Download the Docker image, and run <code>/challenge/run</code> to start the challenge, and finishing it will give you the flag.</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>

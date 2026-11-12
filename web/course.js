@@ -20,6 +20,16 @@ const COURSE = [
               flagHash: "fcb17f702f3271783e441b2d6f67bdec42b7cbbd4657abb981f39bb41878e009", // SHA-256 of the flag
             },
           },
+          {
+            id: "the-computers-language-part-2",
+            title: "The Computer's Language Part 2",
+            challenge: {
+              command: "docker run --rm -it ghcr.io/pwnctual/the-computers-language-part-2",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/the-computers-language-part-2",
+              flagHash: "3270c971f083d1775a3167dcd7b04ff711c4e299e780ce5af00e871bdaa2a5eb", // SHA-256 of the flag
+            },
+          },
         ],
       },
     ],

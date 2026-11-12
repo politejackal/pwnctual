@@ -443,3 +443,4 @@ main p code, main li code, main td code { border: 1px solid var(--border); backg
 .home .site-brand { display: none; }
 .home .site-head-in { justify-content: center; }
 .switches { margin: 32px 0; }
+.place tr.plain td:not(.x):not(:empty) { background: var(--card); color: var(--text); }
