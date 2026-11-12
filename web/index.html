@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pwnctual</title>
+<meta name="theme-color" content="#F7FBF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101510" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..800&family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light dark;
+    --primary: #37693D;
+    --on-primary: #FFFFFF;
+    --primary-container: #B8F0B8;
+    --on-primary-container: #002107;
+    --tertiary: #39656B;
+    --tertiary-container: #BCEBF2;
+    --on-tertiary-container: #001F23;
+    --surface: #F7FBF2;
+    --surface-container: #EBEFE6;
+    --surface-container-high: #E6E9E1;
+    --on-surface: #181D18;
+    --on-surface-variant: #414941;
+    --shape-soft: #A3DBA4;
+    --spring: linear(0, 0.35 8%, 0.8 18%, 1.08 30%, 1.12 38%, 1.04 52%, 0.99 66%, 1);
+    --font: "Google Sans Flex", "Roboto Flex", "Google Sans", Roboto, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --primary: #9DD49E;
+      --on-primary: #003912;
+      --primary-container: #1E5127;
+      --on-primary-container: #B8F0B8;
+      --tertiary: #A1CED5;
+      --tertiary-container: #1F4D53;
+      --on-tertiary-container: #BCEBF2;
+      --surface: #101510;
+      --surface-container: #1C211C;
+      --surface-container-high: #272B26;
+      --on-surface: #E0E4DB;
+      --on-surface-variant: #C1C9BE;
+      --shape-soft: #2C6A36;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--surface);
+    color: var(--on-surface);
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+
+  main {
+    width: min(100%, 60rem);
+    margin-inline: auto;
+    padding: max(1rem, env(safe-area-inset-top)) 1rem 3rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    border-radius: 3rem;
+    min-height: clamp(15rem, 52vw, 24rem);
+    padding: clamp(1.5rem, 5vw, 3rem);
+    display: flex;
+    align-items: flex-end;
+  }
+  .hero h1 {
+    position: relative;
+    font-size: clamp(3.25rem, 15.5vw, 9.5rem);
+    font-weight: 760;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+  }
+  .shape { position: absolute; }
+  .cookie {
+    width: clamp(11rem, 42vw, 21rem);
+    top: clamp(-4rem, -8vw, -2.5rem);
+    right: clamp(-3.5rem, -6vw, -2rem);
+    fill: var(--primary);
+    animation: spin 60s linear infinite;
+  }
+  .pill {
+    width: clamp(5rem, 17vw, 9rem);
+    height: clamp(2.25rem, 7.5vw, 4rem);
+    border-radius: 999px;
+    background: var(--tertiary);
+    top: clamp(1.5rem, 5vw, 3rem);
+    left: clamp(1.5rem, 5vw, 3rem);
+    rotate: -14deg;
+  }
+  .dot {
+    width: clamp(2.25rem, 7vw, 4rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--shape-soft);
+    top: clamp(5rem, 15vw, 9rem);
+    left: clamp(6.5rem, 22vw, 13rem);
+  }
+
+  /* Announcement */
+  .announcement {
+    background: var(--tertiary-container);
+    color: var(--on-tertiary-container);
+    border-radius: 2rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-weight: 560;
+    line-height: 1.4;
+  }
+  .live {
+    flex: none;
+    width: 0.75rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--tertiary);
+    animation: pulse 2.4s ease-out infinite;
+  }
+
+  /* Text cards */
+  .card {
+    background: var(--surface-container);
+    border-radius: 1.75rem;
+    padding: clamp(1.5rem, 4.5vw, 2.5rem);
+  }
+  .card p { max-width: 62ch; }
+  .card.lead {
+    background: var(--surface-container-high);
+    font-size: clamp(1.25rem, 3.6vw, 1.75rem);
+    font-weight: 520;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .card.lead p { max-width: 34ch; }
+  .card.about { color: var(--on-surface-variant); }
+
+  /* Motion */
+  .hero, .announcement, .card {
+    animation: rise 0.9s var(--spring) both;
+  }
+  .announcement { animation-delay: 0.08s; }
+  .card.lead { animation-delay: 0.16s; }
+  .card.about { animation-delay: 0.24s; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(1.5rem) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes spin { to { rotate: 360deg; } }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tertiary) 55%, transparent); }
+    70%, 100% { box-shadow: 0 0 0 0.75rem transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; }
+  }
+
+  @media (min-width: 48rem) {
+    main { gap: 1rem; padding-top: 1.5rem; }
+    .grid { display: grid; grid-template-columns: 5fr 7fr; gap: 1rem; align-items: stretch; }
+  }
+  @media (max-width: 47.99rem) {
+    .grid { display: grid; gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <svg class="shape cookie" viewBox="0 0 220 220" aria-hidden="true"><path d="M210.0,110.0L209.2,113.5L206.8,116.8L203.3,119.8L199.2,122.5L195.2,125.0L191.9,127.4L189.8,129.9L189.0,132.7L189.6,135.9L191.3,139.6L193.5,143.7L195.7,148.1L197.2,152.5L197.6,156.6L196.6,160.0L194.1,162.6L190.4,164.3L185.9,165.1L181.0,165.4L176.3,165.6L172.2,166.0L169.1,167.1L167.1,169.1L166.0,172.2L165.6,176.3L165.4,181.0L165.1,185.9L164.3,190.4L162.6,194.1L160.0,196.6L156.6,197.6L152.5,197.2L148.1,195.7L143.7,193.5L139.6,191.3L135.9,189.6L132.7,189.0L129.9,189.8L127.4,191.9L125.0,195.2L122.5,199.2L119.8,203.3L116.8,206.8L113.5,209.2L110.0,210.0L106.5,209.2L103.2,206.8L100.2,203.3L97.5,199.2L95.0,195.2L92.6,191.9L90.1,189.8L87.3,189.0L84.1,189.6L80.4,191.3L76.3,193.5L71.9,195.7L67.5,197.2L63.4,197.6L60.0,196.6L57.4,194.1L55.7,190.4L54.9,185.9L54.6,181.0L54.4,176.3L54.0,172.2L52.9,169.1L50.9,167.1L47.8,166.0L43.7,165.6L39.0,165.4L34.1,165.1L29.6,164.3L25.9,162.6L23.4,160.0L22.4,156.6L22.8,152.5L24.3,148.1L26.5,143.7L28.7,139.6L30.4,135.9L31.0,132.7L30.2,129.9L28.1,127.4L24.8,125.0L20.8,122.5L16.7,119.8L13.2,116.8L10.8,113.5L10.0,110.0L10.8,106.5L13.2,103.2L16.7,100.2L20.8,97.5L24.8,95.0L28.1,92.6L30.2,90.1L31.0,87.3L30.4,84.1L28.7,80.4L26.5,76.3L24.3,71.9L22.8,67.5L22.4,63.4L23.4,60.0L25.9,57.4L29.6,55.7L34.1,54.9L39.0,54.6L43.7,54.4L47.8,54.0L50.9,52.9L52.9,50.9L54.0,47.8L54.4,43.7L54.6,39.0L54.9,34.1L55.7,29.6L57.4,25.9L60.0,23.4L63.4,22.4L67.5,22.8L71.9,24.3L76.3,26.5L80.4,28.7L84.1,30.4L87.3,31.0L90.1,30.2L92.6,28.1L95.0,24.8L97.5,20.8L100.2,16.7L103.2,13.2L106.5,10.8L110.0,10.0L113.5,10.8L116.8,13.2L119.8,16.7L122.5,20.8L125.0,24.8L127.4,28.1L129.9,30.2L132.7,31.0L135.9,30.4L139.6,28.7L143.7,26.5L148.1,24.3L152.5,22.8L156.6,22.4L160.0,23.4L162.6,25.9L164.3,29.6L165.1,34.1L165.4,39.0L165.6,43.7L166.0,47.8L167.1,50.9L169.1,52.9L172.2,54.0L176.3,54.4L181.0,54.6L185.9,54.9L190.4,55.7L194.1,57.4L196.6,60.0L197.6,63.4L197.2,67.5L195.7,71.9L193.5,76.3L191.3,80.4L189.6,84.1L189.0,87.3L189.8,90.1L191.9,92.6L195.2,95.0L199.2,97.5L203.3,100.2L206.8,103.2L209.2,106.5Z"/></svg>
+    <span class="shape pill" aria-hidden="true"></span>
+    <span class="shape dot" aria-hidden="true"></span>
+    <h1>pwnctual</h1>
+  </header>
+
+  <p class="announcement" role="status">
+    <span class="live" aria-hidden="true"></span>
+    <span>pwnctual is under construction and new lessons are releasing every few days.</span>
+  </p>
+
+  <div class="grid">
+    <section class="card lead">
+      <p>pwnctual is a 6 year course, and it starts with introduction to computer science, and goes all the way to finding zero days. Though it is still in progress.</p>
+    </section>
+
+    <section class="card about">
+      <p>pwnctual is a platform created by me, Polite Jackal, alone. It aims to teach vulnerability research from absolute beginning. All you need is English to get started. Every year acts as a checkpoint and you can quit at any level and be ready for real world jobs. Except year 1, after every year you will be able to find a job, and by a job I mean world class elite jobs and I will also hopefully guide you to get a job. I'm writing this right now in November, 2026. So if in future, maybe, just maybe if this becomes famous and I'm successful in making the project a success, pwnctual will itself hire you. Anyway, that's just a dream of mine.</p>
+    </section>
+  </div>
+</main>
+</body>
+</html>
