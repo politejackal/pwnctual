@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Computer's Language · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="computational-thinking" data-lesson="the-computers-language">
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Computers are all about ones and zeroes. But what are these ones and zeroes? Well, you see, deep inside your device, all there is, are a bunch of tiny switches called transistors. And by a bunch I mean billions of them. So a switch can have only 2 states. A switch can either be on or off. Nothing else. It turns out we represent different things by some patterns, which in turn are created with a bunch of these switches. So instead of saying off and on every time, we shorten it and call it 0 for off, and 1 for on. This switch, either on or off, is called a bit in computer science's terms. Cool.</p>
+
+    <figure class="switches" role="img" aria-label="switch on = 1, switch off = 0">
+      <svg viewBox="0 0 400 180" aria-hidden="true">
+        <g transform="translate(40 30)">
+          <rect class="track on" x="0" y="0" width="120" height="60" rx="30"/>
+          <circle class="knob" cx="90" cy="30" r="22"/>
+          <text class="state" x="60" y="100" text-anchor="middle">ON</text>
+          <text class="bit" x="60" y="136" text-anchor="middle">1</text>
+        </g>
+        <g transform="translate(240 30)">
+          <rect class="track off" x="0" y="0" width="120" height="60" rx="30"/>
+          <circle class="knob" cx="30" cy="30" r="22"/>
+          <text class="state" x="60" y="100" text-anchor="middle">OFF</text>
+          <text class="bit" x="60" y="136" text-anchor="middle">0</text>
+        </g>
+      </svg>
+    </figure>
+
+    <p>Now, these zeroes and ones alone are useless. They make sense when we use a sequence of those switches to represent something, and from something we represent many things, and so on. This is where the magic of computing happens.</p>
+
+    <p>Now we can represent a bunch of switches as <code>01000100</code>, and here wherever there is a zero, it means a switch that is turned off. And when we see a 1 it represents a switch that is on. Now before we go further, we need to understand the computer's number system, because it's surprising that there is actually a number system made by just ones and zeroes.</p>
+
+    <p>Before we go to understand the computer's number system, recall our normal everyday number system from school. Here we have 10 digits, 0 to 9. In this system, we do the following:</p>
+
+    <p>If we have a number like 1234, we multiply the 4 by 1, and add to it, multiplied by 10, 3. Like (10 × 3) + (1 × 4). Then you add 2 multiplied by hundred, like (100 × 2) + (10 × 3) + (1 × 4), and so on. This is just so you get the idea. Here is another example: 101</p>
+
+    <figure class="place">
+      <table>
+        <tr><th scope="row">Place value</th><td>100</td><td class="x">×10</td><td>10</td><td class="x">×10</td><td>1</td></tr>
+        <tr><th scope="row">Digit</th><td>1</td><td></td><td>0</td><td></td><td>1</td></tr>
+      </table>
+      <p class="sum">(1 × 100) + (0 × 10) + (1 × 1) = 101</p>
+    </figure>
+
+    <p>Now in the computer's number system, instead of multiplying each digit place to the left by 10 more than that digit's place, we multiply it by 2. I know you didn't understand shit, so let's slow down and look at what I mean.</p>
+
+    <figure class="place">
+      <table>
+        <tr><th scope="row">Place value</th><td>4</td><td class="x">×2</td><td>2</td><td class="x">×2</td><td>1</td></tr>
+        <tr><th scope="row">Digit</th><td>1</td><td></td><td>0</td><td></td><td>1</td></tr>
+      </table>
+      <p class="sum">(1 × 4) + (0 × 2) + (1 × 1) = 5</p>
+    </figure>
+
+    <p>I used the number 101 for simplification because both number systems have it. But in binary remember you only have zeroes and ones!</p>
+
+    <p>If you had a longer number, like <code>1010</code>, the first <code>1</code>'s place would be the 8's place, and so on. It's just as simple as that. And that's how bigger numbers are stored: more bits are used.</p>
+
+    <p>So now you know how to read a binary number.</p>
+
+    <p>Install Docker. Then run the command below, and in the terminal you get, run the <code>/challenge/run</code> file and answer the questions it asks, and it then gives you the flag. That's the end goal of each challenge. Whenever you complete each challenge successfully, you will get the flag.</p>
+
+    <p>If you are stuck, ask me on Discord, I will help you, or somebody else who has completed this will. Never go looking for a walkthrough or something!</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>© 2026 Polite Jackal</footer>
+</div>
+</body>
+</html>
