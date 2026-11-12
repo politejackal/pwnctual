@@ -2,11 +2,4 @@ node_modules/
 .wrangler/
 .claude/
 
-# Built by `npm run build`
-web/lessons/
-web/learn/
-web/sitemap.xml
-web/llms.txt
-web/_headers
-
 .DS_store

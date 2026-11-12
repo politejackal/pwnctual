@@ -5,7 +5,7 @@
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./web",
-    // Paths like /learn/1-1 load index.html; the app routes them
+    // Every path loads the blank index.html
     "not_found_handling": "single-page-application"
   },
   "routes": [
