@@ -52,6 +52,10 @@ const COURSE = [
             id: "pseudocode",
             title: "Pseudocode",
           },
+          {
+            id: "core-programming-concepts",
+            title: "Core programming concepts",
+          },
         ],
       },
     ],
