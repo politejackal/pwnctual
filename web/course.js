@@ -48,6 +48,10 @@ const COURSE = [
             id: "algorithms",
             title: "Algorithms",
           },
+          {
+            id: "pseudocode",
+            title: "Pseudocode",
+          },
         ],
       },
     ],
