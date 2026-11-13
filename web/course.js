@@ -8,7 +8,7 @@ const COURSE = [
     modules: [
       {
         id: "computational-thinking",
-        title: "Computational thinking",
+        title: "Binary & Data Representation",
         lessons: [
           {
             id: "reading-the-computers-language",
@@ -32,7 +32,7 @@ const COURSE = [
           },
           {
             id: "how-is-binary-used",
-            title: "How is Binary Used",
+            title: "How data is represented",
           },
         ],
       },
