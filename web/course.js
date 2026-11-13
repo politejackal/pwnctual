@@ -7,7 +7,7 @@ const COURSE = [
     description: "Teaches how a computer works, C & Python.",
     modules: [
       {
-        id: "computational-thinking",
+        id: "binary-and-data-representation",
         title: "Binary & data representation",
         lessons: [
           {
@@ -36,6 +36,16 @@ const COURSE = [
           },
         ],
       },
+      {
+        id: "computational-thinking",
+        title: "Computational thinking",
+        lessons: [
+          {
+            id: "thinking-like-a-computer",
+            title: "Thinking like a computer",
+          },
+        ],
+      },
     ],
   },
 ];
@@ -51,8 +61,11 @@ let done = loadDone();
 
 // Lessons that were renamed: carry saved progress over to the new id
 const RENAMED = {
-  "chapter-1/computational-thinking/the-computers-language": "chapter-1/computational-thinking/reading-the-computers-language",
-  "chapter-1/computational-thinking/the-computers-language-part-2": "chapter-1/computational-thinking/writing-the-computers-language",
+  "chapter-1/computational-thinking/the-computers-language": "chapter-1/binary-and-data-representation/reading-the-computers-language",
+  "chapter-1/computational-thinking/the-computers-language-part-2": "chapter-1/binary-and-data-representation/writing-the-computers-language",
+  "chapter-1/computational-thinking/reading-the-computers-language": "chapter-1/binary-and-data-representation/reading-the-computers-language",
+  "chapter-1/computational-thinking/writing-the-computers-language": "chapter-1/binary-and-data-representation/writing-the-computers-language",
+  "chapter-1/computational-thinking/how-is-binary-used": "chapter-1/binary-and-data-representation/how-is-binary-used",
 };
 for (const [from, to] of Object.entries(RENAMED)) {
   if (done.has(from)) { done.delete(from); done.add(to); saveDone(done); }
