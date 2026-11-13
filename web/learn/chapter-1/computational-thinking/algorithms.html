@@ -40,7 +40,7 @@
         <ol>
           <li>Start at the first name in the contacts.</li>
           <li>Compare the name with the text "John".</li>
-          <li>If it is equal, hand out the phone number.</li>
+          <li>If it is equal, hand out the phone number and quit.</li>
           <li>If not, move to the next name.</li>
           <li>Go back to step 2.</li>
         </ol>
@@ -51,7 +51,7 @@
 
     <p>Now assume a scenario where the names are alphabetically sorted, as is the case generally. Now instead of going and checking every single name, you just go to the middle of the names and check if the name is on that page. If not, then you check if the name is to the right of where you are now or to the left, because the names are alphabetically sorted. You then throw the other half where you know the name is not. You keep only the half that can still contain the name. Now you have reduced the problem size in half. Then you again go to the middle of the middle, and then to the middle of the middle of the middle, and so on, until you find the name.</p>
 
-    <p>But we are missing something. We forgot to add a final touch to our algorithm. And if we had not remembered this now, we would expose our program to a huge bunch of attacks and stuff, and we don't want that to happen—with our program, at least. The thing is, we forgot to give the program the instruction to quit after finding John's number. Not specifying this can cause our program to misbehave in many ways!</p>
+    <p>But we are missing something. We forgot to add a final touch to our algorithm. And if we had not remembered this now, we would expose our program to a huge bunch of attacks and stuff, and we don't want that to happen—with our program, at least. The thing is, we never told the program what to do if John is not in the contacts at all. It would keep looking until there are no names left to check, and then still try to find John. Not specifying this can cause our program to misbehave in many ways!</p>
 
     <p>This was just an example of two different types of algorithms. To see what an algorithm might look like in the real world, you can check the diagram above.</p>
   </main>
