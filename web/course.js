@@ -44,6 +44,10 @@ const COURSE = [
             id: "thinking-like-a-computer",
             title: "Thinking like a computer",
           },
+          {
+            id: "algorithms",
+            title: "Algorithms",
+          },
         ],
       },
     ],

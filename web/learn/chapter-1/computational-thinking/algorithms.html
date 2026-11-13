@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithms · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="computational-thinking" data-lesson="algorithms">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Algorithms are nothing but a set of instructions, like a recipe for a cake.</p>
+
+    <div class="compare">
+      <section>
+        <h3>A recipe for a cake</h3>
+        <ol>
+          <li>Heat the oven.</li>
+          <li>Mix the flour, sugar and eggs in a bowl.</li>
+          <li>Pour the mix into a pan.</li>
+          <li>Bake it for 30 minutes.</li>
+          <li>Take it out and let it cool.</li>
+        </ol>
+      </section>
+      <section>
+        <h3>An algorithm to find John's number</h3>
+        <ol>
+          <li>Start at the first name in the contacts.</li>
+          <li>Compare the name with the text "John".</li>
+          <li>If it is equal, hand out the phone number and stop.</li>
+          <li>If not, move to the next name.</li>
+          <li>Go back to step 2.</li>
+        </ol>
+      </section>
+    </div>
+
+    <p>An example of an algorithm is an algorithm to search for John's number in your contacts. Now you can write an algorithm in many ways. You could just go step by step, look at each name, and compare it with the text "John", and if it is equal, you find his phone number and hand it out. This might seem like a simple, cool little program—easy to work with, but way too dumb and inefficient. As hackers are also programmers, I believe, and you should believe too, that as programmers it's our job to write code that is efficient and fast and does fewer calculations.</p>
+
+    <p>Now assume a scenario where the names are alphabetically sorted, as is the case generally. Now instead of going and checking every single name, you just go to the middle of the names and check if the name is on that page. If not, then you check if the name is to the right of where you are now or to the left, because the names are alphabetically sorted. Now you have reduced the problem size in half. Then you again go to the middle of the middle, and then to the middle of the middle of the middle, and so on, until you find the name.</p>
+
+    <p>This was just an example of two different types of algorithms. To see what an algorithm might look like in the real world, you can check the diagram above.</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>
