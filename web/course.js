@@ -30,6 +30,10 @@ const COURSE = [
               flagHash: "3270c971f083d1775a3167dcd7b04ff711c4e299e780ce5af00e871bdaa2a5eb", // SHA-256 of the flag
             },
           },
+          {
+            id: "how-is-binary-used",
+            title: "How is Binary Used",
+          },
         ],
       },
     ],

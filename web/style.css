@@ -448,3 +448,4 @@ main p code, main li code, main td code { border: 1px solid var(--border); backg
 /* Homepage video */
 .video { max-width: 800px; margin: 0 auto 32px; aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--card); }
 .video iframe { display: block; width: 100%; height: 100%; border: 0; }
+main p + h2 { margin-top: 40px; }
