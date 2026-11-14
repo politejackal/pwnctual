@@ -65,6 +65,13 @@ const COURSE = [
           {
             id: "c-syntax",
             title: "C syntax",
+            challenge: {
+              description: "i know it feels fuzzzy, but fixing and writing code is the great way to remove that fuzzy feeling",
+              command: "docker run --rm -it ghcr.io/pwnctual/c-syntax",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/c-syntax",
+              flagHash: "b2e5120e065f6094367691fb162a1d03583deefbac324adb2cde28ea2f2c5327", // SHA-256 of the flag
+            },
           },
         ],
       },
@@ -242,6 +249,7 @@ function lessonActions(c, m, l, onChange) {
   const title = h("p", { class: "challenge-title" }, icon("flag", "flag-icon"), "Challenge");
   return h("div", { class: "challenge" },
     title,
+    l.challenge.description && h("p", { class: "challenge-desc" }, l.challenge.description),
     commandGroup(l.challenge.command, "This installs the challenge files on your computer."),
     commandGroup(l.challenge.leave, "This exits the challenge, so you can run the next command."),
     commandGroup(l.challenge.cleanup, "This deletes the challenge files from your computer. Run this after finishing the challenge to save up space."),

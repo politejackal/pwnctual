@@ -221,6 +221,7 @@ main .compare li:last-child { margin-bottom: 0; }
 .challenge-title { display: flex; align-items: center; gap: 10px; margin: 0; font-family: var(--font-code); font-size: 17px; font-weight: 600; }
 .challenge-title .flag-icon { display: grid; place-items: center; }
 .challenge-title svg { width: 20px; height: 20px; }
+.challenge-desc { margin: 0; }
 .chev { display: grid; place-items: center; }
 .cmd-group { display: flex; flex-direction: column; gap: 8px; }
 .command { display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }
