@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compiling · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="compiling">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Now who said the CPU can understand whatever was written in the script from the previous lesson? The CPU doesn't have any clue about what that means. Recall that all the CPU knows is ones and zeroes. But what we wrote are not ones and zeroes, so the computer can't understand it.</p>
+
+    <p>Well, it turns out that the C language we wrote is nothing but some words standing in for a bunch of ones and zeroes. We need some way to convert these words back to their respective zeroes and ones. This is where a tool called <code>make</code> comes in.</p>
+
+    <p><code>make</code> uses something called a <strong>compiler</strong>. And a compiler is nothing but a translator which translates human-readable words into computer-executable instructions. Its job is to turn our C code into those machine instructions. The usage of <code>make</code> is quite simple, but before we learn about it, we should know something.</p>
+
+    <aside class="note">
+      <p><strong>NOTE:</strong> It is a good practice to save any code written in C with the filename ending with <code>.c</code>. The <code>.c</code> is nothing but a label for us and others to know that the file contains C code. This is also important for compilers.</p>
+    </aside>
+
+    <p>So the usage of <code>make</code> is simple. You just type <code>make</code> followed by the name of the <code>.c</code> file that you want to compile. You don't need to type <code>.c</code> when passing the name of the file as the argument—<code>make</code> will automatically find the file ending with <code>.c</code> and know we are talking about that file. It will then give you a new executable file with that exact same name. To run the file that <code>make</code> gives you, use <code>./</code> followed by the filename (for example, <code>./program</code>).</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>

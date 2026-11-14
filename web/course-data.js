@@ -77,6 +77,10 @@ export const COURSE = [
               flagHash: "b2e5120e065f6094367691fb162a1d03583deefbac324adb2cde28ea2f2c5327", // SHA-256 of the flag
             },
           },
+          {
+            id: "compiling",
+            title: "Compiling",
+          },
         ],
       },
     ],
