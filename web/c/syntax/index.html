@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>C syntax · pwnctual</title>
+<meta name="description" content="Lesson 1 of the C module: your first C program, semicolons, curly braces, whitespace, comments and the rules for names.">
+<meta name="theme-color" content="#F7FBF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101510" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..800&family=Roboto+Flex:opsz,wght@8..144,400..800&family=Roboto+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<main>
+  <nav class="topbar">
+    <a class="back" href="/c/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 5.3a1 1 0 0 1 0 1.4L9.4 12l5.3 5.3a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg>
+      C
+    </a>
+  </nav>
+
+  <header class="page-head rise">
+    <span class="eyebrow">C · Lesson 1</span>
+    <h1>C syntax</h1>
+    <p>The grammar of C: the rules every line of C code has to follow.</p>
+  </header>
+
+  <section class="card rise" style="animation-delay: 0.08s;">
+    <p>Every language has grammar. In English, a sentence starts with a capital letter and ends with a full stop. If you break those rules, people still understand you most of the time.</p>
+    <p>C has grammar too, and it is called <b>syntax</b>. The difference is that C is not forgiving at all. The program that turns your C code into something the computer can run is called the <b>compiler</b>, and if you break one single rule, the compiler refuses to do its job and gives you an error instead.</p>
+    <p>So before we write anything useful, let’s learn the rules.</p>
+  </section>
+
+  <section class="card rise" style="animation-delay: 0.16s;">
+    <h2>Your first C program</h2>
+    <p>Here is the smallest useful C program. It prints <code>Hello, world!</code> on the screen. Don’t worry if it looks strange, we will go through it line by line.</p>
+    <pre><span class="label">hello.c</span><code><span class="tok-d">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-k">int</span> main(<span class="tok-k">void</span>) {
+    printf(<span class="tok-s">"Hello, world!\n"</span>);
+    <span class="tok-k">return</span> 0;
+}</code></pre>
+    <pre class="output"><span class="label">Output</span><code>Hello, world!</code></pre>
+    <div class="table-wrap">
+      <table class="stack">
+        <thead>
+          <tr><th>Line</th><th>What it means</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Line"><code>#include &lt;stdio.h&gt;</code></td>
+            <td data-label="What it means">Brings in <code>stdio.h</code>, the standard input and output library. It is code someone else already wrote for us, and it is where <code>printf</code> comes from. Lines starting with <code>#</code> are special, and they don’t end with a semicolon.</td>
+          </tr>
+          <tr>
+            <td data-label="Line"><code>int main(void)</code></td>
+            <td data-label="What it means">Every C program starts running at <code>main</code>. The <code>int</code> means <code>main</code> gives back a whole number when it finishes, and <code>void</code> means it takes nothing in.</td>
+          </tr>
+          <tr>
+            <td data-label="Line"><code>{</code> and <code>}</code></td>
+            <td data-label="What it means">Everything between these two curly braces belongs to <code>main</code>.</td>
+          </tr>
+          <tr>
+            <td data-label="Line"><code>printf("Hello, world!\n");</code></td>
+            <td data-label="What it means">Prints the text between the quotes. The <code>\n</code> is not printed as it is. It means “go to a new line”.</td>
+          </tr>
+          <tr>
+            <td data-label="Line"><code>return 0;</code></td>
+            <td data-label="What it means">Ends <code>main</code> and hands <code>0</code> back to the operating system. <code>0</code> means everything went fine.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card rise">
+    <h2>Statements end with a semicolon</h2>
+    <p>One instruction in C is called a <b>statement</b>. <code>printf("Hello, world!\n");</code> is a statement, and so is <code>return 0;</code>.</p>
+    <p>Every statement ends with a semicolon <code>;</code>. It is the full stop of C. Forget it, and the compiler stops. Here is the same program with the semicolon after <code>printf</code> missing:</p>
+    <pre><code>    printf(<span class="tok-s">"Hello, world!\n"</span>)
+    <span class="tok-k">return</span> 0;</code></pre>
+    <pre class="error"><span class="label">Compiler error</span><code>hello.c: In function 'main':
+hello.c:4:30: error: expected ';' before 'return'
+    4 |     printf("Hello, world!\n")
+      |                              ^
+      |                              ;</code></pre>
+    <p>Read errors from the top. <code>hello.c:4:30</code> means file <code>hello.c</code>, line 4, character 30. The compiler even draws an arrow where the semicolon should go. Errors look scary at first, but most of the time they tell you exactly what is wrong.</p>
+  </section>
+
+  <section class="card rise">
+    <h2>Curly braces make blocks</h2>
+    <p>A pair of curly braces <code>{ }</code> groups statements together into a <b>block</b>. The body of <code>main</code> is a block. Later, when we learn about <code>if</code> and loops, they will have blocks of their own.</p>
+    <p>The rule is simple: every <code>{</code> needs a matching <code>}</code>. If you open one and never close it, the compiler will complain.</p>
+  </section>
+
+  <section class="card rise">
+    <h2>Spaces and new lines mostly don’t matter</h2>
+    <p>The compiler doesn’t care about extra spaces, tabs or empty lines. This program works exactly the same as the first one:</p>
+    <pre><code><span class="tok-d">#include</span> &lt;stdio.h&gt;
+<span class="tok-k">int</span> main(<span class="tok-k">void</span>){printf(<span class="tok-s">"Hello, world!\n"</span>);<span class="tok-k">return</span> 0;}</code></pre>
+    <p>But it is painful to read, so nobody writes code like that. We put each statement on its own line and push the lines inside a block a bit to the right. That push is called <b>indentation</b>, and it is only there for humans.</p>
+    <p>There are a few places where spaces do matter:</p>
+    <ul>
+      <li>Between two words. <code>int main</code> works, <code>intmain</code> doesn’t.</li>
+      <li>Inside quotes. <code>"Hello, world!"</code> and <code>"Hello,   world!"</code> print different things.</li>
+      <li>Lines starting with <code>#</code> must sit on a line of their own.</li>
+    </ul>
+  </section>
+
+  <section class="card rise">
+    <h2>Comments</h2>
+    <p>A <b>comment</b> is a note for humans. The compiler throws it away, so it never affects the program. C has two kinds:</p>
+    <pre><code><span class="tok-c">// This is a one line comment. It lasts until the end of the line.</span>
+
+<span class="tok-c">/* This is a block comment.
+   It can go over as many lines as you want,
+   and it ends here: */</span>
+
+<span class="tok-k">return</span> 0; <span class="tok-c">// A comment can also sit after code.</span></code></pre>
+    <p class="note">You can’t put a block comment inside another block comment. The first <code>*/</code> ends the whole thing, and whatever comes after it is treated as code.</p>
+  </section>
+
+  <section class="card rise">
+    <h2>Capital letters matter</h2>
+    <p>C is <b>case sensitive</b>. To C, <code>main</code>, <code>Main</code> and <code>MAIN</code> are three completely different words. If you write <code>Printf</code> instead of <code>printf</code>, C has no idea what you mean.</p>
+  </section>
+
+  <section class="card rise">
+    <h2>Rules for names</h2>
+    <p>Soon we will give names to our own things, like a variable that stores a score. A name you make up is called an <b>identifier</b>, and it has to follow these rules:</p>
+    <ul>
+      <li>It can use letters, digits and the underscore <code>_</code>.</li>
+      <li>It can’t start with a digit.</li>
+      <li>It can’t have spaces or symbols like <code>-</code>.</li>
+      <li>It can’t be a <b>keyword</b>. Keywords are words C already uses for itself, like <code>int</code>, <code>void</code>, <code>return</code>, <code>if</code>, <code>else</code>, <code>while</code> and <code>for</code>.</li>
+    </ul>
+    <div class="table-wrap">
+      <table class="stack">
+        <thead>
+          <tr><th>Name</th><th>Allowed?</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td data-label="Name"><code>score</code></td><td data-label="Allowed?">Yes</td><td data-label="Why">Only letters.</td></tr>
+          <tr><td data-label="Name"><code>player_2</code></td><td data-label="Allowed?">Yes</td><td data-label="Why">Letters, an underscore and a digit, and it doesn’t start with the digit.</td></tr>
+          <tr><td data-label="Name"><code>Score</code></td><td data-label="Allowed?">Yes</td><td data-label="Why">Allowed, but it is a different name from <code>score</code>.</td></tr>
+          <tr><td data-label="Name"><code>2player</code></td><td data-label="Allowed?">No</td><td data-label="Why">Starts with a digit.</td></tr>
+          <tr><td data-label="Name"><code>my score</code></td><td data-label="Allowed?">No</td><td data-label="Why">Has a space.</td></tr>
+          <tr><td data-label="Name"><code>my-score</code></td><td data-label="Allowed?">No</td><td data-label="Why">C reads <code>-</code> as minus, so this is <code>my</code> minus <code>score</code>.</td></tr>
+          <tr><td data-label="Name"><code>return</code></td><td data-label="Allowed?">No</td><td data-label="Why">It is a keyword.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card rise">
+    <h2>Recap</h2>
+    <ul>
+      <li>Syntax is the grammar of C, and the compiler refuses code that breaks it.</li>
+      <li>Every program starts at <code>main</code>.</li>
+      <li>Every statement ends with <code>;</code>.</li>
+      <li>Curly braces <code>{ }</code> group statements into blocks, and they always come in pairs.</li>
+      <li>Extra spaces and new lines are for humans, not for the compiler.</li>
+      <li>Comments use <code>//</code> or <code>/* */</code> and are ignored by the compiler.</li>
+      <li>Capital letters matter, and names follow strict rules.</li>
+    </ul>
+  </section>
+
+  <nav class="topbar">
+    <a class="back" href="/c/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 5.3a1 1 0 0 1 0 1.4L9.4 12l5.3 5.3a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg>
+      Back to C
+    </a>
+  </nav>
+</main>
+</body>
+</html>

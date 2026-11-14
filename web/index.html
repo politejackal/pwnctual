@@ -8,64 +8,9 @@
 <meta name="theme-color" content="#101510" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..800&family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..800&family=Roboto+Flex:opsz,wght@8..144,400..800&family=Roboto+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
 <style>
-  :root {
-    color-scheme: light dark;
-    --primary: #37693D;
-    --on-primary: #FFFFFF;
-    --primary-container: #B8F0B8;
-    --on-primary-container: #002107;
-    --tertiary: #39656B;
-    --tertiary-container: #BCEBF2;
-    --on-tertiary-container: #001F23;
-    --surface: #F7FBF2;
-    --surface-container: #EBEFE6;
-    --surface-container-high: #E6E9E1;
-    --on-surface: #181D18;
-    --on-surface-variant: #414941;
-    --shape-soft: #A3DBA4;
-    --spring: linear(0, 0.35 8%, 0.8 18%, 1.08 30%, 1.12 38%, 1.04 52%, 0.99 66%, 1);
-    --font: "Google Sans Flex", "Roboto Flex", "Google Sans", Roboto, system-ui, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --primary: #9DD49E;
-      --on-primary: #003912;
-      --primary-container: #1E5127;
-      --on-primary-container: #B8F0B8;
-      --tertiary: #A1CED5;
-      --tertiary-container: #1F4D53;
-      --on-tertiary-container: #BCEBF2;
-      --surface: #101510;
-      --surface-container: #1C211C;
-      --surface-container-high: #272B26;
-      --on-surface: #E0E4DB;
-      --on-surface-variant: #C1C9BE;
-      --shape-soft: #2C6A36;
-    }
-  }
-
-  * { box-sizing: border-box; margin: 0; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    background: var(--surface);
-    color: var(--on-surface);
-    font-family: var(--font);
-    font-size: 1.0625rem;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100dvh;
-  }
-
-  main {
-    width: min(100%, 60rem);
-    margin-inline: auto;
-    padding: max(1rem, env(safe-area-inset-top)) 1rem 3rem;
-    display: grid;
-    gap: 0.75rem;
-  }
-
   /* Hero */
   .hero {
     position: relative;
@@ -133,12 +78,6 @@
   }
 
   /* Text cards */
-  .card {
-    background: var(--surface-container);
-    border-radius: 1.75rem;
-    padding: clamp(1.5rem, 4.5vw, 2.5rem);
-  }
-  .card p { max-width: 62ch; }
   .card.lead {
     background: var(--surface-container-high);
     font-size: clamp(1.25rem, 3.6vw, 1.75rem);
@@ -150,28 +89,20 @@
   .card.about { color: var(--on-surface-variant); }
 
   /* Motion */
-  .hero, .announcement, .card {
+  .hero, .announcement, .card, .modules {
     animation: rise 0.9s var(--spring) both;
   }
   .announcement { animation-delay: 0.08s; }
   .card.lead { animation-delay: 0.16s; }
   .card.about { animation-delay: 0.24s; }
+  .modules { animation-delay: 0.32s; display: grid; gap: 0.75rem; }
 
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(1.5rem) scale(0.96); }
-    to { opacity: 1; transform: none; }
-  }
   @keyframes spin { to { rotate: 360deg; } }
   @keyframes pulse {
     0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tertiary) 55%, transparent); }
     70%, 100% { box-shadow: 0 0 0 0.75rem transparent; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; }
-  }
-
   @media (min-width: 48rem) {
-    main { gap: 1rem; padding-top: 1.5rem; }
     .grid { display: grid; grid-template-columns: 5fr 7fr; gap: 1rem; align-items: stretch; }
   }
   @media (max-width: 47.99rem) {
@@ -202,6 +133,18 @@
       <p>pwnctual is a platform created by me, Polite Jackal, alone. It aims to teach vulnerability research from absolute beginning. All you need is English to get started. Every year acts as a checkpoint and you can quit at any level and be ready for real world jobs. Except year 1, after every year you will be able to find a job, and by a job I mean world class elite jobs and I will also hopefully guide you to get a job. I'm writing this right now in November, 2026. So if in future, maybe, just maybe if this becomes famous and I'm successful in making the project a success, pwnctual will itself hire you. Anyway, that's just a dream of mine.</p>
     </section>
   </div>
+
+  <section class="modules" aria-labelledby="modules-title">
+    <h2 class="section-title" id="modules-title">Modules</h2>
+    <a class="tile" href="/c/">
+      <span class="tile-badge" aria-hidden="true">C</span>
+      <span class="tile-text">
+        <span class="tile-title">C</span>
+        <span class="tile-meta">1 lesson</span>
+      </span>
+      <svg class="tile-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.3 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4-1.4L14.6 12 9.3 6.7a1 1 0 0 1 0-1.4z"/></svg>
+    </a>
+  </section>
 </main>
 </body>
 </html>
