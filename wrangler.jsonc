@@ -19,8 +19,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "pwnctual",
-      // From: npx wrangler d1 create pwnctual
+      "database_name": "pwnctual-accounts",
+      // From: npx wrangler d1 create pwnctual-accounts
       "database_id": "PASTE_DATABASE_ID_HERE",
       "migrations_dir": "migrations"
     }
