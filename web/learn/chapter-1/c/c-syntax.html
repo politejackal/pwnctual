@@ -43,6 +43,10 @@ int main() {
 
     <p>Now <code>printf</code> is just a function like <code>main</code>, written by somebody else. How does the program know where it is—I mean, there is nothing defined for it, right? Well, the first line is what imported it. The line starting with a <code>#</code> is a special line used for importing things. We imported a file called <code>stdio.h</code>, which stands for standard input/output. <code>.h</code> is just a label saying it's a header file, but don't worry about that now.</p>
 
+    <p>Now what are those double quotes, <code>""</code>, doing inside <code>printf</code>? Well, remember that <code>printf</code> is a function written by somebody else, and its job is to print text on the screen. But how does it know what text to print? We have to hand it over. Notice that <code>printf</code> also has a pair of parentheses after it. When you use a function, whatever you put inside its parentheses is what you are giving to that function to work with. That thing you hand over is called an <strong>argument</strong>.</p>
+
+    <p>And why the quotes? Recall that <code>main</code> and <code>printf</code> are names. Without the quotes, C would think <code>Hello</code> is also the name of something, like a function or a variable, go looking for it, find nothing, and your program wouldn't work at all. The double quotes tell C: this isn't code, it's just text, leave it as it is. Text inside double quotes is called a <strong>string</strong>. The quotes themselves don't get printed, only what's between them.</p>
+
     <p>Now also notice that some lines end with a semicolon, <code>;</code>. Well, it turns out every instruction in C, except for function definitions and <code>#include</code> lines, needs to end with a semicolon. There is no need to write different instructions on different lines—you could just separate almost all instructions with semicolons and it would work the same. It turns out that this code does the exact same thing:</p>
 
     <pre class="code">#include &lt;stdio.h&gt;
