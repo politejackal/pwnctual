@@ -25,6 +25,26 @@
     <h1>C syntax</h1>
   </header>
 
+  <section class="card rise" style="animation-delay: 0.08s;">
+    <p>Here is an example of C code:</p>
+    <pre><span class="label">C</span><code><span class="tok-d">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-k">int</span> main() {
+    printf(<span class="tok-s">"Hello, World!"</span>);
+    <span class="tok-k">return</span> 0;
+}</code></pre>
+    <p>I know that looks very cryptic at first. But it's one of the simplest programs possible out there.</p>
+    <p>Now the first line is something we will come back to in a bit. The main aim of this lesson is to teach you the basic grammar of the C language.</p>
+    <p>You should, for now, also ignore what <code>int</code> means.</p>
+    <p>See that <code>main</code>? It is just the name of the function. Recall that a function is a bunch of code that performs specific actions. Now how does the program know that you are defining a function, or perhaps defining a variable (recall a variable is like a container that stores something, like some value)? Well, you use a pair of parentheses, <code>()</code>, to say that this is a function and not a variable or something else.</p>
+    <p>Then, inside a pair of curly braces, <code>{}</code>, you write whatever you want that specific function to do. Think of curly braces as the walls, and whatever is inside those walls is what happens whenever that function runs.</p>
+    <p>Now <code>printf</code> is just a function like <code>main</code>, written by somebody else. How does the program know where it is—I mean, there is nothing defined for it, right? Well, the first line is what imported it. The line starting with a <code>#</code> is a special line used for importing things. We imported a file called <code>stdio.h</code>, which stands for standard input/output. <code>.h</code> is just a label saying it's a header file, but don't worry about that now.</p>
+    <p>Now also notice that some lines end with a semicolon, <code>;</code>. Well, it turns out every instruction in C, except for function definitions and <code>#include</code> lines, needs to end with a semicolon. There is no need to write different instructions on different lines—you could just separate almost all instructions with semicolons and it would work the same. It turns out that this code does the exact same thing:</p>
+    <pre><span class="label">C</span><code><span class="tok-d">#include</span> &lt;stdio.h&gt;
+<span class="tok-k">int</span> main(){printf(<span class="tok-s">"Hello, World!"</span>); <span class="tok-k">return</span> 0;}</code></pre>
+    <p>Remember that everything is case-sensitive here, and typos will almost certainly stop your program from compiling ( we will learn this soon). Anyway, that was our first C program!</p>
+  </section>
+
   <nav class="topbar">
     <a class="back" href="/c/">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 5.3a1 1 0 0 1 0 1.4L9.4 12l5.3 5.3a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg>
