@@ -80,6 +80,12 @@ export const COURSE = [
           {
             id: "compiling",
             title: "Compiling",
+            challenge: {
+              command: "docker run --rm -it ghcr.io/pwnctual/compiling",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/compiling",
+              flagHash: "d870a7912870de7f647e0a4af5850cd2889a6a152cf0ec260f7f4d31eb4308c3", // SHA-256 of the flag
+            },
           },
         ],
       },
