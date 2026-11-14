@@ -1,13 +1,30 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   // The site: static files in web/, served by a Worker on pwnctual.com.
+  // src/worker.js only handles sign-in, the API and profiles (the paths in run_worker_first).
   "name": "pwnctual",
+  "main": "src/worker.js",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./web",
-    // Every path loads the blank index.html
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    // Every other path loads the blank index.html
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/auth/*", "/api/*", "/u/*"]
   },
+  "vars": {
+    // From the GitHub OAuth app. The client secret is set with: npx wrangler secret put GITHUB_CLIENT_SECRET
+    "GITHUB_CLIENT_ID": "PASTE_CLIENT_ID_HERE"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pwnctual",
+      // From: npx wrangler d1 create pwnctual
+      "database_id": "PASTE_DATABASE_ID_HERE",
+      "migrations_dir": "migrations"
+    }
+  ],
   "routes": [
     { "pattern": "pwnctual.com", "custom_domain": true }
   ]

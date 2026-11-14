@@ -278,3 +278,33 @@ a.lesson-nav-btn:hover { border-color: var(--text); background: var(--card); }
   .place td { min-width: 0; padding: 8px 10px; font-size: 18px; }
   .place .sum { font-size: 15px; }
 }
+
+/* Sign in / signed-in user in the top bar */
+.site-nav .nav-signin { border: 1px solid var(--border); color: var(--text); }
+.site-nav .nav-signin:hover { border-color: var(--text); background: none; }
+.site-nav .nav-user { display: inline-flex; align-items: center; gap: 8px; color: var(--text); }
+.nav-user img { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); }
+
+/* Profile: /u/<login> */
+.profile-head { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
+.profile-head .avatar { flex: none; width: 96px; height: 96px; border-radius: 50%; border: 1px solid var(--border); }
+.profile-head h1 { overflow-wrap: anywhere; }
+.profile-name { margin: 8px 0 0; color: var(--muted); font-size: 19px; }
+.profile-head .meta { margin-top: 10px; }
+.profile-head .meta a { color: var(--muted); }
+.profile-section { margin: 0 0 48px; }
+.profile-chapters, .solved { list-style: none; margin: 24px 0 0; padding: 0; }
+.profile-chapters li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; padding: 14px 0; border-top: 1px solid var(--border); }
+.profile-chapters li > a { flex: 1 1 260px; font-family: var(--font-code); font-size: 16px; text-decoration: none; }
+.profile-chapters li > a:hover { text-decoration: underline; }
+.profile-chapters .progress { flex: 1 1 220px; }
+.solved li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 14px 0; border-top: 1px solid var(--border); }
+.solved li:first-child { border-top: 0; }
+.solved a { font-family: var(--font-code); font-size: 17px; font-weight: 600; text-decoration: none; }
+.solved a:hover { text-decoration: underline; }
+.signout { background: transparent; color: var(--text); border-color: var(--border); }
+.signout:hover { border-color: var(--text); }
+@media (max-width: 640px) {
+  .site-nav .nav-user { font-size: 0; gap: 0; }
+  .profile-head .avatar { width: 72px; height: 72px; }
+}
