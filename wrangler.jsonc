@@ -21,7 +21,7 @@
       "binding": "DB",
       "database_name": "pwnctual-accounts",
       // From: npx wrangler d1 create pwnctual-accounts
-      "database_id": "PASTE_DATABASE_ID_HERE",
+      "database_id": "cf469c44-0c6c-4d7f-8bd4-250f6de1865f",
       "migrations_dir": "migrations"
     }
   ],
