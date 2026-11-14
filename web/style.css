@@ -222,6 +222,7 @@ main .compare li:last-child { margin-bottom: 0; }
 .challenge-title .flag-icon { display: grid; place-items: center; }
 .challenge-title svg { width: 20px; height: 20px; }
 .challenge-desc { margin: 0; }
+.challenge-desc code { padding: 2px 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font-family: var(--font-code); font-size: .88em; }
 .chev { display: grid; place-items: center; }
 .cmd-group { display: flex; flex-direction: column; gap: 8px; }
 .command { display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }

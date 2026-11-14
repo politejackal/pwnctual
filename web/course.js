@@ -66,7 +66,11 @@ const COURSE = [
             id: "c-syntax",
             title: "C syntax",
             challenge: {
-              description: "i know it feels fuzzzy, but fixing and writing code is the great way to remove that fuzzy feeling",
+              description: [
+                "I know it feels fuzzy, but fixing and writing code is a great way to remove that fuzzy feeling.",
+                "In this challenge, you will be fixing a broken C program. You get a file called `hello.c` that is supposed to print `Hello, World!`, but it has a mistake in it. Your job is to find that mistake and fix it. There are 6 levels, and every level has a different mistake.",
+                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `hello.c`. Open it with `nano hello.c`, fix the mistake, save it with Ctrl+O and Enter, and leave with Ctrl+X. Now run `/challenge/run` again to check your fix. If it's right, you move on to the next level. Fix all 6 and you get the flag. Paste it in the box below, and that's it!",
+              ],
               command: "docker run --rm -it ghcr.io/pwnctual/c-syntax",
               leave: "exit",
               cleanup: "docker rmi ghcr.io/pwnctual/c-syntax",
@@ -200,6 +204,11 @@ function commandGroup(command, note) {
   return h("div", { class: "cmd-group" }, commandBox(command), h("p", { class: "cmd-note" }, note));
 }
 
+// A challenge description paragraph: text in `backticks` shows as code
+function descParagraph(text) {
+  return h("p", { class: "challenge-desc" }, text.split("`").map((part, i) => (i % 2 ? h("code", null, part) : part)));
+}
+
 // The challenge box (or the "Mark as complete" button) under a lesson
 function lessonActions(c, m, l, onChange) {
   const key = lessonKey(c, m, l);
@@ -249,7 +258,7 @@ function lessonActions(c, m, l, onChange) {
   const title = h("p", { class: "challenge-title" }, icon("flag", "flag-icon"), "Challenge");
   return h("div", { class: "challenge" },
     title,
-    l.challenge.description && h("p", { class: "challenge-desc" }, l.challenge.description),
+    [].concat(l.challenge.description || []).map(descParagraph),
     commandGroup(l.challenge.command, "This installs the challenge files on your computer."),
     commandGroup(l.challenge.leave, "This exits the challenge, so you can run the next command."),
     commandGroup(l.challenge.cleanup, "This deletes the challenge files from your computer. Run this after finishing the challenge to save up space."),
