@@ -58,6 +58,16 @@ const COURSE = [
           },
         ],
       },
+      {
+        id: "c",
+        title: "C",
+        lessons: [
+          {
+            id: "c-syntax",
+            title: "C syntax",
+          },
+        ],
+      },
     ],
   },
 ];
