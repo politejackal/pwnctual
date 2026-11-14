@@ -291,6 +291,10 @@ function render() {
     headEl.replaceChildren(hero(`Chapter ${ci + 1}`, chapter.title, chapter.description,
       `${count(chapter.modules.length, "module")} · ${count(lessons.length, "lesson")}`, percent(lessons)));
     list.replaceChildren(
+      chapter.video && h("div", { class: "video" },
+        h("iframe", { src: `https://www.youtube.com/embed/${chapter.video}`, title: chapter.title, loading: "lazy",
+          allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+          referrerpolicy: "strict-origin-when-cross-origin", allowfullscreen: true })),
       h("h2", { class: "section-title" }, "Modules"),
       h("div", { class: "grid" }, chapter.modules.map((m, i) => moduleCard(chapter, m, i))));
   } else if (d.page === "module") {
