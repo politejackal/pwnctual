@@ -14,7 +14,7 @@
   },
   "vars": {
     // From the GitHub OAuth app. The client secret is set with: npx wrangler secret put GITHUB_CLIENT_SECRET
-    "GITHUB_CLIENT_ID": "PASTE_CLIENT_ID_HERE"
+    "GITHUB_CLIENT_ID": "Ov23lipZlQKLpDwxFXyl"
   },
   "d1_databases": [
     {
