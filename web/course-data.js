@@ -84,8 +84,8 @@ export const COURSE = [
             challenge: {
               description: [
                 "Time to turn some C code into ones and zeroes yourself!",
-                "In this challenge, you get a file called `hello.c`. It's the same Hello, World! program from the previous lesson, but nobody has compiled it yet. Your job is to compile it with `make`.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `hello.c`. Compile it with `make hello`, then run `/challenge/run` again to check. If you compiled it right, you get the flag. Paste it in the box below, and that's it!",
+                "In this challenge, you get a file called `flag.c`. It's a C program that prints the flag, but nobody has compiled it yet. Your job is to compile it with `make` and run it.",
+                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `flag.c`. Compile it with `make flag`, then run it with `./flag`. That prints the flag. Paste it in the box below, and that's it!",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/compiling",
               leave: "exit",
