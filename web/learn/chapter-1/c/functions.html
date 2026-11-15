@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Functions · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="functions">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Instead of reusing the same block of code again and again, we use something called functions. For example, somebody way back—like literally wayyy back—wrote the <code>printf</code> function to print something to us in the terminal. So we just import that function and use it whenever we want. In this lesson, we will be doing exactly that.</p>
+
+    <p>By default, whenever we run our C program, we execute the <code>main</code> function. The <code>main</code> function is a special function and runs automatically every time we run the program. Other functions don't run automatically unless we call them.</p>
+
+    <p>As you can probably guess, <code>main</code> is not the program itself, it's just a function. And the main one!</p>
+
+    <p>In C, you need to define functions by specifying what the function will return. This is something we will learn soon, so you can safely ignore this part for now. Just remember that the function takes something called <code>int</code> as its return value.</p>
+
+    <p>So our function written so far: <code>int</code></p>
+
+    <p>Then we write the name of the function. Let's call this function <code>hello</code>.</p>
+
+    <p>So our function so far: <code>int hello</code></p>
+
+    <p>Then we use a pair of parentheses, <code>()</code>, to tell the program that we are talking about a function. The program needs to differentiate between a variable and a function, and inside these parentheses, we can pass something called arguments (which we will skip for now to keep things simple).</p>
+
+    <p>So our function so far: <code>int hello()</code></p>
+
+    <p>Then we have something like walls: the curly braces, <code>{}</code>. Inside these, we write whatever we want to happen when this function is called. For now, whenever this function is called, let's just print "hello". To do that, we need to call the <code>printf</code> function. (The 'f' in <code>printf</code> stands for "formatted"). Inside the <code>printf</code> we will pass an argument—something known as a string, which we will come back to soon as well.</p>
+
+    <p>But wait! Remember that <code>printf</code> is written by somebody else, so we need to import the library or file that contains it. That is done using the <code>#include</code> line, and it generally goes at the very top of the file.</p>
+
+    <p>So our code so far:</p>
+
+    <pre class="code">#include &lt;stdio.h&gt;
+int hello() {printf("hello")}</pre>
+
+    <p>Now, we generally like to keep our code organized, so we write each instruction on a new line. Like this:</p>
+
+    <pre class="code">#include &lt;stdio.h&gt;
+
+int hello() {
+    printf("hello")
+}</pre>
+
+    <p>Now we are missing something. Recall that every instruction in C—except for defining functions and importing files—needs to end with a semicolon. That's just the rule.</p>
+
+    <p>So our code so far:</p>
+
+    <pre class="code">#include &lt;stdio.h&gt;
+
+int hello() {
+    printf("hello");
+}</pre>
+
+    <p>Now let's save this as <code>hello.c</code>, compile it (using <code>make hello</code>), and then run it (<code>./hello</code>).</p>
+
+    <p>Wait! You might expect this program to compile successfully, but it won't! It will actually give you an error.</p>
+
+    <p>Why? Because whatever is in <code>main</code> gets executed first. If the program doesn't find <code>main</code>, it panics and gives an error because it doesn't know where the program is supposed to start. Our code right now only has <code>hello</code>.</p>
+
+    <p>If we didn't want anything to actually happen, we could just leave the <code>main</code> function empty. But we do want something to happen: we want our <code>hello</code> function to run. So, before finishing our script, we will write our <code>main</code> function and pass our <code>hello()</code> function into it. We are calling our new function exactly the same way we called the <code>printf</code> function earlier!</p>
+
+    <p>Here is what the final, working code looks like:</p>
+
+    <pre class="code">#include &lt;stdio.h&gt;
+
+int hello() {
+    printf("hello");
+}
+
+int main() {
+    hello();
+}</pre>
+
+    <p>Now, when the program runs, it starts at <code>main</code>, sees that we are calling <code>hello()</code>, jumps up to our <code>hello</code> function, prints "hello", and finishes successfully!</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>
