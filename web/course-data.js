@@ -96,6 +96,12 @@ export const COURSE = [
           {
             id: "functions",
             title: "Functions",
+            challenge: {
+              command: "docker run --rm -it ghcr.io/pwnctual/functions",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/functions",
+              flagHash: "18e916d481325d974370769c1b019d6f8bb13dc87e6b23ebecaeea8f451896ce", // SHA-256 of the flag
+            },
           },
         ],
       },
