@@ -111,6 +111,12 @@ export const COURSE = [
           {
             id: "variables",
             title: "Variables",
+            challenge: {
+              command: "docker run --rm -it ghcr.io/pwnctual/variables",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/variables",
+              flagHash: "31c11c4f53657bd4bc269231f2a00eed3a059c40b2dd118745d0ceea481e8d46", // SHA-256 of the flag
+            },
           },
         ],
       },
