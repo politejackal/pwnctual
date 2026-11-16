@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variables · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="variables">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Now of course, you can store stuff in programming. For example, you can store the value <code>1337</code> in <code>x</code> by saying <code>int x = 1337;</code>. Now here, <code>int</code> is just short for integer, and it is important for you to specify the type of the variable before assigning the value to it. This is all a bit of a headache, which is why in the next module we will transition from C to Python, where Python does this assigning of the value type for us.</p>
+
+    <p>So in C, we specify the type of the variable before assigning the value. This is done by simply typing the type of the variable you are assigning before the name of the variable. The name could be whatever you want, but there are some rules to follow.</p>
+
+    <p>There are 4 main types of variables in C. These are <code>int</code>, <code>char</code>, <code>float</code>, and <code>double</code>:</p>
+
+    <ul class="terms">
+      <li><strong>int</strong> (short for integer, 4 bytes long): Stores whole numbers without decimals. Example: <code>int age = 25;</code></li>
+      <li><strong>char</strong> (short for character, 1 byte long): Stores a single character or an ASCII value. Example: <code>char grade = 'A';</code></li>
+      <li><strong>float</strong> (floating-point number, 4 bytes long): Stores decimal numbers with precision for about 6–7 digits. Example: <code>float pi = 3.1415927;</code></li>
+      <li><strong>double</strong> (8 bytes long): Stores decimal numbers with double precision, about 15 digits long. Example: <code>double pi = 3.14159265358979;</code></li>
+    </ul>
+
+    <p>The <code>printf</code> function allows printing variables, but as you know, the meaning of <code>printf</code> itself is "print formatted", so you need to format the type of the variable and some more things. Let's look at an example.</p>
+
+    <p>Say I wanted to print a number <code>x</code>, whose type is <code>int</code>, I would need to use a percentage symbol and an <code>i</code> such as follows:<br>
+    <code>printf("%i");</code></p>
+
+    <p>I would then, after the second double quote, put a comma and type the name of the variable I am printing:<br>
+    <code>printf("%i", x);</code></p>
+
+    <p>Of course, before running this command, you would need to specify <code>x</code> with something like <code>int x = 1337;</code>.</p>
+
+    <p>Before we look at the other types, you might notice a <code>\n</code> in the examples below. <code>\n</code> is just a special, invisible character that tells the terminal to hit "Enter" and start a new line. If you don't use it, your next terminal prompt will be squished right next to your output, looking all messy.</p>
+
+    <p>Just like the <code>%i</code> is for <code>int</code>, here are the different specifiers for different variable types:</p>
+
+    <div style="overflow-x:auto">
+      <table class="states">
+        <tr><th>Data Type</th><th>Specifier</th><th>Example Code</th></tr>
+        <tr><td><strong>int</strong> (Integer)</td><td><code>%d</code> or <code>%i</code></td><td><code>printf("%d\n", x);</code></td></tr>
+        <tr><td><strong>float</strong> (Decimal)</td><td><code>%f</code></td><td><code>printf("%f\n", x);</code></td></tr>
+        <tr><td><strong>double</strong> (Large Decimal)</td><td><code>%lf</code> or <code>%f</code></td><td><code>printf("%lf\n", x);</code></td></tr>
+        <tr><td><strong>char</strong> (Single Character)</td><td><code>%c</code></td><td><code>printf("%c\n", x);</code></td></tr>
+      </table>
+    </div>
+
+    <p>Now, you might be thinking, "Wait, if a <code>char</code> only holds one single letter, how do I store a whole word or a sentence?"</p>
+
+    <p>Well, it turns out C is so low-level that it doesn't actually have a "string" (word) variable type! If you want to store a word, you have to use a bunch of <code>char</code>s lined up next to each other. We will dive into how that works very soon, but for now, just know that when you do want to print a word or text, you use the <code>%s</code> specifier.</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>
