@@ -123,6 +123,10 @@ export const COURSE = [
               flagHash: "18e916d481325d974370769c1b019d6f8bb13dc87e6b23ebecaeea8f451896ce", // SHA-256 of the flag
             },
           },
+          {
+            id: "conditionals",
+            title: "Conditionals",
+          },
         ],
       },
     ],

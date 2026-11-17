@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conditionals · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="conditionals">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Conditionals are like the basic decisions we make when we want to do something. For example, "if it is raining, I will take the umbrella."</p>
+
+    <p>Conditionals allow you to do specific things based on whether some statements are true or false. In C, true is represented by any value other than 0, and false is represented by a 0. Yes, plain numbers have true/false meanings in C!</p>
+
+    <p>In C, relational and equality operators compare two values and look for their relationship. If the statement is true, C gives us <code>1</code>, and if it is false, it gives us <code>0</code>.</p>
+
+    <p>The operators we have in C are:</p>
+
+    <ul class="terms">
+      <li>Equal to (<code>==</code>)</li>
+      <li>Not equal to (<code>!=</code>) (I added this one for you!)</li>
+      <li>Greater than (<code>&gt;</code>)</li>
+      <li>Less than (<code>&lt;</code>)</li>
+      <li>Greater than or equal to (<code>&gt;=</code>)</li>
+      <li>Less than or equal to (<code>&lt;=</code>)</li>
+    </ul>
+
+    <p>The use of these operators is simple. You just type a variable on the left-hand side and the right-hand side and add the symbols in between. For example:</p>
+
+    <pre class="code">10 &gt; 5   // This gives us 1 (True)
+10 &lt;= 5  // This gives us 0 (False)</pre>
+
+    <p>Remember that we assign a value with a single equal sign (<code>=</code>), but when we want to check for equality, we use a double equal sign (<code>==</code>). For example:</p>
+
+    <pre class="code">int x = 5;  // This ASSIGNS the value 5 to x.
+x == 5;     // This CHECKS if x is equal to 5 (returns 1 for True).</pre>
+
+    <aside class="note">
+      <p><strong>Note:</strong> Mixing up <code>=</code> and <code>==</code> inside a condition is one of the most common ways programmers accidentally introduce massive bugs and security vulnerabilities!</p>
+    </aside>
+
+    <h2>The Core Statements</h2>
+
+    <ul class="terms">
+      <li><code>if</code> statement: Does something if the following condition is true.</li>
+      <li><code>else if</code> statement: Does something if the previous <code>if</code> statement was false AND this new condition is true.</li>
+      <li><code>else</code> statement: Executes only when ALL the prior <code>if</code> and <code>else if</code> statements are false.</li>
+    </ul>
+
+    <p>You can branch as many statements as you like. For example:</p>
+
+    <pre class="code">int age = 15;
+
+if (age &lt; 13) {
+    printf("You are a kid.\n");
+}
+else if (age &lt; 18) {
+    printf("You are a teenager.\n");
+}
+else {
+    printf("You are an adult.\n");
+}</pre>
+
+    <p>(Since <code>age</code> is 15, the first statement is false, but the second statement is true, so it will print "You are a teenager.")</p>
+
+    <h2>Logical Operators (AND, OR, NOT)</h2>
+
+    <p>Now we have Logical operators. In C, we don't type the English words; we use special symbols: <code>&amp;&amp;</code> (AND), <code>||</code> (OR), and <code>!</code> (NOT).</p>
+
+    <p>AND (<code>&amp;&amp;</code>) just means the condition on the left-hand side as well as the right-hand side must BOTH be true. Otherwise, the whole statement is false.</p>
+
+    <pre class="code">// Checking if a number is between 10 and 20
+if (x &gt; 10 &amp;&amp; x &lt; 20) {
+    printf("x is right in the sweet spot!\n");
+}</pre>
+
+    <p>OR (<code>||</code>) checks if the condition on either the left-hand side or the right-hand side is true. If any one is true, the whole statement is true.</p>
+
+    <pre class="code">// Checking if today is the weekend (Saturday is day 6, Sunday is day 7)
+if (day == 6 || day == 7) {
+    printf("It is the weekend!\n");
+}</pre>
+
+    <p>NOT (<code>!</code>) is the exact opposite of whatever follows it. If something is true, NOT makes it false.</p>
+
+    <pre class="code">int is_raining = 0; // 0 means false
+
+if (!is_raining) {
+    printf("It is NOT raining, leave the umbrella.\n");
+}</pre>
+
+    <p>Remember, the order of the conditions matters a lot, as you will see in the following challenges!</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>
