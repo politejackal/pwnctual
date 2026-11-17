@@ -61,7 +61,7 @@ export const COURSE = [
       },
       {
         id: "c",
-        title: "C",
+        title: "Hello, C",
         lessons: [
           {
             id: "c-syntax",
