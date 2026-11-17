@@ -126,6 +126,17 @@ export const COURSE = [
           {
             id: "conditionals",
             title: "Conditionals",
+            challenge: {
+              description: [
+                "Let's make some decisions!",
+                "In this challenge, you get a file called `conditionals.c`, and every level asks you to make the program decide something: fix a sneaky bug, put conditions in the right order, or combine them with `&&`, `||` and `!`. There are 7 levels. Here's the catch: the checker doesn't just run your program once. It tries lots of different values, so your conditions have to be right every single time.",
+                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `conditionals.c` and tells you what to do. Open it with `nano conditionals.c`, make your changes, and try it with `make conditionals` and `./conditionals`. Change the numbers at the top to test it yourself! When you think it's right, run `/challenge/run` again to check. Finish all 7 levels and you get the flag. Paste it in the box below, and that's it!",
+              ],
+              command: "docker run --rm -it ghcr.io/pwnctual/conditionals",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/conditionals",
+              flagHash: "bac25ee795cf60c7388a54efba50b48db727c6d256944528ce09621a7f663bfc", // SHA-256 of the flag
+            },
           },
         ],
       },
