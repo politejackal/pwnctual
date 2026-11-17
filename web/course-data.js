@@ -5,7 +5,7 @@ export const COURSE = [
     id: "chapter-1",
     title: "Introduction to computer science",
     description: "Teaches how a computer works, C & Python.",
-    video: "asEAODiZnnY", // YouTube video id, shown on the chapter page
+    video: "W6G73tg4yKs", // YouTube video id, shown on the chapter page
     modules: [
       {
         id: "binary-and-data-representation",
