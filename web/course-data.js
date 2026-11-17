@@ -112,6 +112,11 @@ export const COURSE = [
             id: "variables",
             title: "Variables",
             challenge: {
+              description: [
+                "Variables are the boxes that hold everything, so let's fill some up!",
+                "In this challenge, you get a file called `variables.c`, and every level asks you to do something different with variables: give one a type, pick the right specifier to print it, or figure out why it's printing the wrong thing. There are 6 levels.",
+                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `variables.c` and tells you what to do. Open it with `nano variables.c`, make your changes, and try it with `make variables` and `./variables`. When you think it's right, run `/challenge/run` again to check. Finish all 6 levels and you get the flag. Paste it in the box below, and that's it!",
+              ],
               command: "docker run --rm -it ghcr.io/pwnctual/variables",
               leave: "exit",
               cleanup: "docker rmi ghcr.io/pwnctual/variables",
