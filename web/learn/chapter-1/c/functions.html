@@ -88,6 +88,24 @@ int main() {
 }</pre>
 
     <p>Now, when the program runs, it starts at <code>main</code>, sees that we are calling <code>hello()</code>, jumps up to our <code>hello</code> function, prints "hello", and finishes successfully!</p>
+
+    <p>Now notice that we wrote our <code>hello</code> function above <code>main</code>, not below it. That's on purpose. C reads your code from top to bottom, just like you do. So if <code>hello</code> were written below <code>main</code>, by the time C reaches <code>hello();</code> inside <code>main</code>, it has never heard of <code>hello</code> before. Newer compilers will give you an error and refuse to compile it. Older ones, like the one in our challenges, will only give you a warning and take a guess, but you should never rely on that guess.</p>
+
+    <p>So what if you really want <code>main</code> at the top? Well, you can tell C about the function before using it, by writing just the first part of it at the top of the file, followed by a semicolon. This is called a <strong>declaration</strong>. Notice the semicolon: we are not defining the function here, we are only telling C that it exists.</p>
+
+    <pre class="code">#include &lt;stdio.h&gt;
+
+int hello();
+
+int main() {
+    hello();
+}
+
+int hello() {
+    printf("hello");
+}</pre>
+
+    <p>Now C already knows about <code>hello</code> by the time it reaches <code>main</code>, so it's happy, even though the actual code of <code>hello</code> is written at the bottom.</p>
   </main>
 
   <div id="list"></div>
