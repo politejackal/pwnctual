@@ -54,13 +54,7 @@ export function emblem(badge, { mystery = false } = {}) {
     <g clip-path="url(#${id}g)" fill="none" stroke="${green}" stroke-width="1.6" filter="url(#${id}f)">${lon}${lat}</g>
     <path d="M60 52 C66 46 74 44 80 44" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
     <ellipse cx="80" cy="74" rx="50" ry="13" transform="rotate(-18 80 74)" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="70 12" opacity=".85"/>
-    <circle cx="124" cy="58" r="4.5" fill="#fff" stroke="${INK}" stroke-width="2.5"/>
-    <path d="M20 112 L30 104 L130 104 L140 112 L130 120 L30 120 Z" fill="#0d1118" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M24 104 L14 98 L22 112 L14 126 L28 120" fill="url(#${id}gold)" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M136 104 L146 98 L138 112 L146 126 L132 120" fill="url(#${id}gold)" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M30 104 L130 104 L136 108 L24 108 Z" fill="#f5c542"/>
-    <path d="M24 116 L136 116 L130 120 L30 120 Z" fill="#f5c542"/>
-    <text x="80" y="116.5" text-anchor="middle" font-family="'Google Sans Code', ui-monospace, monospace" font-size="12.5" font-weight="700" fill="${green}">Hello, World!</text>`);
+    <circle cx="124" cy="58" r="4.5" fill="#fff" stroke="${INK}" stroke-width="2.5"/>`);
 }
 
 // The chunky reveal font, loaded the first time the reveal shows
