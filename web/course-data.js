@@ -142,6 +142,11 @@ export const COURSE = [
             id: "loops",
             title: "Loops",
             challenge: {
+              description: [
+                "Time to make the computer do the boring stuff for us, again and again!",
+                "In this challenge, you get a file called `loops.c`, and every level asks you to do something different with loops: fix an off-by-one, stop a loop that never ends, scan some ports, or crack a pin with `break`. There are 6 levels. Just like in conditionals, the checker tries lots of different values, so your loop has to be right every single time.",
+                "Here’s how it works: run the first command below, then run `/challenge/run`. That gives you `loops.c` and tells you what to do. Open it with `nano loops.c`, make your changes, and try it with `make loops` and `./loops`. Change the numbers at the top to test it yourself! When you think it’s right, run `/challenge/run` again to check. Finish all 6 levels and you get the flag.!",
+              ],
               command: "docker run --rm -it ghcr.io/pwnctual/loops",
               leave: "exit",
               cleanup: "docker rmi ghcr.io/pwnctual/loops",
