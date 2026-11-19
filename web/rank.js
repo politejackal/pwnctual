@@ -40,53 +40,191 @@ export function nextStep(done) {
   return { rank: next, text: `How to reach ${next.name} is a secret. Keep going!` };
 }
 
-// ---- The emblem: a chunky shield that gets crazier with every rank ----
+// ---- The emblem: a different character for every rank ----
+// Common: an old computer with a blinking cursor. Uncommon: a hooded hacker, code raining in the hood.
+// Rare: a cyborg with a scanning visor. Legendary: a crowned skull on fire, with wings.
+// Mythic: a giant horned eye in a spinning portal that looks around and blinks.
 
 let uid = 0;
-export function emblem(r, { mystery = false } = {}) {
-  const k = RANKS[r];
-  const id = `rk${++uid}`;
-  const [c1, c2, c3] = mystery ? ["#3a3f4d", "#1b1f29", "#0b0d12"] : k.c;
-  const ink = "#0b0d12";
-  const shield = "M60 10 L102 26 V64 C102 88 82 104 60 112 C38 104 18 88 18 64 V26 Z";
-  const inner = "M60 22 L91 34 V63 C91 81 77 93 60 99 C43 93 29 81 29 63 V34 Z";
-
-  // Wings for Legendary and Mythic, horns too for Mythic
-  const wing = (s) => `<g transform="translate(${s < 0 ? 120 : 0} 0) scale(${s} 1)">
-      <path d="M22 40 C4 38 -2 52 2 66 C8 60 12 60 16 64 C6 70 6 82 12 90 C16 82 20 80 24 82 Z" fill="url(#${id}w)" stroke="${ink}" stroke-width="5" stroke-linejoin="round"/>
-    </g>`;
-  const wings = !mystery && r >= 3 ? wing(1) + wing(-1) : "";
-  const horns = !mystery && r >= 4
-    ? `<path d="M38 18 C30 6 22 4 14 6 C24 10 28 18 30 26 Z M82 18 C90 6 98 4 106 6 C96 10 92 18 90 26 Z" fill="url(#${id}w)" stroke="${ink}" stroke-width="5" stroke-linejoin="round"/>`
+const INK = "#0b0d12";
+const pt = (r, deg) => [60 + r * Math.cos((deg * Math.PI) / 180), 60 + r * Math.sin((deg * Math.PI) / 180)];
+function skull(id, r, eye) {
+  const glow = r >= 1;
+  const eyes = glow
+    ? `<g filter="url(#${id}f)"><ellipse class="e-eye" cx="50" cy="60" rx="6.5" ry="7.5" fill="${eye}"/><ellipse class="e-eye" cx="70" cy="60" rx="6.5" ry="7.5" fill="${eye}"/></g>
+       <ellipse cx="50" cy="60" rx="2.6" ry="3" fill="#fff"/><ellipse cx="70" cy="60" rx="2.6" ry="3" fill="#fff"/>`
+    : `<ellipse cx="50" cy="60" rx="6.5" ry="7.5" fill="${INK}"/><ellipse cx="70" cy="60" rx="6.5" ry="7.5" fill="${INK}"/>`;
+  const horns = r >= 4
+    ? `<path d="M41 50 C30 42 26 28 32 14 C36 28 44 36 52 40 Z M79 50 C90 42 94 28 88 14 C84 28 76 36 68 40 Z" fill="url(#${id}h)" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`
     : "";
+  const crown = r >= 3
+    ? `<path d="M44 40 L41 22 L51 31 L60 17 L69 31 L79 22 L76 40 Z" fill="url(#${id}w)" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
+       <circle cx="60" cy="31" r="3.4" fill="#fff" stroke="${INK}" stroke-width="2"/>
+       <circle cx="49" cy="35" r="2.4" fill="#fff" stroke="${INK}" stroke-width="1.6"/><circle cx="71" cy="35" r="2.4" fill="#fff" stroke="${INK}" stroke-width="1.6"/>`
+    : "";
+  const third = r >= 4
+    ? `<path filter="url(#${id}f)" class="e-eye" d="M60 44 L64 49 L60 54 L56 49 Z" fill="${eye}"/><path d="M60 46 L62 49 L60 52 L58 49 Z" fill="#fff"/>`
+    : "";
+  return `${horns}
+    <path d="M60 36 C45 36 36 46 36 58 C36 66 40 71 44 73 L44 81 C44 83.5 46 85 48 85 L72 85 C74 85 76 83.5 76 81 L76 73 C80 71 84 66 84 58 C84 46 75 36 60 36 Z" fill="#f4f6fa" stroke="${INK}" stroke-width="4.5" stroke-linejoin="round"/>
+    <path d="M44 50 C46 42 54 39 60 39" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+    ${eyes}
+    <path d="M60 66 L56 73 L64 73 Z" fill="${INK}"/>
+    <path d="M53 77 V85 M60 77 V85 M67 77 V85" stroke="${INK}" stroke-width="2.6"/>
+    ${third}${crown}`;
+}
 
-  // The symbol in the middle: 1, 2, 3 chevrons, then a crown, then a crown with a star
-  const chevron = (y) => `<path d="M40 ${y} L60 ${y + 12} L80 ${y}" fill="none" stroke="${ink}" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M40 ${y} L60 ${y + 12} L80 ${y}" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const crown = `<path d="M38 76 L34 48 L48 60 L60 42 L72 60 L86 48 L82 76 Z" fill="#fff" stroke="${ink}" stroke-width="5" stroke-linejoin="round"/>
-    <circle cx="60" cy="66" r="5" fill="${c2}" stroke="${ink}" stroke-width="3"/>`;
-  const star = `<path d="M60 26 L64 36 L75 36 L66 43 L69 54 L60 47 L51 54 L54 43 L45 36 L56 36 Z" fill="#fff" stroke="${ink}" stroke-width="4" stroke-linejoin="round"/>`;
-  let symbol;
-  if (mystery) symbol = `<text x="60" y="80" text-anchor="middle" font-family="'Lilita One', sans-serif" font-size="52" fill="#fff" stroke="${ink}" stroke-width="5" paint-order="stroke">?</text>`;
-  else if (r <= 2) symbol = [0, 1, 2].slice(0, r + 1).map((i) => chevron(64 - r * 9 + i * 18)).join("");
-  else if (r === 3) symbol = crown;
-  else symbol = crown.replace(/M38 76 L34 48 L48 60 L60 42 L72 60 L86 48 L82 76 Z/, "M38 84 L34 58 L48 70 L60 52 L72 70 L86 58 L82 84 Z").replace('cy="66"', 'cy="76"') + star;
+const bones = (fill) => [-38, 38].map((a) => `<g transform="rotate(${a} 60 64)">
+      <rect x="20" y="59" width="80" height="10" rx="5" fill="${fill}" stroke="${INK}" stroke-width="4"/>
+      <circle cx="20" cy="59" r="6" fill="${fill}" stroke="${INK}" stroke-width="4"/><circle cx="20" cy="69" r="6" fill="${fill}" stroke="${INK}" stroke-width="4"/>
+      <circle cx="100" cy="59" r="6" fill="${fill}" stroke="${INK}" stroke-width="4"/><circle cx="100" cy="69" r="6" fill="${fill}" stroke="${INK}" stroke-width="4"/>
+      <rect x="20" y="60.5" width="80" height="7" rx="3.5" fill="${fill}"/>
+    </g>`).join("");
 
-  return `<svg class="emblem" viewBox="0 0 120 120" aria-hidden="true">
-    <defs>
-      <linearGradient id="${id}g" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset=".5" stop-color="${c2}"/><stop offset="1" stop-color="${c3}"/></linearGradient>
+// Flames licking up around the badge
+function flames(id, outer, inner) {
+  const one = (deg, len, w, fill) => {
+    const [bx1, by1] = pt(40, deg - w);
+    const [bx2, by2] = pt(40, deg + w);
+    const [tx, ty] = pt(40 + len, deg);
+    const [c1x, c1y] = pt(40 + len * 0.55, deg - w * 1.6);
+    const [c2x, c2y] = pt(40 + len * 0.55, deg + w * 1.6);
+    return `<path d="M${bx1.toFixed(1)} ${by1.toFixed(1)} Q${c1x.toFixed(1)} ${c1y.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)} Q${c2x.toFixed(1)} ${c2y.toFixed(1)} ${bx2.toFixed(1)} ${by2.toFixed(1)} Z" fill="${fill}"/>`;
+  };
+  const angles = [-162, -138, -114, -90, -66, -42, -18];
+  const lens = [16, 30, 42, 54, 42, 30, 16];
+  return `<g class="e-flame" stroke="${INK}" stroke-width="4" stroke-linejoin="round">${angles.map((a, i) => one(a, lens[i], 15, outer)).join("")}</g>
+    <g class="e-flame e-flame2">${angles.map((a, i) => one(a, lens[i] * 0.6, 8, inner)).join("")}</g>`;
+}
+
+function wings(id) {
+  const feathers = `
+    <path d="M26 42 C10 18 -10 10 -18 16 C-8 28 2 42 18 58 Z"/>
+    <path d="M20 56 C0 46 -16 52 -20 62 C-6 66 6 68 20 70 Z"/>
+    <path d="M22 70 C4 76 -10 92 -8 102 C4 94 16 86 30 80 Z"/>`;
+  const side = (flip) => `<g ${flip ? 'transform="translate(120 0) scale(-1 1)" ' : ""}fill="url(#${id}w)" stroke="${INK}" stroke-width="4" stroke-linejoin="round">${feathers}</g>`;
+  return `<g class="e-wings">${side(false)}${side(true)}</g>`;
+}
+
+const sparkle = (x, y, n) => `<path class="e-twinkle" style="animation-delay:${n * 0.25}s" d="M${x} ${y - 7} L${x + 1.8} ${y - 1.8} L${x + 7} ${y} L${x + 1.8} ${y + 1.8} L${x} ${y + 7} L${x - 1.8} ${y + 1.8} L${x - 7} ${y} L${x - 1.8} ${y - 1.8} Z" fill="#fff" stroke="${INK}" stroke-width="1.5"/>`;
+
+export function emblem(r, { mystery = false } = {}) {
+  const id = `rk${++uid}`;
+  const [c1, c2, c3] = mystery ? ["#3a3f4d", "#1b1f29", "#0b0d12"] : RANKS[r].c;
+  const defs = `<defs>
+      <linearGradient id="${id}g" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset=".5" stop-color="${c2}"/><stop offset="1" stop-color="${c3}"/></linearGradient>
       <linearGradient id="${id}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>
-      <clipPath id="${id}c"><path d="${shield}"/></clipPath>
-    </defs>
-    ${wings}${horns}
-    <path d="${shield}" fill="url(#${id}g)" stroke="${ink}" stroke-width="7" stroke-linejoin="round"/>
+      <linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="${c1}"/><stop offset="1" stop-color="${c3}"/></linearGradient>
+      <radialGradient id="${id}d" cx=".5" cy=".38" r=".7"><stop offset="0" stop-color="${c2}"/><stop offset=".65" stop-color="${c3}"/><stop offset="1" stop-color="${INK}"/></radialGradient>
+      <radialGradient id="${id}i" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="${c1}"/><stop offset=".7" stop-color="${c2}"/><stop offset="1" stop-color="${c3}"/></radialGradient>
+      <filter id="${id}f" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>`;
+  const wrap = (body, box = "-20 -20 160 160") => `<svg class="emblem" viewBox="${box}" aria-hidden="true">${defs}${body}</svg>`;
+  const shine = (shape) => `<clipPath id="${id}c">${shape}</clipPath>
     <g clip-path="url(#${id}c)">
-      <path d="M0 0 H120 V46 C90 56 30 56 0 46 Z" fill="#fff" opacity=".22"/>
-      <rect class="emblem-shine" x="-60" y="-10" width="26" height="140" fill="#fff" opacity=".45" transform="skewX(-20)"/>
-    </g>
-    <path d="${inner}" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linejoin="round"/>
-    ${symbol}
-  </svg>`;
+      <path d="M-20 -20 H140 V44 C100 54 20 54 -20 44 Z" fill="#fff" opacity=".2"/>
+      <rect class="emblem-shine" x="-60" y="-20" width="26" height="170" fill="#fff" opacity=".4" transform="skewX(-20)"/>
+    </g>`;
+
+  if (mystery) {
+    const shield = "M60 6 L106 23 V62 C106 90 85 106 60 116 C35 106 14 90 14 62 V23 Z";
+    return wrap(`<path d="${shield}" fill="url(#${id}g)" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>
+      ${shine(`<path d="${shield}"/>`)}
+      <text x="60" y="82" text-anchor="middle" font-family="'Lilita One', sans-serif" font-size="58" fill="#fff" stroke="${INK}" stroke-width="5" paint-order="stroke">?</text>`, "-2 -2 124 124");
+  }
+
+  if (r === 0) {
+    // Common: an old computer, a cursor blinking on its screen
+    const body = `<rect x="10" y="14" width="100" height="78" rx="16"/>`;
+    return wrap(`<rect x="44" y="88" width="32" height="14" fill="url(#${id}d)" stroke="${INK}" stroke-width="5"/>
+      <rect x="26" y="98" width="68" height="14" rx="7" fill="url(#${id}g)" stroke="${INK}" stroke-width="6"/>
+      <rect x="10" y="14" width="100" height="78" rx="16" fill="url(#${id}g)" stroke="${INK}" stroke-width="7"/>
+      ${shine(body)}
+      <rect x="22" y="25" width="76" height="54" rx="9" fill="#0d1118" stroke="${INK}" stroke-width="4"/>
+      <path d="M22 34 H98 M22 44 H98 M22 54 H98 M22 64 H98 M22 74 H98" stroke="#fff" stroke-opacity=".05" stroke-width="3"/>
+      <path d="M34 40 L48 52 L34 64" fill="none" stroke="${c1}" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect class="e-blink" x="54" y="59" width="22" height="6.5" rx="2" fill="${c1}"/>
+      <circle cx="96" cy="86" r="3" fill="#7dff8a" stroke="${INK}" stroke-width="1.5"/>`, "-2 -2 124 124");
+  }
+
+  if (r === 1) {
+    // Uncommon: a hooded hacker. Glowing eyes, code raining inside the hood.
+    const hood = "M60 4 C90 4 110 30 110 62 L110 98 C110 110 102 116 90 116 L30 116 C18 116 10 110 10 98 L10 62 C10 30 30 4 60 4 Z";
+    const face = "M60 26 C80 26 92 44 92 64 C92 86 78 102 60 104 C42 102 28 86 28 64 C28 44 40 26 60 26 Z";
+    const col = (x, d, text) => `<text class="e-rain" style="animation-delay:${d}s" x="${x}" y="0" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="${c2}" writing-mode="tb" letter-spacing="1">${text}</text>`;
+    return wrap(`<path d="${hood}" fill="url(#${id}g)" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>
+      ${shine(`<path d="${hood}"/>`)}
+      <path d="M22 50 C26 30 40 16 60 14 M98 50 C94 30 80 16 60 14 M18 96 C22 84 26 76 30 72 M102 96 C98 84 94 76 90 72" fill="none" stroke="${c3}" stroke-width="3.5" stroke-linecap="round" opacity=".7"/>
+      <path d="${face}" fill="#05070a" stroke="${INK}" stroke-width="5"/>
+      <clipPath id="${id}r"><path d="${face}"/></clipPath>
+      <g clip-path="url(#${id}r)" opacity=".55">${col(36, 0, "10110100")}${col(48, -0.9, "01001101")}${col(60, -0.4, "11010010")}${col(72, -1.3, "00101101")}${col(84, -0.7, "10011010")}</g>
+      <g class="e-lid" filter="url(#${id}f)">
+        <path d="M40 60 L56 65 L54 71 L41 67 Z" fill="${c1}"/>
+        <path d="M80 60 L64 65 L66 71 L79 67 Z" fill="${c1}"/>
+      </g>
+      <path d="M48 104 V112 M72 104 V112" stroke="#f4f6fa" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="48" cy="113" r="3" fill="#f4f6fa" stroke="${INK}" stroke-width="1.5"/><circle cx="72" cy="113" r="3" fill="#f4f6fa" stroke="${INK}" stroke-width="1.5"/>`, "-2 -2 124 124");
+  }
+
+  if (r === 2) {
+    // Rare: a cyborg. Scanning visor, sparking antenna, lightning out the sides.
+    const head = "M26 34 Q26 16 44 16 H76 Q94 16 94 34 V74 Q94 86 82 88 V104 H38 V88 Q26 86 26 74 Z";
+    const bolt = `<path d="M-4 28 L14 28 L6 50 L20 50 L-10 92 L0 60 L-14 60 Z" fill="#fff6a8" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>`;
+    const ear = (x) => `<circle cx="${x}" cy="54" r="10" fill="url(#${id}w)" stroke="${INK}" stroke-width="5"/><path d="M${x - 4} 54 H${x + 4} M${x} 50 V58" stroke="${INK}" stroke-width="2.5" stroke-linecap="round"/>`;
+    return wrap(`${bolt}<g transform="translate(120 0) scale(-1 1)">${bolt}</g>
+      <path d="M60 16 V-2" stroke="${INK}" stroke-width="5"/>
+      <circle class="e-spark" cx="60" cy="-4" r="6.5" fill="#fff6a8" stroke="${INK}" stroke-width="3" filter="url(#${id}f)"/>
+      ${ear(22)}${ear(98)}
+      <path d="${head}" fill="url(#${id}g)" stroke="${INK}" stroke-width="7" stroke-linejoin="round"/>
+      ${shine(`<path d="${head}"/>`)}
+      <circle cx="40" cy="26" r="2.6" fill="${INK}"/><circle cx="80" cy="26" r="2.6" fill="${INK}"/>
+      <rect x="32" y="38" width="56" height="22" rx="11" fill="#06091a" stroke="${INK}" stroke-width="4"/>
+      <clipPath id="${id}v"><rect x="34" y="40" width="52" height="18" rx="9"/></clipPath>
+      <g clip-path="url(#${id}v)">
+        <rect x="34" y="40" width="52" height="18" fill="${c2}" opacity=".35"/>
+        <rect class="e-scan" x="34" y="38" width="14" height="22" fill="${c1}" filter="url(#${id}f)"/>
+      </g>
+      <circle cx="47" cy="49" r="4" fill="#fff"/><circle cx="73" cy="49" r="4" fill="#fff"/>
+      <rect x="40" y="68" width="40" height="16" rx="4" fill="#06091a" stroke="${INK}" stroke-width="4"/>
+      <path d="M48 70 V82 M56 70 V82 M64 70 V82 M72 70 V82" stroke="${c1}" stroke-width="2.5" opacity=".8"/>
+      <path d="M38 96 H82" stroke="${INK}" stroke-width="3" opacity=".5"/>`);
+  }
+
+  if (r === 3) {
+    // Legendary: a crowned skull, on fire, with wings
+    return wrap(`${flames(id, "#ff8a00", "#fff4b0")}
+      ${wings(id)}
+      <circle cx="60" cy="60" r="45" fill="url(#${id}g)" stroke="${INK}" stroke-width="6"/>
+      ${shine(`<circle cx="60" cy="60" r="45"/>`)}
+      <circle cx="60" cy="62" r="36" fill="url(#${id}d)" stroke="${INK}" stroke-width="3"/>
+      ${bones("#fff8d6")}${skull(id, r, "#fff27a")}`);
+  }
+
+  // Mythic: a giant eye in a spinning portal, with horns. It looks around. It blinks.
+  const orbit = `<g class="e-orbit">${sparkle(60, -14, 0)}${sparkle(134, 60, 1)}${sparkle(60, 134, 2)}${sparkle(-14, 60, 3)}</g>
+      <g class="e-orbit rev">${sparkle(118, 2, 4)}${sparkle(2, 118, 5)}</g>`;
+  const eye = "M8 62 C30 28 90 28 112 62 C90 96 30 96 8 62 Z";
+  const swirl = Array.from({ length: 6 }, (_, i) => `<path transform="rotate(${i * 60} 60 60)" d="M60 60 C74 40 98 44 106 66" fill="none" stroke="${i % 2 ? c1 : c2}" stroke-width="7" stroke-linecap="round" opacity=".75"/>`).join("");
+  const lash = (x1, y1, x2, y2) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+  return wrap(`<path d="M34 30 C12 14 4 -6 12 -18 C20 0 36 10 50 18 Z M86 30 C108 14 116 -6 108 -18 C100 0 84 10 70 18 Z" fill="url(#${id}h)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="60" cy="60" r="56" fill="url(#${id}d)" stroke="${INK}" stroke-width="7"/>
+      <g class="e-spin">${swirl}</g>
+      ${shine(`<circle cx="60" cy="60" r="56"/>`)}
+      <g class="e-blinkeye">
+        ${lash(30, 40, 24, 28)}${lash(45, 34, 42, 20)}${lash(60, 32, 60, 17)}${lash(75, 34, 78, 20)}${lash(90, 40, 96, 28)}
+        <path d="${eye}" fill="#fff" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>
+        <clipPath id="${id}e"><path d="${eye}"/></clipPath>
+        <g clip-path="url(#${id}e)">
+          <path d="M14 66 C24 64 28 70 34 68 M106 58 C96 60 92 54 86 56" fill="none" stroke="${c2}" stroke-width="1.6" opacity=".6"/>
+          <g class="e-look">
+            <circle cx="60" cy="62" r="22" fill="url(#${id}i)" stroke="${INK}" stroke-width="4"/>
+            <circle cx="60" cy="62" r="14" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2" stroke-dasharray="3 4"/>
+            <ellipse cx="60" cy="62" rx="5.5" ry="15" fill="${INK}"/>
+            <circle cx="67" cy="54" r="4.5" fill="#fff"/>
+          </g>
+        </g>
+      </g>
+      ${orbit}`);
 }
 
 // The chunky rank font, loaded the first time a rank is drawn
