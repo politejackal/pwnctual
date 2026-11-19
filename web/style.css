@@ -384,9 +384,8 @@ a.lesson-nav-btn:hover { border-color: var(--text); background: var(--card); }
 .rank-road span { color: var(--muted); font-size: 13px; line-height: 1.35; }
 .rank-road .got { border-color: color-mix(in srgb, var(--c2) 70%, var(--border)); }
 .rank-road .got b { color: color-mix(in srgb, var(--c2) 75%, var(--text)); }
-.rank-road .now { border-width: 3px; border-color: var(--c2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c2) 22%, transparent), 0 0 28px color-mix(in srgb, var(--c2) 35%, transparent); }
-.rank-road .now::after { content: "You"; position: absolute; top: -12px; padding: 1px 10px; border-radius: 999px; background: var(--c2); color: #0b0d12; font-family: var(--font-code); font-size: 12px; font-weight: 600; border: 2px solid #0b0d12; }
-.rank-road .now .tile-emblem { animation: float 3s ease-in-out infinite; }
+.rank-road .got { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c2) 18%, transparent), 0 0 24px color-mix(in srgb, var(--c2) 28%, transparent); }
+.rank-road .got .tile-emblem { animation: float 3s ease-in-out infinite; }
 .rank-road .locked .tile-emblem { filter: grayscale(1) brightness(.55); opacity: .7; }
 .rank-road .locked b { color: var(--faint); }
 
@@ -451,10 +450,9 @@ body.rankup-open { overflow: hidden; }
   .rank-road .tile-emblem { width: 40px; height: 40px; }
   .rank-road b { font-size: 11px; }
   .rank-road span { display: none; }
-  .rank-road .now::after { font-size: 10px; top: -10px; padding: 0 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .emblem *, .rank-card::before, .rank-card .rank-emblem, .rank-road .now .tile-emblem, .ru-rays, .ru-mystery, .r-mythic.rank-card, .rankup.r-mythic.opened { animation: none !important; }
+  .emblem *, .rank-card::before, .rank-card .rank-emblem, .rank-road .got .tile-emblem, .ru-rays, .ru-mystery, .r-mythic.rank-card, .rankup.r-mythic.opened { animation: none !important; }
   .rankup.opened .ru-emblem, .rankup.opened .ru-kicker, .rankup.opened .ru-name { animation: ru-in .3s ease-out forwards; }
   .ru-confetti, .ru-flash { display: none; }
   .rankup.opened .ru-stage, .ru-drop { animation: none; }

@@ -71,7 +71,7 @@ async function show() {
   const road = h("section", { class: "profile-section" },
     h("h2", { class: "section-title" }, "Rank road"),
     h("ol", { class: "rank-road" }, RANKS.map((k, i) => {
-      const li = h("li", { class: i < r ? "got" : i === r ? "got now" : "locked" },
+      const li = h("li", { class: i <= r ? "got" : "locked" },
         art("tile-emblem", i),
         h("b", null, k.name),
         h("span", null, k.need || "???"));
