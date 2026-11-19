@@ -7,7 +7,7 @@ import { rankOf, chapterPct } from "./rank-rules.js";
 export { rankOf };
 
 export const RANKS = [
-  { id: "common", name: "Common", need: "Where everybody starts", c: ["#f4f7fb", "#a9b4c4", "#56627a"] },
+  { id: "common", name: "Common", need: "Everybody starts somewhere", c: ["#f4f7fb", "#a9b4c4", "#56627a"] },
   { id: "uncommon", name: "Uncommon", need: "Finish first chapter", c: ["#d9ff9e", "#3ddc5a", "#0b7a34"] },
   { id: "rare", name: "Rare", need: null, c: ["#c9ecff", "#2f9bff", "#1238c4"] },
   { id: "legendary", name: "Legendary", need: null, c: ["#fff7b8", "#ffc81f", "#d06a00"] },
@@ -188,13 +188,11 @@ export function emblem(r, { mystery = false } = {}) {
       <g class="e-orbit rev">${sparkle(118, 2, 4)}${sparkle(2, 118, 5)}</g>`;
   const eye = "M8 62 C30 28 90 28 112 62 C90 96 30 96 8 62 Z";
   const swirl = Array.from({ length: 6 }, (_, i) => `<path transform="rotate(${i * 60} 60 60)" d="M60 60 C74 40 98 44 106 66" fill="none" stroke="${i % 2 ? c1 : c2}" stroke-width="7" stroke-linecap="round" opacity=".75"/>`).join("");
-  const lash = (x1, y1, x2, y2) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
   return wrap(`<path d="M34 30 C12 14 4 -6 12 -18 C20 0 36 10 50 18 Z M86 30 C108 14 116 -6 108 -18 C100 0 84 10 70 18 Z" fill="url(#${id}h)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
       <circle cx="60" cy="60" r="56" fill="url(#${id}d)" stroke="${INK}" stroke-width="7"/>
       <g class="e-spin">${swirl}</g>
       ${shine(`<circle cx="60" cy="60" r="56"/>`)}
       <g class="e-blinkeye">
-        ${lash(30, 40, 24, 28)}${lash(45, 34, 42, 20)}${lash(60, 32, 60, 17)}${lash(75, 34, 78, 20)}${lash(90, 40, 96, 28)}
         <path d="${eye}" fill="#fff" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>
         <clipPath id="${id}e"><path d="${eye}"/></clipPath>
         <g clip-path="url(#${id}e)">
