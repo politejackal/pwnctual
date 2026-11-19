@@ -47,7 +47,7 @@ account.then((a) => {
       link.append(img);
     }
     link.append(a.user.login);
-    const r = rankOf(a.done);
+    const r = Math.max(rankOf(a.done), a.rank || 0);
     link.classList.add("ranked");
     link.title = `${a.user.login} · ${RANKS[r].name}`;
     paint(link, r);

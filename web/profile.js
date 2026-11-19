@@ -34,7 +34,7 @@ async function show() {
     root.replaceChildren(h("header", { class: "page-head" }, h("p", { class: "eyebrow" }, "Profile"), h("h1", null, "Not found")));
     return;
   }
-  const { user, done } = await res.json();
+  const { user, done, rank } = await res.json();
   const doneAt = new Map(done.map((d) => [d.lesson, d.at]));
   document.title = `${user.login} · pwnctual`;
 
@@ -54,8 +54,8 @@ async function show() {
 
   // Their rank, big, and the road of every rank
   rankFont();
-  const r = rankOf(doneAt.keys());
-  const next = nextStep(new Set(doneAt.keys()));
+  const r = Math.max(rankOf(doneAt.keys()), rank || 0);
+  const next = nextStep(new Set(doneAt.keys()), r);
   const art = (cls, i) => {
     const el = h("div", { class: cls });
     el.innerHTML = emblem(i);

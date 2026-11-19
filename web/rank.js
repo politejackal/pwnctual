@@ -1,42 +1,25 @@
 // Ranks: Common → Uncommon → Rare → Legendary → Mythic.
-// Everybody starts Common. Finishing a chapter makes you Uncommon. The rest are a secret for now.
+// Everybody starts Common. Finishing the first chapter makes you Uncommon. The rest are a secret for now.
+// Once earned, a rank stays. The rules are in rank-rules.js.
 // Shown on profiles, around the avatar in the top bar, and as a big reveal when you rank up.
 import { COURSE } from "./course-data.js";
+import { rankOf, chapterPct } from "./rank-rules.js";
+export { rankOf };
 
 export const RANKS = [
   { id: "common", name: "Common", need: "Where everybody starts", c: ["#f4f7fb", "#a9b4c4", "#56627a"] },
-  { id: "uncommon", name: "Uncommon", need: "Finish a chapter", c: ["#d9ff9e", "#3ddc5a", "#0b7a34"] },
+  { id: "uncommon", name: "Uncommon", need: "Finish first chapter", c: ["#d9ff9e", "#3ddc5a", "#0b7a34"] },
   { id: "rare", name: "Rare", need: null, c: ["#c9ecff", "#2f9bff", "#1238c4"] },
   { id: "legendary", name: "Legendary", need: null, c: ["#fff7b8", "#ffc81f", "#d06a00"] },
   { id: "mythic", name: "Mythic", need: null, c: ["#ffc2e2", "#ff2e63", "#8a00d4"] },
 ];
 
-const keyOf = (c, m, l) => `${c.id}/${m.id}/${l.id}`;
-const chapterKeys = (c) => c.modules.flatMap((m) => m.lessons.map((l) => keyOf(c, m, l)));
-const chapterPct = (c, done) => {
-  const keys = chapterKeys(c);
-  return keys.length ? Math.round((keys.filter((k) => done.has(k)).length / keys.length) * 100) : 0;
-};
-
-// Which rank (an index into RANKS) this list of finished lessons earns
-export function rankOf(done) {
+// What to do for the next rank, for someone at rank r: { rank, text, pct } (pct only when there's a bar)
+export function nextStep(done, r) {
   const set = done instanceof Set ? done : new Set(done);
-  let r = 0;
-  if (COURSE.some((c) => chapterPct(c, set) === 100)) r = 1;
-  return r;
-}
-
-// What to do for the next rank: { rank, text, pct } (pct only when there's a bar to show)
-export function nextStep(done) {
-  const set = done instanceof Set ? done : new Set(done);
-  const r = rankOf(set);
   const next = RANKS[r + 1];
   if (!next) return null;
-  if (r === 0) {
-    const best = COURSE.reduce((a, c) => (chapterPct(c, set) > chapterPct(a, set) ? c : a), COURSE[0]);
-    const i = COURSE.indexOf(best);
-    return { rank: next, text: `Finish Chapter ${i + 1} to rank up to ${next.name}.`, pct: chapterPct(best, set) };
-  }
+  if (r === 0) return { rank: next, text: `Finish Chapter 1 to rank up to ${next.name}.`, pct: chapterPct(COURSE[0], set) };
   return { rank: next, text: `How to reach ${next.name} is a secret. Keep going!` };
 }
 
@@ -252,9 +235,10 @@ export function paint(el, r) {
 const SEEN = "pwnctual:rank";
 const reduced = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Call after progress changes: shows the reveal when the rank went up since last time
-export function checkRankUp(done) {
-  const r = rankOf(done);
+// Call after progress changes: shows the reveal when the rank went up since last time.
+// kept is the rank the server says this person already has (0 when not signed in).
+export function checkRankUp(done, kept = 0) {
+  const r = Math.max(rankOf(done), kept);
   let seen = 0;
   try { seen = Number(localStorage.getItem(SEEN)) || 0; } catch {}
   if (r > seen) {

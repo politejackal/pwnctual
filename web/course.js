@@ -354,7 +354,7 @@ account.then(async (a) => {
   done = new Set(list);
   saveDone(done);
   refresh();
-  checkRankUp(done);
+  checkRankUp(done, a.rank || 0);
 });
 // Progress can change in another tab
 window.addEventListener("storage", (e) => {
