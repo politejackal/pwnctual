@@ -309,151 +309,68 @@ a.lesson-nav-btn:hover { border-color: var(--text); background: var(--card); }
   .profile-head .avatar { width: 72px; height: 72px; }
 }
 
-/* ---- Ranks ----
-   The one place with color: each rank has three (--c1 light, --c2 main, --c3 dark). */
+/* ---- Badges ----
+   Proof you finished something. The one place with color. Badges on profiles stay still. */
 .emblem { display: block; width: 100%; height: 100%; overflow: visible; }
-.emblem-shine { animation: shine 3.2s ease-in-out infinite; }
-.emblem .e-spin, .emblem .e-orbit, .emblem .e-flame { transform-box: view-box; transform-origin: 60px 60px; }
-.emblem .e-spin { animation: spin 14s linear infinite; }
-.emblem .e-spin.rev { animation: spin 22s linear infinite reverse; }
-.emblem .e-orbit { animation: spin 7s linear infinite; }
-.emblem .e-orbit.rev { animation-direction: reverse; animation-duration: 11s; }
-.emblem .e-flame { transform-origin: 60px 64px; animation: flick .32s ease-in-out infinite alternate; }
-.emblem .e-flame2 { animation-duration: .24s; animation-delay: -.1s; }
-.emblem .e-eye { animation: glow 1.4s ease-in-out infinite; }
-.emblem .e-twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 1s ease-in-out infinite; }
-@keyframes flick { from { transform: scale(1, 1); } to { transform: scale(1.05, 1.12); } }
-@keyframes glow { 50% { opacity: .55; } }
-@keyframes twinkle { 50% { transform: scale(.4) rotate(45deg); opacity: .5; } }
-.emblem .e-blink { animation: blink 1s steps(1) infinite; }
-.emblem .e-rain { animation: rain 2.2s linear infinite; }
-.emblem .e-lid, .emblem .e-blinkeye { transform-box: fill-box; transform-origin: center; animation: lid 4s ease-in-out infinite; }
-.emblem .e-scan { animation: scan 1.6s ease-in-out infinite alternate; }
-.emblem .e-spark { animation: glow .5s ease-in-out infinite; }
-.emblem .e-look { animation: look 5s ease-in-out infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-@keyframes rain { from { transform: translateY(-10px); } to { transform: translateY(110px); } }
-@keyframes lid { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.08); } }
-@keyframes scan { to { transform: translateX(38px); } }
-@keyframes look { 0%, 12% { transform: none; } 18%, 34% { transform: translate(-13px, 2px); } 40%, 56% { transform: translate(12px, -3px); } 62%, 76% { transform: translate(0, 5px); } 82%, 100% { transform: none; } }
-.rank-road .locked .emblem *, .ru-mystery .emblem * { animation: none !important; }
-@keyframes shine { 0%, 55% { transform: skewX(-20deg) translateX(0); } 100% { transform: skewX(-20deg) translateX(220px); } }
-.rank-name, .ru-name, .ru-kicker, .ru-hint, .rank-road b {
-  font-family: "Lilita One", var(--font); font-weight: 400; letter-spacing: .02em; text-transform: uppercase;
-}
-.rank-text {
-  color: var(--c1);
-  text-shadow: 0 3px 0 #0b0d12, 2px 0 0 #0b0d12, -2px 0 0 #0b0d12, 0 -2px 0 #0b0d12, 2px 2px 0 #0b0d12, -2px 2px 0 #0b0d12, 2px -2px 0 #0b0d12, -2px -2px 0 #0b0d12, 0 6px 0 rgba(0, 0, 0, .35);
-}
+.badges { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 24px 0 0; padding: 0; }
+.badge { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 26px 18px 22px; border-radius: 18px; border: 1px solid var(--border); background: var(--card); text-align: center; }
+.badge .badge-art { width: 148px; height: 166px; margin-bottom: 10px; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .18)); }
+.badge b { font-family: var(--font-code); font-size: 19px; font-weight: 600; }
+.badge span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+.badge time { margin-top: 4px; color: var(--faint); font-family: var(--font-code); font-size: 13px; }
+.badge-hint { margin: 0 0 12px; color: var(--muted); }
 
-/* The rank card on a profile */
-.rank-card {
-  position: relative; overflow: hidden; isolation: isolate;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px;
-  margin: 0 0 48px; padding: 28px 32px; border-radius: 20px; color: #fff;
-  background: radial-gradient(120% 140% at 0% 50%, color-mix(in srgb, var(--c2) 55%, transparent), transparent 60%), linear-gradient(135deg, #10131c, color-mix(in srgb, var(--c3) 55%, #0b0d12));
-  border: 3px solid #0b0d12; box-shadow: 0 6px 0 #0b0d12, inset 0 0 0 2px color-mix(in srgb, var(--c1) 35%, transparent);
-}
-.rank-card::before {
-  content: ""; position: absolute; z-index: -1; left: 90px; top: 50%; width: 520px; height: 520px; margin: -260px 0 0 -260px;
-  background: repeating-conic-gradient(color-mix(in srgb, var(--c1) 22%, transparent) 0 9deg, transparent 9deg 22deg);
-  -webkit-mask: radial-gradient(closest-side, #000 20%, transparent); mask: radial-gradient(closest-side, #000 20%, transparent);
-  animation: spin 18s linear infinite;
-}
-.rank-card .rank-emblem { flex: none; width: 128px; height: 128px; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 8px 0 rgba(0, 0, 0, .35)) drop-shadow(0 0 22px color-mix(in srgb, var(--c2) 70%, transparent)); }
-.rank-info { flex: 1 1 260px; min-width: 0; }
-.rank-label { margin: 0; font-family: var(--font-code); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
-.rank-name { margin: 2px 0 6px; font-size: clamp(40px, 9vw, 64px); line-height: 1.05; }
-.rank-next { margin: 0; color: rgba(255, 255, 255, .85); font-size: 16px; line-height: 1.5; }
-.rank-next .progress { margin-top: 10px; }
-.rank-card .bar { background: rgba(255, 255, 255, .15); }
-.rank-card .bar span { background: linear-gradient(90deg, var(--c1), var(--c2)); }
-.rank-card .pct { color: #fff; }
-.r-legendary .rank-emblem, .r-mythic .rank-emblem { animation: float 3s ease-in-out infinite, pulse 1.6s ease-in-out infinite; }
-.r-mythic.rank-card { animation: hue 6s linear infinite; }
-@keyframes float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
-@keyframes pulse { 0%, 100% { filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)) drop-shadow(0 0 18px var(--c2)); } 50% { filter: drop-shadow(0 8px 0 rgba(0,0,0,.35)) drop-shadow(0 0 40px var(--c1)); } }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes hue { to { filter: hue-rotate(360deg); } }
-
-/* The rank road: every rank, the ones you haven't reached yet locked */
-.rank-road { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 24px 0 0; padding: 0; }
-.rank-road li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 8px 14px; border-radius: 14px; border: 2px solid var(--border); background: var(--card); text-align: center; }
-.rank-road .tile-emblem { width: 64px; height: 64px; }
-.rank-road b { font-size: 17px; line-height: 1.1; overflow-wrap: anywhere; }
-.rank-road span { color: var(--muted); font-size: 13px; line-height: 1.35; }
-.rank-road .got { border-color: color-mix(in srgb, var(--c2) 70%, var(--border)); }
-.rank-road .got b { color: color-mix(in srgb, var(--c2) 75%, var(--text)); }
-.rank-road .got { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c2) 18%, transparent), 0 0 24px color-mix(in srgb, var(--c2) 28%, transparent); }
-.rank-road .got .tile-emblem { animation: float 3s ease-in-out infinite; }
-.rank-road .locked .tile-emblem { filter: grayscale(1) brightness(.55); opacity: .7; }
-.rank-road .locked b { color: var(--faint); }
-
-/* Your rank around your avatar in the top bar */
-.nav-user.ranked img { border: 2px solid var(--c2); box-shadow: 0 0 0 2px color-mix(in srgb, var(--c2) 30%, transparent); }
-
-/* Rank up! The full screen reveal */
-body.rankup-open { overflow: hidden; }
-.rankup { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow: hidden; color: #fff; cursor: pointer; outline: none; animation: ru-in .3s ease-out; -webkit-tap-highlight-color: transparent; }
-.rankup.r-mythic.opened { animation: ru-in .3s ease-out, hue 4s linear infinite; }
-.rankup.closing { animation: ru-out .35s ease-in forwards; }
-.ru-bg { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--c3) 70%, #000) 0%, #05060a 70%); }
-.ru-rays { position: absolute; left: 50%; top: 45%; width: 220vmax; height: 220vmax; margin: -110vmax 0 0 -110vmax; opacity: .15; background: repeating-conic-gradient(var(--c2) 0 8deg, transparent 8deg 20deg); -webkit-mask: radial-gradient(closest-side, #000 10%, transparent 60%); mask: radial-gradient(closest-side, #000 10%, transparent 60%); animation: spin 30s linear infinite; transition: opacity .4s; }
-.rankup.opened .ru-rays { opacity: .55; animation-duration: 9s; }
-.ru-stage { position: relative; display: flex; flex-direction: column; align-items: center; padding: 16px; text-align: center; }
-.ru-drop { position: relative; width: min(240px, 56vw); aspect-ratio: 1; padding: 0; border: 0; background: none; cursor: pointer; animation: ru-drop .7s cubic-bezier(.2, 1.6, .4, 1) both; }
-.ru-drop > span { position: absolute; inset: 0; }
-.ru-mystery { filter: drop-shadow(0 0 30px var(--c2)); animation: ru-charge .9s ease-in-out infinite; }
-.rankup[data-taps="1"] .ru-mystery { animation-duration: .5s; filter: drop-shadow(0 0 45px var(--c2)); }
-.rankup[data-taps="2"] .ru-mystery { animation-duration: .25s; filter: drop-shadow(0 0 70px var(--c1)); }
-.ru-drop.hit .ru-mystery { animation: ru-hit .25s ease-out, ru-charge .4s ease-in-out .25s infinite; }
-.ru-emblem { opacity: 0; transform: scale(.2); filter: drop-shadow(0 10px 0 rgba(0, 0, 0, .4)) drop-shadow(0 0 40px var(--c2)); }
-.ru-hint { margin: 18px 0 0; font-size: 28px; color: #fff; text-shadow: 0 3px 0 #000; animation: ru-blink 1s ease-in-out infinite; }
-.ru-kicker, .ru-name, .ru-tap { margin: 0; opacity: 0; }
-.ru-kicker { margin-top: 14px; font-size: clamp(26px, 6vw, 40px); color: #fff; text-shadow: 0 3px 0 #000, 0 0 20px var(--c2); }
-.ru-name { font-size: clamp(56px, 15vw, 120px); line-height: 1; color: var(--c1); text-shadow: 0 5px 0 #0b0d12, 3px 0 0 #0b0d12, -3px 0 0 #0b0d12, 0 -3px 0 #0b0d12, 3px 3px 0 #0b0d12, -3px 3px 0 #0b0d12, 3px -3px 0 #0b0d12, -3px -3px 0 #0b0d12, 0 10px 0 rgba(0, 0, 0, .4), 0 0 60px var(--c2); }
-.ru-tap { margin-top: 26px; font-family: var(--font-code); font-size: 14px; color: rgba(255, 255, 255, .7); }
-.ru-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
-.ru-confetti { position: absolute; left: 50%; top: 42%; }
-.ru-confetti i { position: absolute; width: var(--s); height: calc(var(--s) * .6); border-radius: 2px; opacity: 0; }
-
-/* Opened: flash, burst, then the name slams in */
-.rankup.opened .ru-mystery { animation: ru-pop .25s ease-in forwards; }
-.rankup.opened .ru-emblem { animation: ru-reveal .7s cubic-bezier(.2, 1.8, .4, 1) .15s forwards, float 3s ease-in-out 1s infinite; }
-.rankup.opened .ru-hint { display: none; }
-.rankup.opened .ru-flash { animation: ru-flash .7s ease-out; }
-.rankup.opened .ru-confetti i { animation: ru-burst 1.4s cubic-bezier(.1, .8, .3, 1) var(--d) forwards; }
-.rankup.opened .ru-kicker { animation: ru-slam .45s cubic-bezier(.2, 1.6, .4, 1) .55s forwards; }
-.rankup.opened .ru-name { animation: ru-slam .55s cubic-bezier(.2, 1.6, .4, 1) .8s forwards; }
-.rankup.opened.done .ru-tap { animation: ru-in .4s ease-out forwards, ru-blink 1.4s ease-in-out .4s infinite; }
-.rankup.opened .ru-stage { animation: ru-shake .5s linear .8s; }
-.r-legendary.opened .ru-confetti i, .r-mythic.opened .ru-confetti i { border-radius: 50%; }
-
-@keyframes ru-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes ru-out { to { opacity: 0; transform: scale(1.06); } }
-@keyframes ru-drop { from { transform: translateY(-80vh) scale(.6) rotate(-20deg); } to { transform: none; } }
-@keyframes ru-charge { 0%, 100% { transform: rotate(-4deg) scale(1); } 50% { transform: rotate(4deg) scale(1.04); } }
-@keyframes ru-hit { 0% { transform: scale(1.18) rotate(-8deg); } 100% { transform: scale(1) rotate(0); } }
-@keyframes ru-pop { to { transform: scale(1.6); opacity: 0; } }
-@keyframes ru-reveal { 0% { opacity: 0; transform: scale(.2) rotate(-30deg); } 60% { opacity: 1; transform: scale(1.25) rotate(6deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
-@keyframes ru-flash { 0% { opacity: .95; } 100% { opacity: 0; } }
-@keyframes ru-burst { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 120px)) rotate(var(--r)); } }
-@keyframes ru-slam { 0% { opacity: 0; transform: scale(3) rotate(-6deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
-@keyframes ru-shake { 0%, 100% { transform: none; } 20% { transform: translate(-8px, 4px); } 40% { transform: translate(7px, -5px); } 60% { transform: translate(-5px, 3px); } 80% { transform: translate(3px, -2px); } }
-@keyframes ru-blink { 50% { opacity: .45; } }
-
-@media (max-width: 640px) {
-  .rank-card { padding: 22px; gap: 8px 20px; }
-  .rank-card .rank-emblem { width: 92px; height: 92px; }
-  .rank-road { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-  .rank-road li { padding: 14px 2px 10px; border-radius: 10px; }
-  .rank-road .tile-emblem { width: 40px; height: 40px; }
-  .rank-road b { font-size: 11px; }
-  .rank-road span { display: none; }
-}
+/* Badge unlocked! The full screen reveal */
+body.unlock-open { overflow: hidden; }
+.unlock { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; overflow: hidden; color: #fff; cursor: pointer; outline: none; animation: ul-in .3s ease-out; -webkit-tap-highlight-color: transparent; }
+.unlock.closing { animation: ul-out .35s ease-in forwards; }
+.ul-bg { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, #123a4a 0%, #050a14 70%); }
+.ul-rays { position: absolute; left: 50%; top: 42%; width: 220vmax; height: 220vmax; margin: -110vmax 0 0 -110vmax; opacity: .12; background: repeating-conic-gradient(#f5c542 0 8deg, transparent 8deg 20deg); -webkit-mask: radial-gradient(closest-side, #000 10%, transparent 60%); mask: radial-gradient(closest-side, #000 10%, transparent 60%); animation: ul-spin 30s linear infinite; transition: opacity .4s; }
+.unlock.opened .ul-rays { opacity: .45; animation-duration: 10s; }
+.ul-stage { position: relative; display: flex; flex-direction: column; align-items: center; padding: 16px; text-align: center; }
+.ul-drop { position: relative; width: min(230px, 54vw); aspect-ratio: 160 / 180; padding: 0; border: 0; background: none; cursor: pointer; animation: ul-drop .7s cubic-bezier(.2, 1.6, .4, 1) both; }
+.ul-drop > span { position: absolute; inset: 0; }
+.ul-mystery { filter: drop-shadow(0 0 30px #22c3a6); animation: ul-charge .9s ease-in-out infinite; }
+.unlock[data-taps="1"] .ul-mystery { animation-duration: .5s; filter: drop-shadow(0 0 45px #22c3a6); }
+.unlock[data-taps="2"] .ul-mystery { animation-duration: .25s; filter: drop-shadow(0 0 70px #7dffc8); }
+.ul-drop.hit .ul-mystery { animation: ul-hit .25s ease-out, ul-charge .4s ease-in-out .25s infinite; }
+.ul-emblem { opacity: 0; transform: scale(.2); filter: drop-shadow(0 10px 0 rgba(0, 0, 0, .4)) drop-shadow(0 0 40px rgba(245, 197, 66, .6)); }
+.ul-hint, .ul-kicker, .ul-name { font-family: "Lilita One", var(--font); font-weight: 400; letter-spacing: .02em; text-transform: uppercase; }
+.ul-hint { margin: 18px 0 0; font-size: 28px; text-shadow: 0 3px 0 #000; animation: ul-blink 1s ease-in-out infinite; }
+.ul-kicker, .ul-name, .ul-for, .ul-tap { margin: 0; opacity: 0; }
+.ul-kicker { margin-top: 10px; font-size: clamp(24px, 6vw, 36px); text-shadow: 0 3px 0 #000, 0 0 20px #22c3a6; }
+.ul-name { font-size: clamp(48px, 13vw, 104px); line-height: 1; color: #fff5c4; text-shadow: 0 5px 0 #0b0d12, 3px 0 0 #0b0d12, -3px 0 0 #0b0d12, 0 -3px 0 #0b0d12, 3px 3px 0 #0b0d12, -3px 3px 0 #0b0d12, 3px -3px 0 #0b0d12, -3px -3px 0 #0b0d12, 0 10px 0 rgba(0, 0, 0, .4), 0 0 60px rgba(245, 197, 66, .7); }
+.ul-for { margin-top: 14px; max-width: 30ch; color: rgba(255, 255, 255, .85); font-size: 17px; line-height: 1.45; }
+.ul-tap { margin-top: 22px; font-family: var(--font-code); font-size: 14px; color: rgba(255, 255, 255, .7); }
+.ul-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+.ul-confetti { position: absolute; left: 50%; top: 40%; }
+.ul-confetti i { position: absolute; width: var(--s); height: calc(var(--s) * .6); border-radius: 2px; opacity: 0; }
+.unlock.opened .ul-mystery { animation: ul-pop .25s ease-in forwards; }
+.unlock.opened .ul-emblem { animation: ul-reveal .7s cubic-bezier(.2, 1.8, .4, 1) .15s forwards; }
+.unlock.opened .ul-hint { display: none; }
+.unlock.opened .ul-flash { animation: ul-flash .7s ease-out; }
+.unlock.opened .ul-confetti i { animation: ul-burst 1.4s cubic-bezier(.1, .8, .3, 1) var(--d) forwards; }
+.unlock.opened .ul-kicker { animation: ul-slam .45s cubic-bezier(.2, 1.6, .4, 1) .55s forwards; }
+.unlock.opened .ul-name { animation: ul-slam .55s cubic-bezier(.2, 1.6, .4, 1) .8s forwards; }
+.unlock.opened .ul-for { animation: ul-in .4s ease-out 1.2s forwards; }
+.unlock.opened.done .ul-tap { animation: ul-in .4s ease-out forwards, ul-blink 1.4s ease-in-out .4s infinite; }
+.unlock.opened .ul-stage { animation: ul-shake .5s linear .8s; }
+@keyframes ul-spin { to { transform: rotate(360deg); } }
+@keyframes ul-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ul-out { to { opacity: 0; transform: scale(1.06); } }
+@keyframes ul-drop { from { transform: translateY(-80vh) scale(.6) rotate(-20deg); } to { transform: none; } }
+@keyframes ul-charge { 0%, 100% { transform: rotate(-4deg) scale(1); } 50% { transform: rotate(4deg) scale(1.04); } }
+@keyframes ul-hit { 0% { transform: scale(1.18) rotate(-8deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes ul-pop { to { transform: scale(1.6); opacity: 0; } }
+@keyframes ul-reveal { 0% { opacity: 0; transform: scale(.2) rotate(-30deg); } 60% { opacity: 1; transform: scale(1.2) rotate(5deg); } 100% { opacity: 1; transform: none; } }
+@keyframes ul-flash { 0% { opacity: .95; } 100% { opacity: 0; } }
+@keyframes ul-burst { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 120px)) rotate(var(--r)); } }
+@keyframes ul-slam { 0% { opacity: 0; transform: scale(3) rotate(-6deg); } 100% { opacity: 1; transform: none; } }
+@keyframes ul-shake { 0%, 100% { transform: none; } 20% { transform: translate(-8px, 4px); } 40% { transform: translate(7px, -5px); } 60% { transform: translate(-5px, 3px); } 80% { transform: translate(3px, -2px); } }
+@keyframes ul-blink { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) {
-  .emblem *, .rank-card::before, .rank-card .rank-emblem, .rank-road .got .tile-emblem, .ru-rays, .ru-mystery, .r-mythic.rank-card, .rankup.r-mythic.opened { animation: none !important; }
-  .rankup.opened .ru-emblem, .rankup.opened .ru-kicker, .rankup.opened .ru-name { animation: ru-in .3s ease-out forwards; }
-  .ru-confetti, .ru-flash { display: none; }
-  .rankup.opened .ru-stage, .ru-drop { animation: none; }
+  .ul-rays, .ul-mystery, .ul-hint { animation: none !important; }
+  .unlock.opened .ul-emblem, .unlock.opened .ul-kicker, .unlock.opened .ul-name { animation: ul-in .3s ease-out forwards; }
+  .ul-confetti, .ul-flash { display: none; }
+  .unlock.opened .ul-stage, .ul-drop { animation: none; }
 }

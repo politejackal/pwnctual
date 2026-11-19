@@ -1,7 +1,7 @@
 // A public profile at /u/<github username>: who they are and what they've finished
 import { COURSE } from "./course-data.js";
 import { account, signOut } from "./account.js";
-import { RANKS, rankOf, nextStep, emblem, rankFont, paint } from "./rank.js";
+import { BADGES, emblem, firstBadgeHint } from "./badges.js";
 
 const root = document.getElementById("profile");
 const login = decodeURIComponent(location.pathname.split("/")[2] || "");
@@ -34,7 +34,9 @@ async function show() {
     root.replaceChildren(h("header", { class: "page-head" }, h("p", { class: "eyebrow" }, "Profile"), h("h1", null, "Not found")));
     return;
   }
-  const { user, done, rank } = await res.json();
+  const { user, done, badges } = await res.json();
+  const me = await account;
+  const mine = !!me && me.user.login.toLowerCase() === user.login.toLowerCase();
   const doneAt = new Map(done.map((d) => [d.lesson, d.at]));
   document.title = `${user.login} · pwnctual`;
 
@@ -52,32 +54,24 @@ async function show() {
         `Joined ${date(user.joined)} · `,
         h("a", { href: `https://github.com/${encodeURIComponent(user.login)}`, target: "_blank", rel: "noopener" }, "GitHub"))));
 
-  // Their rank, big, and the road of every rank
-  rankFont();
-  const r = Math.max(rankOf(doneAt.keys()), rank || 0);
-  const next = nextStep(new Set(doneAt.keys()), r);
-  const art = (cls, i) => {
-    const el = h("div", { class: cls });
-    el.innerHTML = emblem(i);
+  // Their badges. Starters have none.
+  const art = (badge) => {
+    const el = h("div", { class: "badge-art" });
+    el.innerHTML = emblem(badge);
     return el;
   };
-  const card = h("section", { class: "rank-card", "aria-label": `Rank: ${RANKS[r].name}` },
-    art("rank-emblem", r),
-    h("div", { class: "rank-info" },
-      h("p", { class: "rank-label" }, "Rank"),
-      h("p", { class: "rank-name rank-text" }, RANKS[r].name),
-      next && h("div", { class: "rank-next" }, next.text, next.pct != null && bar(next.pct))));
-  paint(card, r);
-  const road = h("section", { class: "profile-section" },
-    h("h2", { class: "section-title" }, "Rank road"),
-    h("ol", { class: "rank-road" }, RANKS.map((k, i) => {
-      const li = h("li", { class: i <= r ? "got" : "locked" },
-        art("tile-emblem", i),
-        h("b", null, k.name),
-        h("span", null, k.need || "???"));
-      paint(li, i);
-      return li;
-    })));
+  const earned = (badges || []).filter((b) => BADGES[b.id]);
+  const hint = firstBadgeHint(new Set(doneAt.keys()));
+  const badgeSection = h("section", { class: "profile-section" },
+    h("h2", { class: "section-title" }, "Badges"),
+    earned.length
+      ? h("ul", { class: "badges" }, earned.map((b) =>
+          h("li", { class: "badge" },
+            art(b.id),
+            h("b", null, BADGES[b.id].name),
+            h("span", null, BADGES[b.id].for),
+            h("time", { datetime: new Date(b.at).toISOString() }, `Earned ${date(b.at)}`))))
+      : [h("p", { class: "meta" }, "No badges yet."), mine && h("div", { class: "badge-hint" }, h("p", null, hint.text), bar(hint.pct))]);
 
   const stats = h("section", { class: "profile-section" },
     h("h2", { class: "section-title" }, "Progress",
@@ -100,11 +94,10 @@ async function show() {
             h("span", { class: "meta" }, date(doneAt.get(x.key))))))
       : h("p", { class: "meta" }, "None yet."));
 
-  root.replaceChildren(head, card, road, stats, challenges);
+  root.replaceChildren(head, badgeSection, stats, challenges);
 
   // Your own profile: a sign out button
-  const me = await account;
-  if (me && me.user.login.toLowerCase() === user.login.toLowerCase()) {
+  if (mine) {
     const out = h("button", { class: "button signout", type: "button" }, "Sign out");
     out.addEventListener("click", signOut);
     root.append(h("div", { class: "profile-section" }, out));

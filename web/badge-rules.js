@@ -13,7 +13,7 @@ export function chapterPct(c, done) {
 
 // id: saved with the person, so it never changes
 export const BADGE_RULES = [
-  { id: "compiled", earned: (done) => chapterPct(COURSE[0], done) === 100 }, // Finish Chapter 1
+  { id: "hello-world", earned: (done) => chapterPct(COURSE[0], done) === 100 }, // Finish Chapter 1
 ];
 
 // The ids of the badges this list of finished lessons earns right now
