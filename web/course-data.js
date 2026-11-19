@@ -141,6 +141,12 @@ export const COURSE = [
           {
             id: "loops",
             title: "Loops",
+            challenge: {
+              command: "docker run --rm -it ghcr.io/pwnctual/loops",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/loops",
+              flagHash: "d2233d76de6ca399cd934dfe4594ce52bc3101b82de337d841dac53823c91be0", // SHA-256 of the flag
+            },
           },
         ],
       },
