@@ -1,6 +1,7 @@
 // Builds every page under /learn from the course data, plus the reader's progress.
 import { COURSE } from "./course-data.js";
 import { account, saveProgress, submitFlag } from "./account.js";
+import { checkRankUp } from "./rank.js";
 
 const KEY = "pwnctual:done";
 const loadDone = () => {
@@ -139,7 +140,7 @@ function lessonActions(c, m, l, onChange) {
     toggle.setAttribute("aria-pressed", isDone);
     toggle.textContent = isDone ? "✓ Completed" : "Mark as complete";
   };
-  const changed = () => { paint(); onChange && onChange(); };
+  const changed = () => { paint(); onChange && onChange(); checkRankUp(done); };
   paint();
 
   if (!l.challenge) {
@@ -329,6 +330,8 @@ function render() {
 
 let refresh = render;
 render();
+// Already earned a rank before (or on another device): celebrate it now
+checkRankUp(done);
 
 // Signed in: progress lives on the server. The first time someone signs in on a browser,
 // the lessons they finished there before signing in are brought over to their account.
@@ -351,6 +354,7 @@ account.then(async (a) => {
   done = new Set(list);
   saveDone(done);
   refresh();
+  checkRankUp(done);
 });
 // Progress can change in another tab
 window.addEventListener("storage", (e) => {

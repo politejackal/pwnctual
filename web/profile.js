@@ -1,6 +1,7 @@
 // A public profile at /u/<github username>: who they are and what they've finished
 import { COURSE } from "./course-data.js";
 import { account, signOut } from "./account.js";
+import { RANKS, rankOf, nextStep, emblem, rankFont, paint } from "./rank.js";
 
 const root = document.getElementById("profile");
 const login = decodeURIComponent(location.pathname.split("/")[2] || "");
@@ -51,6 +52,33 @@ async function show() {
         `Joined ${date(user.joined)} · `,
         h("a", { href: `https://github.com/${encodeURIComponent(user.login)}`, target: "_blank", rel: "noopener" }, "GitHub"))));
 
+  // Their rank, big, and the road of every rank
+  rankFont();
+  const r = rankOf(doneAt.keys());
+  const next = nextStep(new Set(doneAt.keys()));
+  const art = (cls, i) => {
+    const el = h("div", { class: cls });
+    el.innerHTML = emblem(i);
+    return el;
+  };
+  const card = h("section", { class: "rank-card", "aria-label": `Rank: ${RANKS[r].name}` },
+    art("rank-emblem", r),
+    h("div", { class: "rank-info" },
+      h("p", { class: "rank-label" }, "Rank"),
+      h("p", { class: "rank-name rank-text" }, RANKS[r].name),
+      next && h("div", { class: "rank-next" }, next.text, next.pct != null && bar(next.pct))));
+  paint(card, r);
+  const road = h("section", { class: "profile-section" },
+    h("h2", { class: "section-title" }, "Rank road"),
+    h("ol", { class: "rank-road" }, RANKS.map((k, i) => {
+      const li = h("li", { class: i < r ? "got" : i === r ? "got now" : "locked" },
+        art("tile-emblem", i),
+        h("b", null, k.name),
+        h("span", null, k.need || "???"));
+      paint(li, i);
+      return li;
+    })));
+
   const stats = h("section", { class: "profile-section" },
     h("h2", { class: "section-title" }, "Progress",
       h("span", { class: "meta" }, `${finished} of ${all.length} lessons · ${solved.length} challenge${solved.length === 1 ? "" : "s"} solved`)),
@@ -72,7 +100,7 @@ async function show() {
             h("span", { class: "meta" }, date(doneAt.get(x.key))))))
       : h("p", { class: "meta" }, "None yet."));
 
-  root.replaceChildren(head, stats, challenges);
+  root.replaceChildren(head, card, road, stats, challenges);
 
   // Your own profile: a sign out button
   const me = await account;

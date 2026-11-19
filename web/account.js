@@ -1,3 +1,5 @@
+import { RANKS, rankOf, paint } from "./rank.js";
+
 // Who is signed in. Fills the "Sign in" / profile button in the top bar on every page.
 const signInUrl = () => `/auth/github?return=${encodeURIComponent(location.pathname + location.hash)}`;
 
@@ -25,7 +27,7 @@ export const submitFlag = (lesson, flag) => post("/api/submit", { lesson, flag }
 
 export async function signOut() {
   try { await post("/auth/logout", {}); } catch {}
-  try { localStorage.removeItem("pwnctual:done"); localStorage.removeItem("pwnctual:user"); } catch {}
+  try { localStorage.removeItem("pwnctual:done"); localStorage.removeItem("pwnctual:user"); localStorage.removeItem("pwnctual:rank"); } catch {}
   location.href = "/";
 }
 
@@ -45,6 +47,10 @@ account.then((a) => {
       link.append(img);
     }
     link.append(a.user.login);
+    const r = rankOf(a.done);
+    link.classList.add("ranked");
+    link.title = `${a.user.login} · ${RANKS[r].name}`;
+    paint(link, r);
   } else {
     link.className = "nav-signin";
     link.href = signInUrl();
