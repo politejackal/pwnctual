@@ -14,58 +14,68 @@ export function firstBadgeHint(done) {
   return { text: `Finish Chapter 1 to earn your first badge: ${BADGES["hello-world"].name}.`, pct: chapterPct(COURSE[0], set) };
 }
 
-// ---- The Hello, World badge: a medal with a glowing wireframe globe, ribbons and a banner. It doesn't move. ----
+// ---- The Hello, World badge: 1-bit pixel art, like the first computer screens. A globe on a medal, with ribbons. ----
+// Black and white only: ink is the text color, paper the background, so it flips with dark mode.
 
-let uid = 0;
-const INK = "#0b0d12";
-export function emblem(badge, { mystery = false } = {}) {
-  const id = `bd${++uid}`;
-  const defs = `<defs>
-      <linearGradient id="${id}gold" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fff5c4"/><stop offset=".45" stop-color="#f5c542"/><stop offset="1" stop-color="#a86a12"/></linearGradient>
-      <radialGradient id="${id}space" cx=".42" cy=".36" r=".75"><stop offset="0" stop-color="#173a5c"/><stop offset=".7" stop-color="#0b1a2e"/><stop offset="1" stop-color="#050a14"/></radialGradient>
-      <radialGradient id="${id}globe" cx=".38" cy=".32" r=".8"><stop offset="0" stop-color="#1f8f6a"/><stop offset=".6" stop-color="#0b4a3d"/><stop offset="1" stop-color="#062a24"/></radialGradient>
-      <linearGradient id="${id}rib" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22c3a6"/><stop offset="1" stop-color="#0e6e60"/></linearGradient>
-      <clipPath id="${id}g"><circle cx="80" cy="74" r="33"/></clipPath>
-      <filter id="${id}f" x="-.3" y="-.3" width="1.6" height="1.6"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>`;
-  const svg = (body) => `<svg class="emblem" viewBox="0 0 160 180" aria-hidden="true">${defs}${body}</svg>`;
+const W = 33;
+const H = 44;
+const C = 16; // center of the medal
 
-  if (mystery) {
-    return svg(`<circle cx="80" cy="80" r="60" fill="#1b1f29" stroke="${INK}" stroke-width="7"/>
-      <circle cx="80" cy="80" r="47" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="3"/>
-      <text x="80" y="102" text-anchor="middle" font-family="'Lilita One', sans-serif" font-size="66" fill="#fff" stroke="${INK}" stroke-width="5" paint-order="stroke">?</text>`);
+// The "?" shown before the badge is opened
+const QUESTION = [
+  ".#####.",
+  "##...##",
+  "##...##",
+  ".....##",
+  "...###.",
+  "...##..",
+  "...##..",
+  ".......",
+  "...##..",
+];
+
+// What each pixel is: "i" ink, "p" paper, or null (nothing)
+function pixel(x, y, mystery) {
+  const dx = x - C;
+  const dy = y - C;
+  const d = Math.hypot(dx, dy);
+  if (d <= 15.6) {
+    if (d > 14) return "i"; // outer ring
+    if (d > 12.6) return "p";
+    if (d > 10.8) return "i"; // the medal's face
+    if (mystery) {
+      const qx = dx + 3;
+      const qy = dy + 4;
+      return QUESTION[qy]?.[qx] === "#" ? "i" : "p";
+    }
+    // The globe: equator, two latitude lines, the middle meridian and one ring of longitude
+    if (dy === 0 || Math.abs(dy) === 5 || dx === 0) return "i";
+    if (Math.abs(dy) < 10 && Math.abs(Math.abs(dx) - Math.round(5.5 * Math.sqrt(1 - (dy / 10.6) ** 2))) === 0) return "i";
+    return "p";
   }
-
-  const green = "#7dffc8";
-  // The globe: lines of longitude and latitude, glowing like a terminal
-  const lon = [33, 22, 10].map((rx) => `<ellipse cx="80" cy="74" rx="${rx}" ry="33"/>`).join("");
-  const lat = [-22, -11, 0, 11, 22].map((dy) => {
-    const half = Math.sqrt(33 * 33 - dy * dy);
-    return `<ellipse cx="80" cy="${74 + dy}" rx="${half.toFixed(1)}" ry="${(half * 0.16).toFixed(1)}"/>`;
-  }).join("");
-  return svg(`
-    <path d="M52 112 L36 172 L50 162 L60 176 L74 118 Z" fill="url(#${id}rib)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M108 112 L124 172 L110 162 L100 176 L86 118 Z" fill="url(#${id}rib)" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
-    <circle cx="80" cy="74" r="62" fill="url(#${id}gold)" stroke="${INK}" stroke-width="7"/>
-    <circle cx="80" cy="74" r="53" fill="none" stroke="#fff6cf" stroke-opacity=".7" stroke-width="2" stroke-dasharray="2 5"/>
-    <circle cx="80" cy="74" r="47" fill="url(#${id}space)" stroke="${INK}" stroke-width="5"/>
-    <circle cx="58" cy="44" r="1.4" fill="#fff"/><circle cx="108" cy="50" r="1.1" fill="#fff"/><circle cx="104" cy="98" r="1.3" fill="#fff" opacity=".7"/><circle cx="54" cy="96" r="1" fill="#fff" opacity=".7"/>
-    <circle cx="80" cy="74" r="33" fill="url(#${id}globe)" stroke="${INK}" stroke-width="3.5"/>
-    <g clip-path="url(#${id}g)" fill="none" stroke="${green}" stroke-width="1.6" filter="url(#${id}f)">${lon}${lat}</g>
-    <path d="M60 52 C66 46 74 44 80 44" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
-    <ellipse cx="80" cy="74" rx="50" ry="13" transform="rotate(-18 80 74)" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="70 12" opacity=".85"/>
-    <circle cx="124" cy="58" r="4.5" fill="#fff" stroke="${INK}" stroke-width="2.5"/>`);
+  // Two ribbons hanging below, notched at the bottom, a stripe down each
+  if (y >= 26 && y <= 43) {
+    const spread = Math.round((y - 26) / 4);
+    for (const mid of [12 - spread, 20 + spread]) {
+      const off = Math.abs(x - mid);
+      if (off <= 2 && !(y >= 42 && off <= y - 42)) return off === 0 && y < 41 ? "p" : "i";
+    }
+  }
+  return null;
 }
 
-// The chunky reveal font, loaded the first time the reveal shows
-let fontLoaded = false;
-function revealFont() {
-  if (fontLoaded) return;
-  fontLoaded = true;
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "https://fonts.googleapis.com/css2?family=Lilita+One&display=swap";
-  document.head.append(link);
+export function emblem(badge, { mystery = false } = {}) {
+  let ink = "";
+  let paper = "";
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const p = pixel(x, y, mystery);
+      if (p === "i") ink += `M${x} ${y}h1v1h-1z`;
+      else if (p === "p") paper += `M${x} ${y}h1v1h-1z`;
+    }
+  }
+  return `<svg class="emblem" viewBox="0 0 ${W} ${H}" shape-rendering="crispEdges" aria-hidden="true">
+    <path class="px-paper" d="${paper}"/><path class="px-ink" d="${ink}"/></svg>`;
 }
 
 // ---- Badge unlocked! ----
@@ -151,7 +161,6 @@ function sound(kind, r) {
 
 // The full screen reveal. Like opening a drop: tap it a few times and it bursts open.
 export function showUnlock(badge) {
-  revealFont();
   document.querySelector(".unlock")?.remove();
   const b = BADGES[badge];
   const el = document.createElement("div");
@@ -165,12 +174,11 @@ export function showUnlock(badge) {
     const angle = (i / n) * Math.PI * 2 + Math.random() * 0.3;
     const dist = 180 + Math.random() * 320;
     const size = 6 + Math.random() * 12;
-    const color = ["#f5c542", "#7dffc8", "#fff", "#22c3a6"][i % 4];
-    return `<i style="--x:${Math.cos(angle) * dist}px;--y:${Math.sin(angle) * dist}px;--s:${size}px;--r:${Math.random() * 720 - 360}deg;--d:${(Math.random() * 0.25).toFixed(2)}s;background:${color}"></i>`;
+    const color = "#fff";
+    return `<i style="--x:${Math.cos(angle) * dist}px;--y:${Math.sin(angle) * dist}px;--s:${Math.round(size)}px;--r:${Math.random() * 720 - 360}deg;--d:${(Math.random() * 0.25).toFixed(2)}s;background:${color}"></i>`;
   }).join("");
   el.innerHTML = `
     <div class="ul-bg"></div>
-    <div class="ul-rays"></div>
     <div class="ul-confetti">${confetti}</div>
     <div class="ul-flash"></div>
     <div class="ul-stage">
