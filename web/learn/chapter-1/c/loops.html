@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loops · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="loops">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>In your hacking journey, many times you will be in a situation where you want to do something multiple times. For this, we have something called loops. You can copy-paste the same code, but that's bad design for many reasons, which is why we have loops. So a loop just repeats a block of code, either an infinite or a finite number of times.</p>
+
+    <p>In C, we have two main types of loops, as we do in almost all programming languages: <code>while</code> loops and <code>for</code> loops.</p>
+
+    <h2>The while Loop</h2>
+
+    <p>A <code>while</code> loop keeps repeating a block of code as long as a given condition is true. If that condition never becomes false, it will repeat an infinite number of times (an infinite loop). Usually, we change something inside the loop so it eventually stops:</p>
+
+    <pre class="code">int count = 0;
+
+while (count &lt; 3) {
+    printf("Trying password... attempt %d\n", count);
+    count = count + 1;
+}</pre>
+
+    <p>Here, the loop runs as long as <code>count</code> is less than 3. Each time it runs, <code>count</code> goes up by 1, so after 3 tries the condition becomes false and the loop stops.</p>
+
+    <h2>The for Loop</h2>
+
+    <p>A <code>for</code> loop is usually used when you know the exact, finite number of times you want something to run. In C, a <code>for</code> loop still uses a condition—it just packs the starting point, the condition, and the update step all into one neat line:</p>
+
+    <pre class="code">for (int i = 0; i &lt; 5; i++) {
+    printf("Scanning port %d\n", i);
+}</pre>
+
+    <p>(Quick tip: <code>i++</code> is just a shortcut for <code>i = i + 1</code>.)</p>
+
+    <h2>break and continue</h2>
+
+    <p>Now, if you are in a loop, there is of course a way to get out of it early. You can use the <code>break</code> statement, which immediately quits the loop it is called from:</p>
+
+    <pre class="code">for (int i = 0; i &lt; 10; i++) {
+    if (i == 4) {
+        printf("Found it! Stopping early.\n");
+        break;
+    }
+    printf("Checking %d...\n", i);
+}</pre>
+
+    <p>Even though the loop is supposed to run up to 10, as soon as <code>i</code> hits 4, <code>break</code> kicks us straight out of the loop.</p>
+
+    <p>There is another keyword called <code>continue</code>, which just skips the remaining steps of that specific iteration and goes straight to the next one:</p>
+
+    <pre class="code">for (int i = 0; i &lt; 5; i++) {
+    if (i == 2) {
+        continue; // Skip 2 and move straight to 3
+    }
+    printf("Number: %d\n", i);
+}</pre>
+
+    <p>This prints <code>0</code>, <code>1</code>, <code>3</code>, and <code>4</code>—completely skipping <code>2</code> without quitting the whole loop.</p>
+
+    <h2>Watch Out for Off-by-One Errors</h2>
+
+    <p>Miscalculating the starting or ending point of a loop can cause off-by-one errors, which can cause major problems—as they have many times in history!</p>
+
+    <p>For example, if you want a loop to run 5 times starting from <code>0</code>:</p>
+
+    <pre class="code">// Runs 5 times (0, 1, 2, 3, 4) -&gt; Correct!
+for (int i = 0; i &lt; 5; i++) { ... }
+
+// Runs 6 times (0, 1, 2, 3, 4, 5) -&gt; Off-by-one error!
+for (int i = 0; i &lt;= 5; i++) { ... }</pre>
+
+    <p>When we get to arrays and memory later, running a loop just one extra time can accidentally overwrite neighboring memory—which is how real vulnerabilities are born.</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>

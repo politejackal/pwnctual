@@ -138,6 +138,10 @@ export const COURSE = [
               flagHash: "bac25ee795cf60c7388a54efba50b48db727c6d256944528ce09621a7f663bfc", // SHA-256 of the flag
             },
           },
+          {
+            id: "loops",
+            title: "Loops",
+          },
         ],
       },
     ],
