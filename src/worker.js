@@ -1,7 +1,7 @@
 // The server side of pwnctual: GitHub sign-in, profiles and saved progress.
 // Every other path is a static file from web/ and never reaches this code.
 import { COURSE } from "../web/course-data.js";
-import { rankOf } from "../web/rank-rules.js";
+import { badgesOf } from "../web/badge-rules.js";
 
 const SESSION_DAYS = 30;
 const LESSONS = new Map(
@@ -99,7 +99,7 @@ async function currentUser(request, env) {
   const token = readCookie(request, "sid");
   if (!token) return null;
   return env.DB.prepare(
-    `SELECT u.id, u.login, u.name, u.avatar, u.created_at, u.rank FROM sessions s JOIN users u ON u.id = s.user_id
+    `SELECT u.id, u.login, u.name, u.avatar, u.created_at FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = ? AND s.expires_at > ?`,
   ).bind(await sha256(token), Date.now()).first();
 }
@@ -109,18 +109,25 @@ async function doneList(env, userId) {
   return results.map((r) => r.lesson);
 }
 
-// Ranks stay once earned: save the rank their progress earns now, if it's higher than the one they have
-async function keepRank(env, user, done) {
-  const r = rankOf(done);
-  if (r > user.rank) await env.DB.prepare("UPDATE users SET rank = ? WHERE id = ? AND rank < ?").bind(r, user.id, r).run();
-  return Math.max(r, user.rank);
+// Badges stay once earned: save any their progress earns now. Returns every badge they have: [{ id, at }]
+async function badgeList(env, userId) {
+  const { results } = await env.DB.prepare("SELECT badge AS id, at FROM badges WHERE user_id = ? ORDER BY at").bind(userId).all();
+  return results;
+}
+async function keepBadges(env, user, done) {
+  const now = Date.now();
+  const earned = badgesOf(done);
+  if (earned.length) {
+    await env.DB.batch(earned.map((b) => env.DB.prepare("INSERT OR IGNORE INTO badges (user_id, badge, at) VALUES (?, ?, ?)").bind(user.id, b, now)));
+  }
+  return badgeList(env, user.id);
 }
 
 async function me(request, env) {
   const user = await currentUser(request, env);
   if (!user) return json({ user: null });
   const done = await doneList(env, user.id);
-  return json({ user: publicUser(user), done, rank: await keepRank(env, user, done) });
+  return json({ user: publicUser(user), done, badges: await keepBadges(env, user, done) });
 }
 
 // Mark reading lessons done or not done. Also used once to bring over progress saved before signing in.
@@ -139,7 +146,7 @@ async function progress(request, env) {
   ];
   if (stmts.length) await env.DB.batch(stmts);
   const done = await doneList(env, user.id);
-  return json({ done, rank: await keepRank(env, user, done) });
+  return json({ done, badges: await keepBadges(env, user, done) });
 }
 
 // Check a challenge flag here, on the server
@@ -153,18 +160,18 @@ async function submit(request, env) {
   if ((await sha256(flag.trim())) !== l.challenge.flagHash) return json({ correct: false });
   await env.DB.prepare("INSERT OR IGNORE INTO completions (user_id, lesson, at) VALUES (?, ?, ?)")
     .bind(user.id, lesson, Date.now()).run();
-  await keepRank(env, user, await doneList(env, user.id));
+  await keepBadges(env, user, await doneList(env, user.id));
   return json({ correct: true });
 }
 
 // ---- Public profiles: /u/<login> ----
 
 async function profile(env, login) {
-  const user = await env.DB.prepare("SELECT id, login, name, avatar, created_at, rank FROM users WHERE login = ?").bind(login).first();
+  const user = await env.DB.prepare("SELECT id, login, name, avatar, created_at FROM users WHERE login = ?").bind(login).first();
   if (!user) return json({ error: "No such user" }, 404);
   const { results } = await env.DB.prepare("SELECT lesson, at FROM completions WHERE user_id = ? ORDER BY at").bind(user.id).all();
   const done = results.filter((r) => LESSONS.has(r.lesson));
-  return json({ user: publicUser(user), done, rank: Math.max(user.rank, rankOf(done.map((r) => r.lesson))) });
+  return json({ user: publicUser(user), done, badges: await badgeList(env, user.id) });
 }
 
 const publicUser = (u) => ({ login: u.login, name: u.name, avatar: u.avatar, joined: u.created_at });
