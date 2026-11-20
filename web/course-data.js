@@ -109,21 +109,6 @@ export const COURSE = [
             },
           },
           {
-            id: "functions",
-            title: "Functions",
-            challenge: {
-              description: [
-                "Functions are everywhere, so let's get our hands dirty with them!",
-                "In this challenge, you get a file called `hello.c`, and every level asks you to do something different with functions: write one, call one, or fix a program that's missing something. There are 5 levels.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `hello.c` and tells you what to do. Open it with `nano hello.c`, make your changes, and try it with `make hello` and `./hello`. When you think it's right, run `/challenge/run` again to check. Finish all 5 levels and you get the flag.",
-              ],
-              command: "docker run --rm -it ghcr.io/pwnctual/functions",
-              leave: "exit",
-              cleanup: "docker rmi ghcr.io/pwnctual/functions",
-              flagHash: "18e916d481325d974370769c1b019d6f8bb13dc87e6b23ebecaeea8f451896ce", // SHA-256 of the flag
-            },
-          },
-          {
             id: "conditionals",
             title: "Conditionals",
             challenge: {
@@ -151,6 +136,21 @@ export const COURSE = [
               leave: "exit",
               cleanup: "docker rmi ghcr.io/pwnctual/loops",
               flagHash: "d2233d76de6ca399cd934dfe4594ce52bc3101b82de337d841dac53823c91be0", // SHA-256 of the flag
+            },
+          },
+          {
+            id: "functions",
+            title: "Functions",
+            challenge: {
+              description: [
+                "Functions are everywhere, so let's get our hands dirty with them!",
+                "In this challenge, you get a file called `hello.c`, and every level asks you to do something different with functions: write one, call one, or fix a program that's missing something. There are 5 levels.",
+                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `hello.c` and tells you what to do. Open it with `nano hello.c`, make your changes, and try it with `make hello` and `./hello`. When you think it's right, run `/challenge/run` again to check. Finish all 5 levels and you get the flag.",
+              ],
+              command: "docker run --rm -it ghcr.io/pwnctual/functions",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/functions",
+              flagHash: "18e916d481325d974370769c1b019d6f8bb13dc87e6b23ebecaeea8f451896ce", // SHA-256 of the flag
             },
           },
         ],
