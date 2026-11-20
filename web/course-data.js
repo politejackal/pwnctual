@@ -109,8 +109,8 @@ export const COURSE = [
             },
           },
           {
-            id: "math-in-c",
-            title: "Math in C",
+            id: "math",
+            title: "Math",
           },
           {
             id: "conditionals",
