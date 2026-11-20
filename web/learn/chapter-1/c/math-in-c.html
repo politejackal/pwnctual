@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math in C · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="math-in-c">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Now of course, you can do calculations using C! Computers are, after all, giant calculators.</p>
+
+    <h2>The basic arithmetic operators</h2>
+
+    <p>There are 5 main arithmetic operators in C:</p>
+
+    <div style="overflow-x:auto">
+      <table class="states">
+        <tr><th>Operator</th><th>What it does</th><th>Example</th><th>Result</th></tr>
+        <tr><td><code>+</code></td><td>Addition</td><td><code>5 + 2</code></td><td><code>7</code></td></tr>
+        <tr><td><code>-</code></td><td>Subtraction</td><td><code>5 - 2</code></td><td><code>3</code></td></tr>
+        <tr><td><code>*</code></td><td>Multiplication</td><td><code>5 * 2</code></td><td><code>10</code></td></tr>
+        <tr><td><code>/</code></td><td>Division</td><td><code>5 / 2</code></td><td><code>2</code> (wait, what? We'll get to that)</td></tr>
+        <tr><td><code>%</code></td><td>Modulus</td><td><code>5 % 2</code></td><td><code>1</code></td></tr>
+      </table>
+    </div>
+
+    <p>Notice that multiplication uses <code>*</code> and not <code>×</code>, simply because there is no <code>×</code> key on your keyboard.</p>
+
+    <p>You can use these with variables too, and store the result in another variable:</p>
+
+    <pre class="code">int a = 5;
+int b = 2;
+int sum = a + b;
+printf("%d\n", sum); // prints 7</pre>
+
+    <h2>The modulus operator</h2>
+
+    <p>This operator is special and needs its own explanation. Unlike normal division, which gives you a quotient and a remainder, this operator does the division and just gives you the remainder. The operator to use for this is <code>%</code>. You use it like <code>5 % 2</code>, and the result is <code>1</code>, because 5 divided by 2 is 2, with 1 left over.</p>
+
+    <p>This might look useless, but it's actually genius. For example:</p>
+
+    <ul class="terms">
+      <li><strong>Checking if a number is even:</strong> if <code>x % 2 == 0</code>, then <code>x</code> is even, because even numbers leave nothing behind when divided by 2.</li>
+      <li><strong>Getting the last digit of a number:</strong> <code>1337 % 10</code> is <code>7</code>.</li>
+      <li><strong>Wrapping around:</strong> on a 24-hour clock, <code>(hour + 5) % 24</code> gives you the hour 5 hours from now, even if it goes past midnight.</li>
+    </ul>
+
+    <p>And don't mix it up with the <code>%</code> inside <code>printf</code>, like <code>%d</code>. That one is a specifier, which just tells <code>printf</code> what to print. Same symbol, completely different job.</p>
+
+    <h2>Dividing two integers</h2>
+
+    <p>One important thing in C is how it handles the division of two integers. The result is always an integer. C just removes all the digits after the decimal point. It doesn't round it or anything, it just makes them disappear. So <code>5 / 2</code> gives you <code>2</code>, and even <code>9 / 10</code> gives you <code>0</code>!</p>
+
+    <aside class="note">
+      <p><strong>NOTE:</strong> Never divide an integer by 0, and never use <code>% 0</code> either. There is no answer to it, so your program will just crash.</p>
+    </aside>
+
+    <h2>Shortcuts</h2>
+
+    <p>Instead of writing <code>x = x + 1</code>, there is a shortcut: <code>x++</code>. It does the exact same thing. Same with <code>x--</code>, which is a shortcut for <code>x = x - 1</code>.</p>
+
+    <p>And if you want to add something other than 1, there's a shortcut for that too: <code>x += 5</code> is the same as <code>x = x + 5</code>. This works with all of them: <code>-=</code>, <code>*=</code>, <code>/=</code> and <code>%=</code>.</p>
+
+    <h2>Type casting</h2>
+
+    <p>Remember that <code>5 / 2</code> gives you <code>2</code> instead of <code>2.5</code>? That's because both of them are integers, so C removes the <code>.5</code>. But if any one of the operands is a float, the result is a float too. So instead of <code>5 / 2</code>, we can write <code>5.0 / 2</code>, <code>5 / 2.0</code>, or <code>5.0 / 2.0</code>, and get <code>2.5</code>.</p>
+
+    <p>But sometimes we are working with variables, and we can't just stick a <code>.0</code> at the end of them. This is where <strong>type casting</strong> comes in. Type casting changes a value from one type to another, like an <code>int</code> to a <code>float</code>. You just write the name of the type you want in brackets, right before the value:</p>
+
+    <pre class="code">int a = 5;
+int b = 2;
+float result = (float)a / b;
+printf("%f\n", result); // prints 2.500000</pre>
+
+    <p><code>(float)a</code> turns <code>a</code> into <code>5.0</code>, so the division becomes <code>5.0 / 2</code>, and the answer is <code>2.5</code>. Casting generally only works for things that make sense, like turning one kind of number into another.</p>
+
+    <p>Careful though, where you put the cast matters: <code>(float)(a / b)</code> gives you <code>2.000000</code>, not <code>2.5</code>! The brackets make the division happen first, between two integers, so the <code>.5</code> is already gone before the cast even happens.</p>
+
+    <h2>Order of operations</h2>
+
+    <p>Just like in school math, C doesn't simply go from left to right. <code>*</code>, <code>/</code> and <code>%</code> are done before <code>+</code> and <code>-</code>. So <code>2 + 3 * 4</code> is <code>14</code>, not <code>20</code>. If you want the addition to happen first, use brackets: <code>(2 + 3) * 4</code> is <code>20</code>. When in doubt, just use brackets. It also makes your code easier to read.</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>
