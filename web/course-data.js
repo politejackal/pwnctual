@@ -68,9 +68,8 @@ export const COURSE = [
             title: "C syntax",
             challenge: {
               description: [
-                "I know it feels fuzzy, but fixing and writing code is a great way to remove that fuzzy feeling.",
-                "In this challenge, you will be fixing a broken C program. You get a file called `hello.c` that is supposed to print `Hello, World!`, but it has a mistake in it. Your job is to find that mistake and fix it. There are 6 levels, and every level has a different mistake.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `hello.c`. Open it with `nano hello.c`, fix the mistake, save it with Ctrl+O and Enter, and leave with Ctrl+X. Now run `/challenge/run` again to check your fix. If it's right, you move on to the next level. Fix all 6 and you get the flag.",
+                "In this challenge you get a file called `hello.c` that is supposed to print `Hello, World!`, but it has a mistake in it! There are 6 levels, and every level has a different mistake.",
+                "Run `/challenge/run`, that spawns `hello.c`. Fix it with `nano hello.c` (save with Ctrl+O and Enter, leave with Ctrl+X), then run `/challenge/run` again to check.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/c-syntax",
               leave: "exit",
@@ -83,9 +82,8 @@ export const COURSE = [
             title: "Compiling",
             challenge: {
               description: [
-                "Time to turn some C code into ones and zeroes yourself!",
-                "In this challenge, you get a file called `flag.c`. It's a C program that prints the flag, but nobody has compiled it yet. Your job is to compile it with `make` and run it.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `flag.c`. Compile it with `make flag`, then run it with `./flag`. That prints the flag.",
+                "In this challenge you get a file called `flag.c`, a C program that prints the flag, but nobody has compiled it yet!",
+                "Run `/challenge/run`, that spawns `flag.c`. Compile it with `make flag`, then run it with `./flag`, and it prints the flag!",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/compiling",
               leave: "exit",
@@ -98,9 +96,8 @@ export const COURSE = [
             title: "Variables",
             challenge: {
               description: [
-                "Variables are the boxes that hold everything, so let's fill some up!",
-                "In this challenge, you get a file called `variables.c`, and every level asks you to do something different with variables: give one a type, pick the right specifier to print it, or figure out why it's printing the wrong thing. There are 6 levels.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `variables.c` and tells you what to do. Open it with `nano variables.c`, make your changes, and try it with `make variables` and `./variables`. When you think it's right, run `/challenge/run` again to check. Finish all 6 levels and you get the flag.",
+                "In this challenge you get a file called `variables.c`, and the challenge will tell you what to do! There are 6 levels.",
+                "Run `/challenge/run`, that spawns `variables.c`, and tells you what to do.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/variables",
               leave: "exit",
@@ -111,15 +108,24 @@ export const COURSE = [
           {
             id: "math",
             title: "Math",
+            challenge: {
+              description: [
+                "In this challenge you get a file called `math.c`, and the challenge will tell you what to do! The checker tries lots of different values, so your math has to be right every time!",
+                "Run `/challenge/run`, that spawns `math.c`, and tells you what to do.",
+              ],
+              command: "docker run --rm -it ghcr.io/pwnctual/math",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/math",
+              flagHash: "2e3f2bd2c5633f3c8f1ee81c782a6aa7164acec219cae6a084bf43f06a393396", // SHA-256 of the flag
+            },
           },
           {
             id: "conditionals",
             title: "Conditionals",
             challenge: {
               description: [
-                "Let's make some decisions!",
-                "In this challenge, you get a file called `conditionals.c`, and every level asks you to make the program decide something: fix a sneaky bug, put conditions in the right order, or combine them with `&&`, `||` and `!`. There are 7 levels. Here's the catch: the checker doesn't just run your program once. It tries lots of different values, so your conditions have to be right every single time.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `conditionals.c` and tells you what to do. Open it with `nano conditionals.c`, make your changes, and try it with `make conditionals` and `./conditionals`. Change the numbers at the top to test it yourself! When you think it's right, run `/challenge/run` again to check. Finish all 7 levels and you get the flag.",
+                "In this challenge you get a file called `conditionals.c`, and the challenge will tell you what to do! Just like before, the checker tries lots of different values, so your conditions have to be right every time!",
+                "Run `/challenge/run`, that spawns `conditionals.c`, and tells you what to do.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/conditionals",
               leave: "exit",
@@ -132,9 +138,8 @@ export const COURSE = [
             title: "Loops",
             challenge: {
               description: [
-                "Time to make the computer do the boring stuff for us, again and again!",
-                "In this challenge, you get a file called `loops.c`, and every level asks you to do something different with loops: fix an off-by-one, stop a loop that never ends, scan some ports, or crack a pin with `break`. There are 6 levels. Just like in conditionals, the checker tries lots of different values, so your loop has to be right every single time.",
-                "Here’s how it works: run the first command below, then run `/challenge/run`. That gives you `loops.c` and tells you what to do. Open it with `nano loops.c`, make your changes, and try it with `make loops` and `./loops`. Change the numbers at the top to test it yourself! When you think it’s right, run `/challenge/run` again to check. Finish all 6 levels and you get the flag!",
+                "In this challenge you get a file called `loops.c`, and the challenge will tell you what to do! Just like before, the checker tries lots of different values, so your loops have to be right every time!",
+                "Run `/challenge/run`, that spawns `loops.c`, and tells you what to do.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/loops",
               leave: "exit",
@@ -147,9 +152,8 @@ export const COURSE = [
             title: "Functions",
             challenge: {
               description: [
-                "Functions are everywhere, so let's get our hands dirty with them!",
-                "In this challenge, you get a file called `hello.c`, and every level asks you to do something different with functions: write one, call one, or fix a program that's missing something. There are 5 levels.",
-                "Here's how it works: run the first command below, then run `/challenge/run`. That gives you `hello.c` and tells you what to do. Open it with `nano hello.c`, make your changes, and try it with `make hello` and `./hello`. When you think it's right, run `/challenge/run` again to check. Finish all 5 levels and you get the flag.",
+                "In this challenge you get a file called `hello.c`, and the challenge will tell you what to do! There are 5 levels.",
+                "Run `/challenge/run`, that spawns `hello.c`, and tells you what to do.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/functions",
               leave: "exit",
