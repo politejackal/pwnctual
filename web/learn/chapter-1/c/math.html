@@ -39,8 +39,6 @@
       </table>
     </div>
 
-    <p>Notice that multiplication uses <code>*</code> and not <code>×</code>, simply because there is no <code>×</code> key on your keyboard.</p>
-
     <p>You can use these with variables too, and store the result in another variable:</p>
 
     <pre class="code">int a = 5;
@@ -55,7 +53,7 @@ printf("%d\n", sum); // prints 7</pre>
     <p>This might look useless, but it's actually genius. For example:</p>
 
     <ul class="terms">
-      <li><strong>Checking if a number is even:</strong> if <code>x % 2 == 0</code>, then <code>x</code> is even, because even numbers leave nothing behind when divided by 2.</li>
+      <li><strong>Checking if a number is even:</strong> if <code>x % 2</code> is <code>0</code>, then <code>x</code> is even, because even numbers leave nothing behind when divided by 2.</li>
       <li><strong>Getting the last digit of a number:</strong> <code>1337 % 10</code> is <code>7</code>.</li>
       <li><strong>Wrapping around:</strong> on a 24-hour clock, <code>(hour + 5) % 24</code> gives you the hour 5 hours from now, even if it goes past midnight.</li>
     </ul>
