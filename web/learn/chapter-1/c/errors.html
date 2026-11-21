@@ -47,7 +47,9 @@ int main() {
       <li><code>error: expected ';' before 'return'</code> is what went wrong, in (almost) plain English.</li>
     </ul>
 
-    <p>Notice that the compiler noticed the problem only when it reached <code>return</code>. So if the line it points to looks fine, always check the line right before it too.</p>
+    <p>Notice the message mentions <code>return</code>, which is on the next line. That's because C only noticed something was wrong when it reached <code>return</code>. Luckily, the compiler is smart enough to still point at line 4, right where the semicolon should go.</p>
+
+    <p>But not every error is that nice. For some mistakes, like a missing <code>{</code>, the compiler only starts complaining a few lines later, about lines that look perfectly fine. So if the line it points to looks fine, always check the lines right before it too.</p>
 
     <h2>Fix the first error first</h2>
 
@@ -62,7 +64,7 @@ int main() {
     <div style="overflow-x:auto">
       <table class="states">
         <tr><th>The compiler says</th><th>What it usually means</th></tr>
-        <tr><td><code>expected ';' before ...</code></td><td>You forgot a semicolon, usually at the end of the line before.</td></tr>
+        <tr><td><code>expected ';' before ...</code></td><td>You forgot a semicolon, right where the compiler points.</td></tr>
         <tr><td><code>implicit declaration of function 'Printf'</code></td><td>C has never heard of that function. Check the spelling (C is case-sensitive!), or you're missing an <code>#include</code>.</td></tr>
         <tr><td><code>expected declaration or statement at end of input</code></td><td>You forgot a closing <code>}</code> somewhere.</td></tr>
         <tr><td><code>'x' undeclared</code></td><td>You used a variable that doesn't exist. A typo, or you forgot to create it.</td></tr>

@@ -94,6 +94,16 @@ export const COURSE = [
           {
             id: "errors",
             title: "Errors and debugging",
+            challenge: {
+              description: [
+                "In this challenge you get a file called `broken.c`, and the challenge will tell you what to do! Every level breaks it in a different way, and the compiler will tell you what's wrong, if you know how to read it!",
+                "Run `/challenge/run`, that spawns `broken.c`, and tells you what to do.",
+              ],
+              command: "docker run --rm -it ghcr.io/pwnctual/errors",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/errors",
+              flagHash: "a9a5140eac016b0e7328b5cdd934344ffecefe25c23d5a657bcc8d48be1a7ef6", // SHA-256 of the flag
+            },
           },
           {
             id: "variables",
