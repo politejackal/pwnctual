@@ -74,6 +74,19 @@ while (count &lt; 3) {
 
     <p>This prints <code>0</code>, <code>1</code>, <code>3</code>, and <code>4</code>—completely skipping <code>2</code> without quitting the whole loop.</p>
 
+    <h2>Loops inside loops</h2>
+
+    <p>You can put a loop inside another loop. The inner loop runs all the way through every single time the outer loop runs once. For example, this prints a 3 by 4 rectangle of <code>#</code>:</p>
+
+    <pre class="code">for (int row = 0; row &lt; 3; row++) {
+    for (int col = 0; col &lt; 4; col++) {
+        printf("#");
+    }
+    printf("\n");
+}</pre>
+
+    <p>The outer loop goes through the 3 rows. For every row, the inner loop prints 4 <code>#</code>s, and then we print a <code>\n</code> to start the next row.</p>
+
     <h2>Watch Out for Off-by-One Errors</h2>
 
     <p>Miscalculating the starting or ending point of a loop can cause off-by-one errors, which can cause major problems—as they have many times in history!</p>

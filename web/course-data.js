@@ -161,6 +161,20 @@ export const COURSE = [
               flagHash: "18e916d481325d974370769c1b019d6f8bb13dc87e6b23ebecaeea8f451896ce", // SHA-256 of the flag
             },
           },
+          {
+            id: "checkpoint-1",
+            title: "Checkpoint 1",
+            challenge: {
+              description: [
+                "In this challenge you get a file called `checkpoint.c`, and the challenge will tell you what to do! Every level starts from an empty program, and just like before, the checker tries lots of different values, so your code has to be right every time!",
+                "Run `/challenge/run`, that spawns `checkpoint.c`, and tells you what to do.",
+              ],
+              command: "docker run --rm -it ghcr.io/pwnctual/checkpoint-1",
+              leave: "exit",
+              cleanup: "docker rmi ghcr.io/pwnctual/checkpoint-1",
+              flagHash: "c76b8d421fff78759ea5482de3eae9a4c16e793e93abe2aab810233a78bfef84", // SHA-256 of the flag
+            },
+          },
         ],
       },
     ],
