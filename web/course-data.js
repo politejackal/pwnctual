@@ -152,7 +152,7 @@ export const COURSE = [
             title: "Functions",
             challenge: {
               description: [
-                "In this challenge you get a file called `hello.c`, and the challenge will tell you what to do! There are 5 levels.",
+                "In this challenge you get a file called `hello.c`, and the challenge will tell you what to do! There are 7 levels.",
                 "Run `/challenge/run`, that spawns `hello.c`, and tells you what to do.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/functions",

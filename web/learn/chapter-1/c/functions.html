@@ -28,17 +28,17 @@
 
     <p>As you can probably guess, <code>main</code> is not the program itself, it's just a function. And the main one!</p>
 
-    <p>In C, you need to define functions by specifying what the function will return. This is something we will learn soon, so you can safely ignore this part for now. Just remember that the function takes something called <code>int</code> as its return value.</p>
+    <p>In C, you need to define functions by specifying what the function will give back (return) when it's done. Our function will just print something and won't give anything back, so we use <code>void</code>, which simply means "nothing". We will see functions that do give something back later in this lesson.</p>
 
-    <p>So our function written so far: <code>int</code></p>
+    <p>So our function written so far: <code>void</code></p>
 
     <p>Then we write the name of the function. Let's call this function <code>hello</code>.</p>
 
-    <p>So our function so far: <code>int hello</code></p>
+    <p>So our function so far: <code>void hello</code></p>
 
-    <p>Then we use a pair of parentheses, <code>()</code>, to tell the program that we are talking about a function. The program needs to differentiate between a variable and a function, and inside these parentheses, we can pass something called arguments (which we will skip for now to keep things simple).</p>
+    <p>Then we use a pair of parentheses, <code>()</code>, to tell the program that we are talking about a function. The program needs to differentiate between a variable and a function, and inside these parentheses, we can pass something called arguments (we will come back to these at the end of this lesson).</p>
 
-    <p>So our function so far: <code>int hello()</code></p>
+    <p>So our function so far: <code>void hello()</code></p>
 
     <p>Then we have something like walls: the curly braces, <code>{}</code>. Inside these, we write whatever we want to happen when this function is called. For now, whenever this function is called, let's just print "hello". To do that, we need to call the <code>printf</code> function. (The 'f' in <code>printf</code> stands for "formatted"). Inside the <code>printf</code> we will pass an argument—something known as a string, which we will come back to soon as well.</p>
 
@@ -47,13 +47,13 @@
     <p>So our code so far:</p>
 
     <pre class="code">#include &lt;stdio.h&gt;
-int hello() {printf("hello")}</pre>
+void hello() {printf("hello")}</pre>
 
     <p>Now, we generally like to keep our code organized, so we write each instruction on a new line. Like this:</p>
 
     <pre class="code">#include &lt;stdio.h&gt;
 
-int hello() {
+void hello() {
     printf("hello")
 }</pre>
 
@@ -63,7 +63,7 @@ int hello() {
 
     <pre class="code">#include &lt;stdio.h&gt;
 
-int hello() {
+void hello() {
     printf("hello");
 }</pre>
 
@@ -73,13 +73,13 @@ int hello() {
 
     <p>Why? Because whatever is in <code>main</code> gets executed first. If the program doesn't find <code>main</code>, it panics and gives an error because it doesn't know where the program is supposed to start. Our code right now only has <code>hello</code>.</p>
 
-    <p>If we didn't want anything to actually happen, we could just leave the <code>main</code> function empty. But we do want something to happen: we want our <code>hello</code> function to run. So, before finishing our script, we will write our <code>main</code> function and pass our <code>hello()</code> function into it. We are calling our new function exactly the same way we called the <code>printf</code> function earlier!</p>
+    <p>If we didn't want anything to actually happen, we could just leave the <code>main</code> function empty. But we do want something to happen: we want our <code>hello</code> function to run. So, before finishing our script, we will write our <code>main</code> function and call our <code>hello()</code> function inside it. We are calling our new function exactly the same way we called the <code>printf</code> function earlier!</p>
 
     <p>Here is what the final, working code looks like:</p>
 
     <pre class="code">#include &lt;stdio.h&gt;
 
-int hello() {
+void hello() {
     printf("hello");
 }
 
@@ -89,23 +89,67 @@ int main() {
 
     <p>Now, when the program runs, it starts at <code>main</code>, sees that we are calling <code>hello()</code>, jumps up to our <code>hello</code> function, prints "hello", and finishes successfully!</p>
 
-    <p>Now notice that we wrote our <code>hello</code> function above <code>main</code>, not below it. That's on purpose. C reads your code from top to bottom, just like you do. So if <code>hello</code> were written below <code>main</code>, by the time C reaches <code>hello();</code> inside <code>main</code>, it has never heard of <code>hello</code> before. Newer compilers will give you an error and refuse to compile it. Older ones, like the one in our challenges, will only give you a warning and take a guess, but you should never rely on that guess.</p>
+    <p>Now notice that we wrote our <code>hello</code> function above <code>main</code>, not below it. That's on purpose. C reads your code from top to bottom, just like you do. So if <code>hello</code> were written below <code>main</code>, by the time C reaches <code>hello();</code> inside <code>main</code>, it has never heard of <code>hello</code> before. Newer compilers will give you an error and refuse to compile it. Older ones will only give you a warning and take a guess, but you should never rely on that guess. Our challenge checker treats it as an error, just like the newer compilers.</p>
 
     <p>So what if you really want <code>main</code> at the top? Well, you can tell C about the function before using it, by writing just the first part of it at the top of the file, followed by a semicolon. This is called a <strong>declaration</strong>. Notice the semicolon: we are not defining the function here, we are only telling C that it exists.</p>
 
     <pre class="code">#include &lt;stdio.h&gt;
 
-int hello();
+void hello();
 
 int main() {
     hello();
 }
 
-int hello() {
+void hello() {
     printf("hello");
 }</pre>
 
     <p>Now C already knows about <code>hello</code> by the time it reaches <code>main</code>, so it's happy, even though the actual code of <code>hello</code> is written at the bottom.</p>
+
+    <h2>Giving something back: return</h2>
+
+    <p>So far, our function just does something and that's it. But a function can also give a value back to whoever called it, using <code>return</code>. This time, instead of <code>void</code>, we write the type of the value it gives back. For example, this function gives back the number 1337, so its type is <code>int</code>:</p>
+
+    <pre class="code">int leet() {
+    return 1337;
+}
+
+int main() {
+    int x = leet();
+    printf("%d\n", x); // prints 1337
+}</pre>
+
+    <p>When C reaches <code>return</code>, the function stops right there and hands the value back. So <code>int x = leet();</code> stores 1337 in <code>x</code>, just like writing <code>int x = 1337;</code>.</p>
+
+    <h2>Passing something in: arguments</h2>
+
+    <p>Remember the arguments we skipped earlier? Arguments are values you hand to a function, so it can work with them. You have already done this with <code>printf</code>: in <code>printf("hello")</code>, <code>"hello"</code> is the argument. To make our own function take an argument, we write it inside the parentheses, with its type and a name, just like declaring a variable:</p>
+
+    <pre class="code">int square(int n) {
+    return n * n;
+}
+
+int main() {
+    printf("%d\n", square(5));  // prints 25
+    printf("%d\n", square(12)); // prints 144
+}</pre>
+
+    <p>Every time we call <code>square</code>, <code>n</code> becomes whatever we passed in: 5 the first time, 12 the second time. A function can take more than one argument too, separated by commas:</p>
+
+    <pre class="code">int add(int a, int b) {
+    return a + b;
+}</pre>
+
+    <p>And <code>add(2, 3)</code> gives back <code>5</code>.</p>
+
+    <p>One more thing: variables you create inside a function only exist inside that function. The <code>n</code> in <code>square</code> has nothing to do with an <code>n</code> in <code>main</code>. Every function has its own.</p>
+
+    <h2>So what is return 0?</h2>
+
+    <p>Remember the <code>return 0;</code> in our very first program? Now you know what it means: <code>main</code> is a function too, and it returns an <code>int</code>. But who does it return it to? The system that ran your program! <code>0</code> means "everything went fine", and any other number means something went wrong. You can even see it yourself: run your program, then run <code>echo $?</code>, and it prints the number your <code>main</code> returned.</p>
+
+    <p>And if <code>main</code> doesn't have a <code>return</code> at all, C returns <code>0</code> for you, which is why our programs work fine without it.</p>
   </main>
 
   <div id="list"></div>
