@@ -166,7 +166,7 @@ export const COURSE = [
             title: "Checkpoint 1",
             challenge: {
               description: [
-                "In this challenge you get a file called `checkpoint.c`, and the challenge will tell you what to do! Every level starts from an empty program, and just like before, the checker tries lots of different values, so your code has to be right every time!",
+                "In this challenge you get a file called `checkpoint.c`, and the challenge will tell you what to do! Just like before, the checker tries lots of different values, so your code has to be right every time!",
                 "Run `/challenge/run`, that spawns `checkpoint.c`, and tells you what to do.",
               ],
               command: "docker run --rm -it ghcr.io/pwnctual/checkpoint-1",
