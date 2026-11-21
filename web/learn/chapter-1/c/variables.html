@@ -71,6 +71,19 @@
     <p>Now, you might be thinking, "Wait, if a <code>char</code> only holds one single character, how do I store a whole word or a sentence?"</p>
 
     <p>We will learn how to store more than one character very soon! For now, just remember that a <code>char</code> strictly holds only one single letter.</p>
+
+    <h2>Getting input from the user</h2>
+
+    <p>So far, all our values are written right into the code. But what if we want the user to type something in? For that, we use <code>scanf</code>, which is like <code>printf</code>, but backwards: instead of printing something, it reads something.</p>
+
+    <pre class="code">int age;
+printf("How old are you? ");
+scanf("%d", &amp;age);
+printf("You are %d years old!\n", age);</pre>
+
+    <p>First, we create <code>age</code> without giving it a value yet, which is totally fine. Then <code>scanf</code> waits for the user to type a number and press Enter, and puts that number into <code>age</code>. The <code>%d</code> works just like in <code>printf</code>: it tells <code>scanf</code> to read an integer.</p>
+
+    <p>Notice the <code>&amp;</code> before <code>age</code>. It's needed so <code>scanf</code> knows where to put the number. We will learn exactly why when we get to memory. For now, just remember: <code>scanf</code> needs an <code>&amp;</code> before the variable.</p>
   </main>
 
   <div id="list"></div>

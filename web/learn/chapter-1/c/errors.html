@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Errors and debugging · pwnctual</title>
+<link rel="icon" href="/pwnctual-logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Google+Sans+Code:wght@400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script type="module" src="/course.js"></script>
+</head>
+<body data-page="lesson" data-chapter="chapter-1" data-module="c" data-lesson="errors">
+<header class="site-head">
+  <div class="site-head-in">
+    <a class="site-brand" href="/"><img src="/pwnctual-logo.png" alt="" width="32" height="32"><span>pwnctual</span></a>
+    <nav class="site-nav"><a href="/learn" aria-current="page">Learn</a><a href="/about">About</a></nav>
+  </div>
+</header>
+<div class="wrap wide">
+  <div id="top"></div>
+  <div id="head"></div>
+  <main>
+    <p>Now here is a secret: your code will almost never work the first time. Not yours, not mine, not anybody's. Everybody gets errors all the time, even programmers with 20 years of experience. The difference is that they know how to read them. So let's learn how!</p>
+
+    <h2>Reading a compiler error</h2>
+
+    <p>Say we forgot a semicolon:</p>
+
+    <pre class="code">#include &lt;stdio.h&gt;
+
+int main() {
+    printf("Hello, World!")
+    return 0;
+}</pre>
+
+    <p>When we run <code>make hello</code>, the compiler refuses and says:</p>
+
+    <pre class="code">hello.c:4:28: error: expected ';' before 'return'</pre>
+
+    <p>This looks scary, but it's actually super helpful. Let's break it down:</p>
+
+    <ul class="terms">
+      <li><code>hello.c</code> is the file with the problem.</li>
+      <li><code>4</code> is the line number, and <code>28</code> is how far into that line (the column).</li>
+      <li><code>error: expected ';' before 'return'</code> is what went wrong, in (almost) plain English.</li>
+    </ul>
+
+    <p>Notice that the compiler noticed the problem only when it reached <code>return</code>. So if the line it points to looks fine, always check the line right before it too.</p>
+
+    <h2>Fix the first error first</h2>
+
+    <p>Sometimes one tiny mistake gives you a whole wall of errors, because the compiler gets confused and everything after the mistake looks wrong to it. So don't panic. Always fix the very first error, compile again, and see what's left. Very often, the rest just disappear.</p>
+
+    <h2>Errors vs warnings</h2>
+
+    <p>An <strong>error</strong> means the compiler couldn't make your program at all. A <strong>warning</strong> means it did make it, but something looks wrong. Never ignore warnings. A warning today is very often a bug (or even a vulnerability) tomorrow.</p>
+
+    <h2>Errors you will see a lot</h2>
+
+    <div style="overflow-x:auto">
+      <table class="states">
+        <tr><th>The compiler says</th><th>What it usually means</th></tr>
+        <tr><td><code>expected ';' before ...</code></td><td>You forgot a semicolon, usually at the end of the line before.</td></tr>
+        <tr><td><code>implicit declaration of function 'Printf'</code></td><td>C has never heard of that function. Check the spelling (C is case-sensitive!), or you're missing an <code>#include</code>.</td></tr>
+        <tr><td><code>expected declaration or statement at end of input</code></td><td>You forgot a closing <code>}</code> somewhere.</td></tr>
+        <tr><td><code>'x' undeclared</code></td><td>You used a variable that doesn't exist. A typo, or you forgot to create it.</td></tr>
+      </table>
+    </div>
+
+    <h2>When it compiles but does the wrong thing</h2>
+
+    <p>The worst bugs are the ones where there's no error at all. The program runs, it just does the wrong thing. For these, the simplest trick is also the most used one: add some <code>printf</code>s to see what's actually happening inside your program, step by step. Print the values you think you have, and compare them with what you expected. The moment they don't match, you found your bug. Once you are done, remove those extra <code>printf</code>s.</p>
+
+    <p>And if you're still stuck, try explaining your code, line by line, out loud, to anybody, even a rubber duck. It sounds silly, but very often you will find the bug halfway through explaining it. Programmers actually call this rubber duck debugging!</p>
+  </main>
+
+  <div id="list"></div>
+
+  <footer>
+    <span>© 2026 Polite Jackal</span>
+    <a class="discord" href="https://discord.gg/Fh773EybYz" target="_blank" rel="noopener"><i aria-hidden="true"></i>Discord</a>
+  </footer>
+</div>
+</body>
+</html>

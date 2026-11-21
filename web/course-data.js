@@ -92,6 +92,10 @@ export const COURSE = [
             },
           },
           {
+            id: "errors",
+            title: "Errors and debugging",
+          },
+          {
             id: "variables",
             title: "Variables",
             challenge: {

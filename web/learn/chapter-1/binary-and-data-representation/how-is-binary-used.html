@@ -30,7 +30,34 @@
 
     <p>Everything you see on your screen is just a bunch of zeroes and ones. Who said? Well, you see, your device screen has millions of pixels. Each pixel has 3 tiny light bulbs: red, green, and blue. We give each bulb an intensity from 0 to 255—recall that this is the value that can be stored in a byte. So we give each bulb—red, green, and blue—an intensity, and it makes that amount of light visible, which gives us the colors we want, and hence the screen you are looking at. So now you should understand what we mean by these ones and zeroes. Similarly, all images, videos, passwords, etc., are all just ones and zeroes.</p>
 
-    <p>Now similarly, we humans have also come up with something to represent text. We represent each character with a bunch of zeroes and ones (this is known as ASCII, we will come back to this).</p>
+    <p>Now similarly, we humans have also come up with something to represent text. We represent each character with a bunch of zeroes and ones (this is known as ASCII).</p>
+
+    <h2>Text is just numbers too</h2>
+
+    <p>ASCII is just a big list everybody agreed on, where every character gets a number. For example:</p>
+
+    <div style="overflow-x:auto">
+      <table class="states">
+        <tr><th>Character</th><th>Number</th><th>In binary</th></tr>
+        <tr><td><code>A</code></td><td>65</td><td><code>01000001</code></td></tr>
+        <tr><td><code>B</code></td><td>66</td><td><code>01000010</code></td></tr>
+        <tr><td><code>a</code></td><td>97</td><td><code>01100001</code></td></tr>
+        <tr><td><code>0</code></td><td>48</td><td><code>00110000</code></td></tr>
+        <tr><td>space</td><td>32</td><td><code>00100000</code></td></tr>
+      </table>
+    </div>
+
+    <p>So when you type <code>Hi</code>, your computer actually stores two bytes: 72 for <code>H</code> and 105 for <code>i</code>. Notice that even the digit <code>0</code> is not stored as 0, it's stored as 48, because here it's a character, not a number.</p>
+
+    <h2>Same bits, different meaning</h2>
+
+    <p>Now here is something really important. Look at <code>01000001</code>. Is it the number 65? The letter <code>A</code>? The red part of a pixel? Well, it's all of them! The bits themselves don't know what they are. It's the program reading them that decides what they mean.</p>
+
+    <p>Keep this in mind, because as hackers, this is one of the most important ideas we will ever learn. A lot of real attacks happen when a program reads some bytes as something they were never supposed to be.</p>
+
+    <h2>Bigger units</h2>
+
+    <p>Since bytes are tiny, we use bigger units for bigger things. A kilobyte (KB) is about a thousand bytes, a megabyte (MB) is about a million bytes, and a gigabyte (GB) is about a billion bytes. So a 1 GB movie is roughly 8 billion zeroes and ones!</p>
   </main>
 
   <div id="list"></div>

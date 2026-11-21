@@ -92,6 +92,17 @@ printf("%f\n", result); // prints 2.500000</pre>
     <h2>Order of operations</h2>
 
     <p>Just like in school math, C doesn't simply go from left to right. <code>*</code>, <code>/</code> and <code>%</code> are done before <code>+</code> and <code>-</code>. So <code>2 + 3 * 4</code> is <code>14</code>, not <code>20</code>. If you want the addition to happen first, use brackets: <code>(2 + 3) * 4</code> is <code>20</code>. When in doubt, just use brackets. It also makes your code easier to read.</p>
+
+    <h2>Floats aren't perfect</h2>
+
+    <p>Here is something weird. Try this:</p>
+
+    <pre class="code">double x = 0.1 + 0.2;
+printf("%.20f\n", x); // prints 0.30000000000000004441</pre>
+
+    <p>(<code>%.20f</code> just means: show 20 digits after the dot.) Wait, what? 0.1 + 0.2 isn't exactly 0.3? Well, remember that computers store everything in binary. And just like 1/3 can't be written exactly in decimal (0.3333... forever), numbers like 0.1 can't be stored exactly in binary. So the computer stores the closest number it can, and those tiny errors add up.</p>
+
+    <p>Most of the time it doesn't matter. But never expect a <code>float</code> or <code>double</code> to be exactly right, and never use them for things like money. For money, programmers count whole cents with an <code>int</code> instead.</p>
   </main>
 
   <div id="list"></div>
